@@ -25,3 +25,13 @@ Thumbs.db
 **/config/apikeys.h
 *.env
 .env.*
+
+# LaTeX build artifacts
+docs/latex/*.aux
+docs/latex/*.log
+docs/latex/*.out
+docs/latex/*.toc
+docs/latex/*.lof
+docs/latex/*.lot
+docs/latex/*.fls
+docs/latex/*.fdb_latexmk
