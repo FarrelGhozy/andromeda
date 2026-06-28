@@ -1,0 +1,27 @@
+# Build artifacts
+hardware/firmware/build/
+hardware/firmware/.pio/
+hardware/firmware/.vscode/
+
+# Android
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/.idea/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Sensitive config
+**/config/wifi.h
+**/config/apikeys.h
+*.env
+.env.*
