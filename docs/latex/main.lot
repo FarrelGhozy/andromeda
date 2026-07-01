@@ -21,8 +21,6 @@
 \contentsline {table}{\numberline {4.2}{\ignorespaces Rencana pengujian sistem}}{39}{table.caption.31}%
 \contentsline {table}{\numberline {4.3}{\ignorespaces Bill of Materials — Sistem ANDROMEDA}}{41}{table.caption.32}%
 \contentsline {table}{\numberline {4.4}{\ignorespaces Rekapitulasi biaya berdasarkan kategori}}{42}{table.caption.33}%
-\contentsline {table}{\numberline {4.5}{\ignorespaces Biaya 6 $\times $ 4-20mA Current Loop}}{46}{table.caption.36}%
-\contentsline {table}{\numberline {4.6}{\ignorespaces Biaya RS485 untuk 6 Petak}}{46}{table.caption.37}%
-\contentsline {table}{\numberline {4.7}{\ignorespaces Perbandingan 6$\times $4-20mA vs RS485 untuk 6 petak}}{46}{table.caption.38}%
-\contentsline {table}{\numberline {4.8}{\ignorespaces Bill of Materials — 6 Petak ANDROMEDA}}{48}{table.caption.40}%
+\contentsline {table}{\numberline {4.5}{\ignorespaces Koneksi pin ESP32 untuk 6 petak}}{46}{table.caption.36}%
+\contentsline {table}{\numberline {4.6}{\ignorespaces Bill of Materials — 6 Petak ANDROMEDA}}{47}{table.caption.38}%
 \addvspace {10\p@ }

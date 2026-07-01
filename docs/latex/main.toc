@@ -67,15 +67,12 @@
 \contentsline {section}{\numberline {4.5}Skenario Implementasi 6 Petak Lahan}{45}{section.4.5}%
 \contentsline {subsection}{\numberline {4.5.1}Spesifikasi Lahan}{45}{subsection.4.5.1}%
 \contentsline {subsection}{\numberline {4.5.2}Tata Letak Lahan (Layout)}{45}{subsection.4.5.2}%
-\contentsline {subsection}{\numberline {4.5.3}Analisis Skalabilitas: 6 Titik Sensor}{45}{subsection.4.5.3}%
-\contentsline {subsubsection}{Opsi A: 6 $\times $ 4-20mA Current Loop (Individual)}{45}{subsection.4.5.3}%
-\contentsline {subsubsection}{Opsi B: RS485 Daisy-Chain Backbone (Rekomendasi 🔥)}{46}{table.caption.36}%
-\contentsline {subsubsection}{Perbandingan Langsung}{46}{table.caption.37}%
-\contentsline {subsection}{\numberline {4.5.4}Rekomendasi Arsitektur Final untuk 6 Petak 🔥}{47}{subsection.4.5.4}%
-\contentsline {subsection}{\numberline {4.5.5}Skema Wiring 6 Petak — RS485 Multi-Node}{47}{subsection.4.5.5}%
-\contentsline {subsection}{\numberline {4.5.6}BOM Update untuk 6 Petak}{48}{subsection.4.5.6}%
-\contentsline {subsection}{\numberline {4.5.7}Kesimpulan untuk 6 Petak}{49}{subsection.4.5.7}%
-\contentsline {chapter}{\numberline {5}PENUTUP}{50}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Kesimpulan}{50}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Saran}{51}{section.5.2}%
-\contentsline {chapter}{DAFTAR PUSTAKA}{52}{chapter*.41}%
+\contentsline {subsection}{\numberline {4.5.3}Arsitektur Sistem: 1 ESP32 — 6 Sensor — 6 Kran}{45}{subsection.4.5.3}%
+\contentsline {subsubsection}{Koneksi Pin ESP32}{46}{subsection.4.5.3}%
+\contentsline {subsubsection}{Diagram Blok Sistem 6 Petak}{46}{table.caption.36}%
+\contentsline {subsection}{\numberline {4.5.4}BOM untuk 6 Petak}{47}{subsection.4.5.4}%
+\contentsline {subsection}{\numberline {4.5.5}Kesimpulan untuk 6 Petak}{48}{subsection.4.5.5}%
+\contentsline {chapter}{\numberline {5}PENUTUP}{49}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Kesimpulan}{49}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Saran}{50}{section.5.2}%
+\contentsline {chapter}{DAFTAR PUSTAKA}{51}{chapter*.39}%

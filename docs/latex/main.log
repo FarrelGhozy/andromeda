@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.6.3)  1 JUL 2026 19:35
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.6.3)  1 JUL 2026 19:43
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -934,7 +934,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.2}) has
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.34 ...neksi Internet untuk IoT}{22}{section.3.3}
+l.34 ...neksi Internet untuk IoT}{23}{section.3.3}
                                                   % [2
 
 ]
@@ -946,7 +946,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.38 ...�� 🔥 REKOMENDASI}{23}{subsection.3.3.4}
+l.38 ...�� 🔥 REKOMENDASI}{24}{subsection.3.3.4}
                                                   %
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -958,7 +958,21 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[3])
+[3]
+
+! LaTeX Error: Unicode character 🔥 (U+1F525)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.74 ... untuk 6 Petak 🔥}{47}{subsection.4.5.4}
+                                                  %
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+)
 \tf@toc=\write5
 \openout5 = `main.toc'.
 
@@ -5126,65 +5140,10 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.1795 ...t (1.5, -2.25) {\textbf{Panel}\\ \textbf
+l.1783 ... at (-1.6, -2) {\textbf{Panel}\\ \textbf
                                                   {Kontrol}};
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
-
-! Undefined control sequence.
-l.1805 ...=\tiny] at (3.5, 0) {\textbullet \orange
-                                                  {$\bullet$} Sensor};
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-l.1806 ...\tiny] at (3.5, -0.3) {\textbullet \cyan
-                                                  {$\bullet$} Solenoid Valve};
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! LaTeX Error: Unicode character ❌ (U+274C)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1841 \end{tabularx}
-                     
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-! LaTeX Error: Unicode character ❌ (U+274C)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1841 \end{tabularx}
-                     
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ❌ (U+274C)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1841 \end{tabularx}
-                     
-You may provide a definition with
-\DeclareUnicodeCharacter 
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -5195,281 +5154,13 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 [45]
 
-! LaTeX Error: Unicode character 🔥 (U+1F525)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1846 ...Daisy-Chain Backbone (Rekomendasi 🔥)}
-                                                  
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-! LaTeX Error: Unicode character ✅ (U+2705)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1865 \end{tabularx}
-                     
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-! LaTeX Error: Unicode character ✅ (U+2705)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1865 \end{tabularx}
-                     
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ✅ (U+2705)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1865 \end{tabularx}
-                     
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-! LaTeX Error: Unicode character ❌ (U+274C)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1888 \end{tabularx}
-                     
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-! LaTeX Error: Unicode character ✅ (U+2705)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1888 \end{tabularx}
-                     
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-! LaTeX Error: Unicode character ✅ (U+2705)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1888 \end{tabularx}
-                     
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-! LaTeX Error: Unicode character ✅ (U+2705)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1888 \end{tabularx}
-                     
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-! LaTeX Error: Unicode character ✅ (U+2705)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1888 \end{tabularx}
-                     
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-! LaTeX Error: Unicode character ❌ (U+274C)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1888 \end{tabularx}
-                     
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-! LaTeX Error: Unicode character ✅ (U+2705)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1888 \end{tabularx}
-                     
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-! LaTeX Error: Unicode character ✅ (U+2705)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1888 \end{tabularx}
-                     
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-! LaTeX Error: Unicode character ✅ (U+2705)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1888 \end{tabularx}
-                     
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-! LaTeX Error: Unicode character ✅ (U+2705)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1888 \end{tabularx}
-                     
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ❌ (U+274C)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1888 \end{tabularx}
-                     
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ✅ (U+2705)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1888 \end{tabularx}
-                     
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ✅ (U+2705)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1888 \end{tabularx}
-                     
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ✅ (U+2705)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1888 \end{tabularx}
-                     
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ✅ (U+2705)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1888 \end{tabularx}
-                     
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character 🔥 (U+1F525)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1892 ...asi Arsitektur Final untuk 6 Petak 🔥}
-                                                  
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 13.59999pt, for example:
-(fancyhdr)                \setlength{\headheight}{13.59999pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
-
-[46]
-Overfull \hbox (3.7152pt too wide) in paragraph at lines 1899--1901
-[]\T1/ptm/b/n/12 Sensor: \T1/ptm/m/n/12 RS485 daisy-chain ^^V satu ka-bel Belde
-n 3107A back-bone (50m) menghubungkan
- []
-
-
-Overfull \hbox (9.4483pt too wide) in paragraph at lines 1906--1907
-[]\T1/ptm/b/n/12 Aktuasi: \T1/ptm/m/n/12 6 solenoid valve dikon-trol dari panel
- se-cara ter-pusat (ka-bel power valve 2$\OMS/cmsy/m/n/12 ^^B$\T1/ptm/m/n/12 1,
-5mm
- []
-
-
 ! LaTeX Error: Not allowed in LR mode.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.1976 }
+l.1910 }
         
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -5477,7 +5168,7 @@ If that doesn't work, type  X <return>  to quit.
 ! Missing } inserted.
 <inserted text> 
                 }
-l.1976 }
+l.1910 }
         
 I've inserted something that you may have forgotten.
 (See the <inserted text> above.)
@@ -5492,14 +5183,14 @@ See the tikz package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.1976 }
+l.1910 }
         
 (That was another \errmessage.)
 
 ! Missing \endgroup inserted.
 <inserted text> 
                 \endgroup 
-l.1976 }
+l.1910 }
         
 I've inserted something that you may have forgotten.
 (See the <inserted text> above.)
@@ -5510,7 +5201,7 @@ my insertion and my current dilemma will both disappear.
 ! Undefined control sequence.
 <recently read> \tikz@expand@last@token@ 
                                          
-l.1976 }
+l.1910 }
         
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -5521,7 +5212,7 @@ and I'll forget about whatever was undefined.
 ! Missing number, treated as zero.
 <to be read again> 
                    \let 
-l.1976 }
+l.1910 }
         
 A number should have been here; I inserted `0'.
 (If you can't figure out why I needed to see a number,
@@ -5530,698 +5221,7 @@ look up `weird error' in the index to The TeXbook.)
 ! Illegal unit of measure (pt inserted).
 <to be read again> 
                    \let 
-l.1976 }
-        
-Dimensions can be in units of em, ex, in, pt, pc,
-cm, mm, dd, cc, nd, nc, bp, or sp; but yours is a new one!
-I'll assume that you meant to say pt, for printer's points.
-To recover gracefully from this error, it's best to
-delete the erroneous units; e.g., type `2' to delete
-two letters. (See Chapter 27 of The TeXbook.)
-
-! Undefined control sequence.
-<recently read> \petak 
-                       
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Extra }, or forgotten \endgroup.
-\pgffor@body ... at (\x +1, -1.5) {Petak\\\petak }
-                                                  ; \draw [thick] (\x +1, -0...
-l.1976 }
-        
-I've deleted a group-closing symbol because it seems to be
-spurious, as in `$x}$'. But perhaps the } is legitimate and
-you forgot something else, as in `\hbox{$x}'. In such cases
-the way to recover is to insert both the forgotten and the
-deleted material, e.g., by typing `I$}'.
-
-Missing character: There is no ; in font nullfont!
-! Undefined control sequence.
-<argument> \x 
-              +1, -0.8
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<argument> \x 
-              +1, -1.2
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<argument> \x 
-              +1, -1.2
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<argument> \x 
-              +1, -1.8
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-\pgffor@invokebody ... /\expandafter {\pgffor@var 
-                                                  }\ifpgfutil@in@ \expandaft...
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<recently read> \pgffor@var 
-                            
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Missing control sequence inserted.
-<inserted text> 
-                \inaccessible 
-l.1976 }
-        
-Please don't say `\def cs{...}', say `\def\cs{...}'.
-I've inserted an inaccessible control sequence so that your
-definition will be completed without mixing me up too badly.
-You can recover graciously from this error, if you're
-careful; see exercise 27.2 in The TeXbook.
-
-! Undefined control sequence.
-\pgffor@invokebody ... \pgffor@assign@before@code 
-                                                  \fi \expandafter \expandaf...
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<recently read> \pgffor@body 
-                             
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-\pgffor@invokebody ...e \pgffor@assign@after@code 
-                                                  \fi \pgffor@endgroup 
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-\pgffor@endgroup ...d {\pgffor@remember@once@code 
-                                                  }\fi \ifx \pgffor@remember...
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-\pgffor@endgroup ...panded {\pgffor@remember@code 
-                                                  }\fi \endgroup \ifx \pgffo...
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-\pgffor@invokebody ... /\expandafter {\pgffor@var 
-                                                  }\ifpgfutil@in@ \expandaft...
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<recently read> \pgffor@var 
-                            
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Missing control sequence inserted.
-<inserted text> 
-                \inaccessible 
-l.1976 }
-        
-Please don't say `\def cs{...}', say `\def\cs{...}'.
-I've inserted an inaccessible control sequence so that your
-definition will be completed without mixing me up too badly.
-You can recover graciously from this error, if you're
-careful; see exercise 27.2 in The TeXbook.
-
-! Undefined control sequence.
-\pgffor@invokebody ... \pgffor@assign@before@code 
-                                                  \fi \expandafter \expandaf...
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<recently read> \pgffor@body 
-                             
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-\pgffor@invokebody ...e \pgffor@assign@after@code 
-                                                  \fi \pgffor@endgroup 
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-\pgffor@endgroup ...d {\pgffor@remember@once@code 
-                                                  }\fi \ifx \pgffor@remember...
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-\pgffor@endgroup ...panded {\pgffor@remember@code 
-                                                  }\fi \endgroup \ifx \pgffo...
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-\pgffor@invokebody ... /\expandafter {\pgffor@var 
-                                                  }\ifpgfutil@in@ \expandaft...
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<recently read> \pgffor@var 
-                            
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Missing control sequence inserted.
-<inserted text> 
-                \inaccessible 
-l.1976 }
-        
-Please don't say `\def cs{...}', say `\def\cs{...}'.
-I've inserted an inaccessible control sequence so that your
-definition will be completed without mixing me up too badly.
-You can recover graciously from this error, if you're
-careful; see exercise 27.2 in The TeXbook.
-
-! Undefined control sequence.
-\pgffor@invokebody ... \pgffor@assign@before@code 
-                                                  \fi \expandafter \expandaf...
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<recently read> \pgffor@body 
-                             
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-\pgffor@invokebody ...e \pgffor@assign@after@code 
-                                                  \fi \pgffor@endgroup 
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-\pgffor@endgroup ...d {\pgffor@remember@once@code 
-                                                  }\fi \ifx \pgffor@remember...
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-\pgffor@endgroup ...panded {\pgffor@remember@code 
-                                                  }\fi \endgroup \ifx \pgffo...
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-\pgffor@invokebody ... /\expandafter {\pgffor@var 
-                                                  }\ifpgfutil@in@ \expandaft...
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<recently read> \pgffor@var 
-                            
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Missing control sequence inserted.
-<inserted text> 
-                \inaccessible 
-l.1976 }
-        
-Please don't say `\def cs{...}', say `\def\cs{...}'.
-I've inserted an inaccessible control sequence so that your
-definition will be completed without mixing me up too badly.
-You can recover graciously from this error, if you're
-careful; see exercise 27.2 in The TeXbook.
-
-! Undefined control sequence.
-\pgffor@invokebody ... \pgffor@assign@before@code 
-                                                  \fi \expandafter \expandaf...
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<recently read> \pgffor@body 
-                             
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-\pgffor@invokebody ...e \pgffor@assign@after@code 
-                                                  \fi \pgffor@endgroup 
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-\pgffor@endgroup ...d {\pgffor@remember@once@code 
-                                                  }\fi \ifx \pgffor@remember...
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-\pgffor@endgroup ...panded {\pgffor@remember@code 
-                                                  }\fi \endgroup \ifx \pgffo...
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-\pgffor@invokebody ... /\expandafter {\pgffor@var 
-                                                  }\ifpgfutil@in@ \expandaft...
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<recently read> \pgffor@var 
-                            
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Missing control sequence inserted.
-<inserted text> 
-                \inaccessible 
-l.1976 }
-        
-Please don't say `\def cs{...}', say `\def\cs{...}'.
-I've inserted an inaccessible control sequence so that your
-definition will be completed without mixing me up too badly.
-You can recover graciously from this error, if you're
-careful; see exercise 27.2 in The TeXbook.
-
-! Undefined control sequence.
-\pgffor@invokebody ... \pgffor@assign@before@code 
-                                                  \fi \expandafter \expandaf...
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<recently read> \pgffor@body 
-                             
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-\pgffor@invokebody ...e \pgffor@assign@after@code 
-                                                  \fi \pgffor@endgroup 
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-\pgffor@endgroup ...d {\pgffor@remember@once@code 
-                                                  }\fi \ifx \pgffor@remember...
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-\pgffor@endgroup ...panded {\pgffor@remember@code 
-                                                  }\fi \endgroup \ifx \pgffo...
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-\pgffor@atendforeach ...ed {\pgffor@remember@code 
-                                                  }\ifx \pgffor@remember@exp...
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-
-! LaTeX Error: Not allowed in LR mode.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1976 }
-        
-You've lost some text.  Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-! Missing } inserted.
-<inserted text> 
-                }
-l.1976 }
-        
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
-
-! Package tikz Error: Giving up on this path. Did you forget a semicolon?.
-
-See the tikz package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1976 }
-        
-(That was another \errmessage.)
-
-! Missing \endgroup inserted.
-<inserted text> 
-                \endgroup 
-l.1976 }
-        
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
-! Undefined control sequence.
-<recently read> \tikz@expand@last@token@ 
-                                         
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Missing number, treated as zero.
-<to be read again> 
-                   \let 
-l.1976 }
-        
-A number should have been here; I inserted `0'.
-(If you can't figure out why I needed to see a number,
-look up `weird error' in the index to The TeXbook.)
-
-! Illegal unit of measure (pt inserted).
-<to be read again> 
-                   \let 
-l.1976 }
-        
-Dimensions can be in units of em, ex, in, pt, pc,
-cm, mm, dd, cc, nd, nc, bp, or sp; but yours is a new one!
-I'll assume that you meant to say pt, for printer's points.
-To recover gracefully from this error, it's best to
-delete the erroneous units; e.g., type `2' to delete
-two letters. (See Chapter 27 of The TeXbook.)
-
-Missing character: There is no K in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no n in font nullfont!
-Missing character: There is no t in font nullfont!
-Missing character: There is no r in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no l in font nullfont!
-! Extra }, or forgotten \endgroup.
-<recently read> }
-                 
-l.1976 }
-        
-I've deleted a group-closing symbol because it seems to be
-spurious, as in `$x}$'. But perhaps the } is legitimate and
-you forgot something else, as in `\hbox{$x}'. In such cases
-the way to recover is to insert both the forgotten and the
-deleted material, e.g., by typing `I$}'.
-
-Missing character: There is no ; in font nullfont!
-
-! LaTeX Error: Not allowed in LR mode.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1976 }
-        
-You've lost some text.  Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-! Missing } inserted.
-<inserted text> 
-                }
-l.1976 }
-        
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
-
-! Package tikz Error: Giving up on this path. Did you forget a semicolon?.
-
-See the tikz package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1976 }
-        
-(That was another \errmessage.)
-
-! Missing \endgroup inserted.
-<inserted text> 
-                \endgroup 
-l.1976 }
-        
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
-! Undefined control sequence.
-<recently read> \tikz@expand@last@token@ 
-                                         
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Missing number, treated as zero.
-<to be read again> 
-                   \let 
-l.1976 }
-        
-A number should have been here; I inserted `0'.
-(If you can't figure out why I needed to see a number,
-look up `weird error' in the index to The TeXbook.)
-
-! Illegal unit of measure (pt inserted).
-<to be read again> 
-                   \let 
-l.1976 }
+l.1910 }
         
 Dimensions can be in units of em, ex, in, pt, pc,
 cm, mm, dd, cc, nd, nc, bp, or sp; but yours is a new one!
@@ -6231,109 +5231,14 @@ delete the erroneous units; e.g., type `2' to delete
 two letters. (See Chapter 27 of The TeXbook.)
 
 Missing character: There is no 1 in font nullfont!
-Missing character: There is no 0 in font nullfont!
-Missing character: There is no 0 in font nullfont!
-Missing character: There is no A in font nullfont!
-Missing character: There is no h in font nullfont!
-! Extra }, or forgotten \endgroup.
-<argument> ...10] at (13, -4.5) {Aki 12V \\ 100Ah}
-                                                  ; \draw [->, thick] (13, -...
-l.1976 }
-        
-I've deleted a group-closing symbol because it seems to be
-spurious, as in `$x}$'. But perhaps the } is legitimate and
-you forgot something else, as in `\hbox{$x}'. In such cases
-the way to recover is to insert both the forgotten and the
-deleted material, e.g., by typing `I$}'.
-
-Missing character: There is no ; in font nullfont!
-
-! LaTeX Error: Not allowed in LR mode.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1976 }
-        
-You've lost some text.  Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-! Missing } inserted.
-<inserted text> 
-                }
-l.1976 }
-        
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
-
-! Package tikz Error: Giving up on this path. Did you forget a semicolon?.
-
-See the tikz package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1976 }
-        
-(That was another \errmessage.)
-
-! Missing \endgroup inserted.
-<inserted text> 
-                \endgroup 
-l.1976 }
-        
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
-! Undefined control sequence.
-<recently read> \tikz@expand@last@token@ 
-                                         
-l.1976 }
-        
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Missing number, treated as zero.
-<to be read again> 
-                   \let 
-l.1976 }
-        
-A number should have been here; I inserted `0'.
-(If you can't figure out why I needed to see a number,
-look up `weird error' in the index to The TeXbook.)
-
-! Illegal unit of measure (pt inserted).
-<to be read again> 
-                   \let 
-l.1976 }
-        
-Dimensions can be in units of em, ex, in, pt, pc,
-cm, mm, dd, cc, nd, nc, bp, or sp; but yours is a new one!
-I'll assume that you meant to say pt, for printer's points.
-To recover gracefully from this error, it's best to
-delete the erroneous units; e.g., type `2' to delete
-two letters. (See Chapter 27 of The TeXbook.)
-
-Missing character: There is no R in font nullfont!
-Missing character: There is no o in font nullfont!
 Missing character: There is no u in font nullfont!
+Missing character: There is no n in font nullfont!
+Missing character: There is no i in font nullfont!
 Missing character: There is no t in font nullfont!
-Missing character: There is no e in font nullfont!
-Missing character: There is no r in font nullfont!
 ! Extra }, or forgotten \endgroup.
-<argument> ...reen!10] at (15, -4.5) {LTE\\Router}
-                                                  ; \draw [->, thick] (14, -...
-l.1976 }
+<argument> ...xtbf {ESP32}\\ \footnotesize 1 unit}
+                                                  ; \par \foreach \i /\x in ...
+l.1910 }
         
 I've deleted a group-closing symbol because it seems to be
 spurious, as in `$x}$'. But perhaps the } is legitimate and
@@ -6345,7 +5250,7 @@ Missing character: There is no ; in font nullfont!
 ! Undefined control sequence.
 \pgfsys@call@end ->\pgfsys@end@save 
                                     \pgfsys@endscope 
-l.1976 }
+l.1910 }
         
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -6353,21 +5258,10 @@ misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-! Missing } inserted.
-<inserted text> 
-                }
-l.1976 }
-        
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
 ! Undefined control sequence.
 \endpgfscope ...pgflinewidth =\pgfscope@linewidth 
                                                   \global \let \pgf@strokeco...
-l.1976 }
+l.1910 }
         
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -6378,7 +5272,7 @@ and I'll forget about whatever was undefined.
 ! Missing number, treated as zero.
 <to be read again> 
                    \global 
-l.1976 }
+l.1910 }
         
 A number should have been here; I inserted `0'.
 (If you can't figure out why I needed to see a number,
@@ -6387,7 +5281,7 @@ look up `weird error' in the index to The TeXbook.)
 ! Illegal unit of measure (pt inserted).
 <to be read again> 
                    \global 
-l.1976 }
+l.1910 }
         
 Dimensions can be in units of em, ex, in, pt, pc,
 cm, mm, dd, cc, nd, nc, bp, or sp; but yours is a new one!
@@ -6399,7 +5293,7 @@ two letters. (See Chapter 27 of The TeXbook.)
 ! Missing } inserted.
 <inserted text> 
                 }
-l.1976 }
+l.1910 }
         
 I've inserted something that you may have forgotten.
 (See the <inserted text> above.)
@@ -6410,7 +5304,7 @@ my insertion and my current dilemma will both disappear.
 ! Extra }, or forgotten \endgroup.
 \endpgfpicture ...globally \endgroup \hss \egroup 
                                                   \pgf@restore@layerlist@fro...
-l.1976 }
+l.1910 }
         
 I've deleted a group-closing symbol because it seems to be
 spurious, as in `$x}$'. But perhaps the } is legitimate and
@@ -6421,7 +5315,7 @@ deleted material, e.g., by typing `I$}'.
 ! Missing } inserted.
 <inserted text> 
                 }
-l.1976 }
+l.1910 }
         
 I've inserted something that you may have forgotten.
 (See the <inserted text> above.)
@@ -6429,19 +5323,25 @@ With luck, this will get me unwedged. But if you
 really didn't forget anything, try typing `2' now; then
 my insertion and my current dilemma will both disappear.
 
+! Extra }, or forgotten \endgroup.
+\endpgfpicture ...dpicture \endgroup \hss \egroup 
+                                                  \pgfsys@typesetpicturebox ...
+l.1910 }
+        
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
 
-Overfull \hbox (7.71297pt too wide) in paragraph at lines 1918--1976
- [][] 
- []
 
-
-! LaTeX Error: \begin{figure} on input line 1916 ended by \end{tikzpicture}.
+! LaTeX Error: \begin{figure} on input line 1862 ended by \end{tikzpicture}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.1976 }
+l.1910 }
         
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -6450,28 +5350,13 @@ or  <return>  to continue without it.
 ! Missing } inserted.
 <inserted text> 
                 }
-l.1976 }
+l.1910 }
         
 I've inserted something that you may have forgotten.
 (See the <inserted text> above.)
 With luck, this will get me unwedged. But if you
 really didn't forget anything, try typing `2' now; then
 my insertion and my current dilemma will both disappear.
-
-! Extra \endgroup.
-\color@endgroup ->\endgraf \@endpefalse \endgroup 
-                                                  
-l.1976 }
-        
-Things are pretty mixed up, but I think the worst is over.
-
-! Too many }'s.
-\@begin@tempboxa ...begingroup #2\color@endgroup }
-                                                  \def \width {\wd \@tempbox...
-l.1976 }
-        
-You've closed more groups than you opened.
-Such booboos are generally harmless, so keep going.
 
 
 ! Package graphics Error: Division by 0.
@@ -6480,56 +5365,44 @@ See the graphics package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.1976 }
+l.1910 }
         
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
-! Extra \endgroup.
-\Gscale@box@dd ...\box \@tempboxa }\@end@tempboxa 
-                                                  
-l.1976 }
-        
-Things are pretty mixed up, but I think the worst is over.
 
-
-! Package caption Error: \caption outside float.
-
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 1911.
 See the caption package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1977 \caption
-               {Skema RS485 backbone untuk 6 petak ANDROMEDA}
-If you do not understand this error, please take a closer look
-at the documentation of the `caption' package, especially the
-section about errors.
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-! Too many }'s.
-\@endfloatbox ...pagefalse \outer@nobreak \egroup 
-                                                  \color@endbox 
-l.1979 \end{figure}
-                   
-You've closed more groups than you opened.
-Such booboos are generally harmless, so keep going.
-
-! Extra \endgroup.
-\color@endgroup ->\endgraf \@endpefalse \endgroup 
-                                                  
-l.1979 \end{figure}
-                   
-Things are pretty mixed up, but I think the worst is over.
 
 ! Too many }'s.
 \color@endbox ->\color@endgroup \egroup 
                                         
-l.1979 \end{figure}
+l.1913 \end{figure}
                    
 You've closed more groups than you opened.
 Such booboos are generally harmless, so keep going.
+
+! Undefined control sequence.
+\endfigure ...box \columnwidth \fi \box \@currbox 
+                                                  \vskip \intextsep \relax 
+l.1913 \end{figure}
+                   
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing number, treated as zero.
+<to be read again> 
+                   \vskip 
+l.1913 \end{figure}
+                   
+A number should have been here; I inserted `0'.
+(If you can't figure out why I needed to see a number,
+look up `weird error' in the index to The TeXbook.)
 
 
 ! LaTeX Error: \begin{document} ended by \end{figure}.
@@ -6538,7 +5411,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.1979 \end{figure}
+l.1913 \end{figure}
                    
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -6547,79 +5420,140 @@ or  <return>  to continue without it.
 ! Extra \endgroup.
 \end  ...end#1\endcsname \@checkend {#1}\endgroup 
                                                   \UseHook {env/#1/after}\if...
-l.1979 \end{figure}
+l.1913 \end{figure}
                    
 Things are pretty mixed up, but I think the worst is over.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2025--2025
+Underfull \hbox (badness 10000) in paragraph at lines 1961--1961
 []|\T1/ptm/m/n/12 ESP32 De-vKit
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2025--2025
-[]|\T1/ptm/m/n/12 Relay Mod-ule 8-
+Underfull \hbox (badness 10000) in paragraph at lines 1961--1961
+[]|\T1/ptm/m/n/12 Huawei B535-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2025--2025
-[]|\T1/ptm/m/n/12 MAX485 RS485
+Underfull \hbox (badness 10000) in paragraph at lines 1961--1961
+\T1/ptm/m/n/12 932 4G LTE
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2025--2025
-[]|\T1/ptm/m/n/12 Huawei B535-932
+Underfull \hbox (badness 10000) in paragraph at lines 1961--1961
+[]|\T1/ptm/m/n/12 Aki Ker-ing
  []
 
 
-Underfull \hbox (badness 1337) in paragraph at lines 2025--2025
-[]|\T1/ptm/m/n/12 Aki Ker-ing 100Ah
+Underfull \hbox (badness 10000) in paragraph at lines 1961--1961
+[]|\T1/ptm/m/n/12 Solar Panel
  []
 
 
-Underfull \hbox (badness 1303) in paragraph at lines 2025--2025
-[]|\T1/ptm/m/n/12 Solar Charge Con-
+Underfull \hbox (badness 10000) in paragraph at lines 1961--1961
+[]|\T1/ptm/m/n/12 Solar Charge
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2025--2025
-[]|\T1/ptm/m/n/12 ADS1115 16-bit
+Underfull \hbox (badness 10000) in paragraph at lines 1961--1961
+\T1/ptm/m/n/12 Con-troller 20A
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2025--2025
-[]|\T1/ptm/m/n/12 ESP32-C3 Su-per-
+Underfull \hbox (badness 10000) in paragraph at lines 1961--1961
+[]|\T1/ptm/m/n/12 Power Sup-ply
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2025--2025
-[]|\T1/ptm/m/n/12 MAX485 RS485
+Underfull \hbox (badness 10000) in paragraph at lines 1961--1961
+[]|\T1/ptm/m/n/12 Step-Down
  []
 
 
-Underfull \hbox (badness 7273) in paragraph at lines 2025--2025
-[]|\T1/ptm/m/n/12 Project Box ke-cil
+Underfull \hbox (badness 10000) in paragraph at lines 1961--1961
+\T1/ptm/m/n/12 LM2596
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2025--2025
-[]|\T1/ptm/m/n/12 Kabel Belden
+Underfull \hbox (badness 2495) in paragraph at lines 1961--1961
+\T1/ptm/m/n/12 (12V$\OMS/cmsy/m/n/12 !$\T1/ptm/m/n/12 5V un-tuk
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2025--2025
+Underfull \hbox (badness 10000) in paragraph at lines 1961--1961
+\T1/ptm/m/n/12 mi-nal Block +
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1961--1961
+[]|\T1/ptm/m/n/12 Capacitive Soil
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1961--1961
+[]|\T1/ptm/m/n/12 Resistor Pre-sisi
+ []
+
+
+Underfull \hbox (badness 4899) in paragraph at lines 1961--1961
+[]|\T1/ptm/m/n/12 Kapasitor 100nF
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1961--1961
+[]|\T1/ptm/m/n/12 Solenoid Valve
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1961--1961
 []|\T1/ptm/m/n/12 Kabel NYMHY
  []
 
 
-Underfull \hbox (badness 8113) in paragraph at lines 2025--2025
-[]|\T1/ptm/m/n/12 Dripper / Emit-ter
+Underfull \hbox (badness 2698) in paragraph at lines 1961--1961
+\T1/ptm/m/n/12 2$\OMS/cmsy/m/n/12 ^^B$\T1/ptm/m/n/12 1,5mm (valve
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2025--2025
-[]|\T1/ptm/m/n/12 Crimping Tool +
+Underfull \hbox (badness 10000) in paragraph at lines 1961--1961
+[]|\T1/ptm/m/n/12 Fitting Se-lang
  []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1961--1961
+\T1/ptm/m/n/12 (Tee, El-bow,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1961--1961
+[]|\T1/ptm/m/n/12 Project Box
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1961--1961
+\T1/ptm/m/n/12 (junc-tion box
+ []
+
+
+Underfull \hbox (badness 3612) in paragraph at lines 1961--1961
+[]|\T1/ptm/m/n/12 Timah Sol-der +
+ []
+
+
+Underfull \hbox (badness 1648) in paragraph at lines 1961--1961
+[]|\T1/ptm/m/n/12 Multimeter Dig-i-
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[46]
+Overfull \vbox (343.78075pt too high) has occurred while \output is active []
+
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -6629,9 +5563,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
 [47]
-Overfull \vbox (149.26979pt too high) has occurred while \output is active []
-
-
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 13.59999pt, for example:
@@ -6640,16 +5571,8 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
 [48]
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 13.59999pt, for example:
-(fancyhdr)                \setlength{\headheight}{13.59999pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
-
-[49]
 Chapter 5.
-[50
+[49
 
 ]
 
@@ -6659,13 +5582,13 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[51]
-Overfull \hbox (58.29362pt too wide) in paragraph at lines 2086--2088
+[50]
+Overfull \hbox (58.29362pt too wide) in paragraph at lines 2024--2026
 \T1/ptm/m/n/12 Available: [][]$\T1/pcr/m/n/12 https : / / www . espressif . com
  / sites / default / files / documentation /
  []
 
-[52
+[51
 
 ] (./main.aux)
  ***********
@@ -6682,24 +5605,40 @@ Package rerunfilecheck Warning: File `main.out' has changed.
 (rerunfilecheck)                or use package `bookmark'.
 
 Package rerunfilecheck Info: Checksums for `main.out':
-(rerunfilecheck)             Before: E0FD6A54758B3083C1C79185B6624B50;12928
-(rerunfilecheck)             After:  341B4DF3A5922789420DA0984C9D8548;14755.
+(rerunfilecheck)             Before: 341B4DF3A5922789420DA0984C9D8548;14755
+(rerunfilecheck)             After:  6AF5C6549934792AACF9C863FBEE5A09;14194.
  ) 
 Here is how much of TeX's memory you used:
- 28581 strings out of 469514
- 556770 string characters out of 5470073
- 1051492 words of memory out of 5000000
- 56491 multiletter control sequences out of 15000+600000
- 682483 words of font info for 93 fonts, out of 8000000 for 9000
+ 28563 strings out of 469514
+ 556415 string characters out of 5470073
+ 1058570 words of memory out of 5000000
+ 56477 multiletter control sequences out of 15000+600000
+ 682480 words of font info for 93 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 84i,13n,104p,588b,896s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,13n,104p,588b,954s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
 pdfTeX warning (dest): name{Hfootnote.1} has been referenced but does not exist
 , replaced by a fixed one
 
 
-pdfTeX warning (dest): name{chapter*.35} has been referenced but does not exist
+pdfTeX warning (dest): name{table.caption.40} has been referenced but does not 
+exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{table.caption.37} has been referenced but does not 
+exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{chapter*.41} has been referenced but does not exist
 , replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.4.5.7} has been referenced but does not 
+exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.4.5.6} has been referenced but does not 
+exist, replaced by a fixed one
 
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/
 share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/
@@ -6707,15 +5646,14 @@ texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive
 /texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-
 dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fo
 nts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/ty
-pe1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw
-/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a
-.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/sha
-re/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texm
-f-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (54 pages, 254841 bytes).
+pe1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times
+/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></
+usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on main.pdf (53 pages, 247116 bytes).
 PDF statistics:
- 1040 PDF objects out of 1200 (max. 8388607)
- 853 compressed objects within 9 object streams
- 268 named destinations out of 1000 (max. 500000)
- 585 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1063 PDF objects out of 1200 (max. 8388607)
+ 879 compressed objects within 9 object streams
+ 263 named destinations out of 1000 (max. 500000)
+ 649 words of extra memory for PDF output out of 10000 (max. 10000000)
 

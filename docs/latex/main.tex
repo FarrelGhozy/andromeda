@@ -1750,15 +1750,15 @@ Berdasarkan seluruh analisis, skema terbaik untuk implementasi ANDROMEDA di PDB 
 
 \subsection{Spesifikasi Lahan}
 
-Berdasarkan kebutuhan pengembangan, sistem ANDROMEDA akan diterapkan pada \textbf{6 petak lahan}, masing-masing berukuran \textbf{5 m $\times$ 1 m} (total luas 30 m²). Setiap petak akan memiliki:
+Berdasarkan kebutuhan pengembangan, sistem ANDROMEDA akan diterapkan pada \textbf{6 petak lahan} yang berada dalam \textbf{satu area} (bersebelahan), masing-masing berukuran \textbf{5 m $\times$ 1 m} (total luas 30 m²). Setiap petak akan memiliki:
 
 \begin{itemize}
     \item 1 buah capacitive soil sensor — memonitor kelembaban tanah secara independen
-    \item 1 buah solenoid valve 12V NC — mengontrol irigasi per petak
+    \item 1 buah solenoid valve 12V NC (kran air otomatis) — mengontrol irigasi per petak
     \item 1 jalur drip irrigation (selang PE 16mm + dripper) — distribusi air merata
 \end{itemize}
 
-Panel kontrol utama ditempatkan di \textbf{satu titik pusat} dengan jarak kabel ke petak terjauh diperkirakan \textbf{10--50 meter}.
+Panel kontrol utama ditempatkan di \textbf{tepi area lahan}, dengan jarak kabel ke petak terjauh diperkirakan \textbf{10--30 meter}. Semua sensor dan kran dikendalikan oleh \textbf{1 (satu) ESP32 DevKit} yang sama.
 
 
 \subsection{Tata Letak Lahan (Layout)}
@@ -1766,220 +1766,154 @@ Panel kontrol utama ditempatkan di \textbf{satu titik pusat} dengan jarak kabel 
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[
-    petak/.style={rectangle, minimum width=1.8cm, minimum height=0.5cm, text centered, draw, font=\scriptsize},
-    label/.style={font=\small}
+    petak/.style={rectangle, minimum width=1.8cm, minimum height=0.7cm, text centered, draw, font=\footnotesize},
 ]
 
-% Grid 6 petak (3 baris × 2 kolom)
+% Grid 6 petak (3 baris $\times$ 2 kolom) dalam 1 area
+\draw[thick, primaryblue!50, rounded corners] (-0.3, 0.8) rectangle (6.3, -4.7);
+\node[above, font=\small] at (3, 0.8) {\textbf{AREA LAHAN (30 m²)}};
+
 \foreach \x in {0,1,2} {
     \foreach \y in {0,1} {
-        \node[petak, fill=green!10] at (\y*3, -\x*1.5) {Petak \pgfmathparse{int(\x*2+\y+1)}\pgfmathresult};
+        \node[petak, fill=green!10] at (\y*3, -\x*1.7) {Petak \pgfmathparse{int(\x*2+\y+1)}\pgfmathresult};
     }
 }
 
-% Sensor dots
+% Panel kontrol di sisi kiri
+\node[rectangle, fill=primaryblue!25, draw=primaryblue, thick, minimum width=1.8cm, minimum height=0.9cm, rounded corners, font=\footnotesize] at (-1.6, -2) {\textbf{Panel}\\ \textbf{Kontrol}};
+
+% Kabel backbone dari panel ke junction box
+\node[circle, fill=gray!40, inner sep=2pt, font=\tiny] at (0, -2) {};
+\node[above, font=\tiny] at (0, -2) {JB};
+
+\draw[thick, green!50!black] (-0.7, -2) -- (0, -2);
+\node[above, font=\tiny] at (-0.35, -2) {Kabel utama};
+
+% Kabel dari junction box ke setiap petak
 \foreach \x in {0,1,2} {
     \foreach \y in {0,1} {
-        \node[circle, fill=orange!60, inner sep=2pt] at (\y*3-0.6, -\x*1.5+0.2) {};
-    }
-}
-
-% Valve dots  
-\foreach \x in {0,1,2} {
-    \foreach \y in {0,1} {
-        \node[circle, fill=cyan!60, inner sep=2pt] at (\y*3+0.6, -\x*1.5+0.2) {};
-    }
-}
-
-% Panel kontrol di tengah
-\node[rectangle, fill=primaryblue!20, draw=primaryblue, thick, minimum width=2cm, minimum height=1cm, rounded corners] at (1.5, -2.25) {\textbf{Panel}\\ \textbf{Kontrol}};
-
-% Kabel dari panel ke petak
-\foreach \x in {0,1,2} {
-    \foreach \y in {0,1} {
-        \draw[thick, green!50!black] (1.5, -2.25) -- (\y*3, -\x*1.5);
+        \draw[thick, green!50!black] (0, -2) -- (\y*3-0.9, -\x*1.7);
     }
 }
 
 % Keterangan
-\node[below right, font=\tiny] at (3.5, 0) {\textbullet \orange{$\bullet$} Sensor};
-\node[below right, font=\tiny] at (3.5, -0.3) {\textbullet \cyan{$\bullet$} Solenoid Valve};
-\node[below right, font=\tiny] at (3.5, -0.6) {--- Kabel sinyal \& power};
+\node[below, font=\footnotesize] at (3, -5.2) {
+\begin{tabular}{l}
+\textbullet\ 1 ESP32 DevKit — kontrol semua sensor \& kran \\
+\textbullet\ Panel kontrol di tepi area — kabel pendek ke petak \\
+\textbullet\ Tandon air di posisi lebih tinggi (gravitasi) \\
+\textbullet\ ---------------------------------------------------- \\
+$\,$ Ukuran petak: 5m $\times$ 1m \; Lebar area: 10m \; Panjang area: 15m
+\end{tabular}
+};
 
 % Ukuran
-\draw[<->, thick] (3.2, 0.3) -- (0.2, 0.3) node[midway, above, font=\tiny] {5 m};
-\draw[<->, thick] (-0.5, 0.5) -- (-0.5, -0.5) node[midway, left, font=\tiny] {1 m};
+\draw[<->, thick] (6.5, 0.5) -- (0.5, 0.5) node[midway, above, font=\footnotesize] {$\sim$10 m};
+\draw[<->, thick] (-0.5, 0.6) -- (-0.5, -0.8) node[midway, left, font=\footnotesize] {1 m};
 
 \end{tikzpicture}
-\caption{Tata letak 6 petak lahan ANDROMEDA — panel kontrol di titik pusat}
+\caption{Tata letak 6 petak lahan — 1 area, 1 ESP32, junction box di tengah}
 \label{fig:6-plot-layout}
 \end{figure}
 
 
-\subsection{Analisis Skalabilitas: 6 Titik Sensor}
+\subsection{Arsitektur Sistem: 1 ESP32 — 6 Sensor — 6 Kran}
 
-Dengan 6 titik sensor yang tersebar, pemilihan arsitektur transmisi sinyal menjadi sangat krusial. Terdapat dua pendekatan yang dipertimbangkan:
+Karena semua petak berada dalam satu area, arsitektur yang digunakan sangat sederhana:
 
-\subsubsection{Opsi A: 6 $\times$ 4-20mA Current Loop (Individual)}
+\begin{itemize}
+    \item \textbf{1 ESP32 DevKit} — sebagai satu-satunya mikrokontroler yang membaca semua sensor dan mengontrol semua kran.
+    \item \textbf{Junction Box (JB)} di tengah area — tempat percabangan kabel dari panel ke tiap petak. Memudahkan instalasi dan maintenance.
+    \item \textbf{Kabel backbone} — satu kabel multi-core (12 pair twisted shielded) dari panel ke junction box (\textasciitilde10--30m). Dari JB, kabel pendek (\textasciitilde1--3m) ke tiap sensor/kran.
+\end{itemize}
 
-Setiap petak memiliki satu modul XTR116 dan satu pasang kabel Belden 3107A terpisah menuju panel kontrol.
+\subsubsection{Koneksi Pin ESP32}
 
 \begin{table}[H]
 \centering
-\caption{Biaya 6 $\times$ 4-20mA Current Loop}
-\label{tab:6x4-20ma}
-\begin{tabularx}{\textwidth}{l X c}
+\caption{Koneksi pin ESP32 untuk 6 petak}
+\label{tab:esp32-6pin}
+\begin{tabularx}{\textwidth}{c c c X}
 \toprule
-\textbf{Komponen} & \textbf{Perhitungan} & \textbf{Total} \\
+\textbf{GPIO} & \textbf{Fungsi} & \textbf{Terhubung ke} & \textbf{Keterangan} \\
 \midrule
-XTR116 module & 6 $\times$ Rp 35.000 & Rp 210.000 \\
-Resistor 250$\Omega$ + kapasitor & 6 $\times$ Rp 3.000 & Rp 18.000 \\
-Kabel Belden 3107A (6 $\times$ 50m) & 300m $\times$ Rp 12.000 & \textbf{Rp 3.600.000} ❌ \\
+32 & ADC1\_CH0 & Sensor 1 (via 4-20mA + 250$\Omega$) & Petak 1 \\
+33 & ADC1\_CH1 & Sensor 2 (via 4-20mA + 250$\Omega$) & Petak 2 \\
+34 & ADC1\_CH2 & Sensor 3 (via 4-20mA + 250$\Omega$) & Petak 3 \\
+35 & ADC1\_CH3 & Sensor 4 (via 4-20mA + 250$\Omega$) & Petak 4 \\
+36 & ADC1\_CH4 & Sensor 5 (via 4-20mA + 250$\Omega$) & Petak 5 \\
+37 & ADC1\_CH5 & Sensor 6 (via 4-20mA + 250$\Omega$) & Petak 6 \\
 \midrule
-\textbf{Total biaya transmisi} & & \textbf{Rp 3.828.000} \\
+26 & Digital Out & Relay CH1 $\to$ Solenoid Valve 1 & Petak 1 \\
+27 & Digital Out & Relay CH2 $\to$ Solenoid Valve 2 & Petak 2 \\
+14 & Digital Out & Relay CH3 $\to$ Solenoid Valve 3 & Petak 3 \\
+12 & Digital Out & Relay CH4 $\to$ Solenoid Valve 4 & Petak 4 \\
+13 & Digital Out & Relay CH5 $\to$ Solenoid Valve 5 & Petak 5 \\
+15 & Digital Out & Relay CH6 $\to$ Solenoid Valve 6 & Petak 6 \\
+\midrule
+23 & Output & LED Indikator Biru (sistem hidup) & Panel \\
+22 & Output & Buzzer / alarm & Panel \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\textbf{Kekurangan:} Biaya kabel sangat tinggi karena tiap sensor butuh kabel sendiri-sendiri. Total 300m kabel Belden 3107A.
-
-\subsubsection{Opsi B: RS485 Daisy-Chain Backbone (Rekomendasi 🔥)}
-
-Satu kabel backbone sepanjang lahan menghubungkan semua node sensor secara daisy-chain. Setiap node menggunakan MAX485 + ADS1115.
-
-\begin{table}[H]
-\centering
-\caption{Biaya RS485 untuk 6 Petak}
-\label{tab:rs485-6plots}
-\begin{tabularx}{\textwidth}{l X c}
-\toprule
-\textbf{Komponen} & \textbf{Perhitungan} & \textbf{Total} \\
-\midrule
-MAX485 module ($\times$2) & 6 $\times$ Rp 20.000 & Rp 120.000 \\
-ADS1115 16-bit ADC & 6 $\times$ Rp 17.000 & Rp 102.000 \\
-ESP32-C3 SuperMini (node) & 6 $\times$ Rp 30.000 & Rp 180.000 \\
-Kabel Belden 3107A backbone & 50m $\times$ Rp 12.000 & \textbf{Rp 600.000} ✅ \\
-\cmidrule{2-3}
-\textbf{Total biaya transmisi} & & \textbf{Rp 1.002.000} \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-\textbf{Keunggulan:} Biaya kabel 6$\times$ lebih murah, satu backbone untuk semua node, bisa ditambah sensor lain (suhu, pH) di masa depan.
-
-\subsubsection{Perbandingan Langsung}
-
-\begin{table}[H]
-\centering
-\caption{Perbandingan 6$\times$4-20mA vs RS485 untuk 6 petak}
-\label{tab:6-plot-compare}
-\begin{tabularx}{\textwidth}{l X X}
-\toprule
-\textbf{Parameter} & \textbf{6 $\times$ 4-20mA} & \textbf{RS485 Daisy-Chain} \\
-\midrule
-Biaya transmisi & \textbf{Rp 3.828.000} ❌ & \textbf{Rp 1.002.000} ✅ \\
-Panjang kabel total & 300m & 50m + 6m drop \\
-Jumlah kabel ke panel & 6 pasang & 1 backbone \\
-Multi-sensor (suhu, pH) & Butuh tambahan loop & Tinggal tambah node \\
-Kompleksitas wiring & Tinggi (6 kabel terpisah) & Rendah (1 kabel) \\
-Maintenance & Cari kabel putus susah & Deteksi node failure mudah \\
-Skalabilitas ke 12 petak & 600m kabel (Rp 7,2jt) ✅ & 50m + 12 node (Rp 2jt) ✅✅ \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-
-\subsection{Rekomendasi Arsitektur Final untuk 6 Petak 🔥}
-
-Berdasarkan analisis di atas, rekomendasi untuk implementasi 6 petak adalah:
-
-\subsubsection*{Arsitektur Hybrid: RS485 Backbone + Aktuasi Terpusat}
-
-\begin{enumerate}
-    \item \textbf{Sensor:} RS485 daisy-chain — satu kabel Belden 3107A backbone (50m) menghubungkan 6 node sensor. Setiap node terdiri dari:
-    \begin{itemize}
-        \item Capacitive Soil Sensor $\to$ ADS1115 (ADC 16-bit, I2C)
-        \item ESP32-C3 SuperMini (mikrokontroler node, baca ADS1115, kirim via RS485)
-        \item MAX485 (RS485 transceiver)
-    \end{itemize}
-    
-    \item \textbf{Aktuasi:} 6 solenoid valve dikontrol dari panel secara terpusat (kabel power valve 2$\times$1,5mm ke tiap petak). ESP32 utama memiliki 6 pin GPIO untuk mengontrol 6 relay module.
-    
-    \item \textbf{Komunikasi:} Semua data sensor dari 6 petak dikumpulkan oleh ESP32 utama melalui bus RS485, kemudian dikirim ke Supabase via WiFi (Huawei B535).
-    
-    \item \textbf{Power:} Setiap node sensor mendapat daya 12V dari backbone (tidak perlu baterai). Solenoid valve juga 12V dari panel.
-\end{enumerate}
-
-
-\subsection{Skema Wiring 6 Petak — RS485 Multi-Node}
+\subsubsection{Diagram Blok Sistem 6 Petak}
 
 \begin{figure}[H]
 \centering
-\resizebox{\textwidth}{!}{%
+\resizebox{0.9\textwidth}{!}{%
 \begin{tikzpicture}[
-    nodec/.style={rectangle, rounded corners, minimum width=2cm, minimum height=0.8cm, text centered, draw, font=\tiny},
-    main/.style={rectangle, rounded corners, minimum width=2.5cm, minimum height=0.8cm, text centered, draw, font=\small}
+    box/.style={rectangle, rounded corners, minimum width=2.2cm, minimum height=0.8cm, text centered, draw, font=\small},
+    wire/.style={thick}
 ]
 
-% BACKBONE
-\draw[thick, green!50!black] (0,0) -- (14,0);
-\node[above, font=\small] at (7,0) {\textbf{RS485 Backbone — Kabel Belden 3107A (50m)}};
+% ESP32 di tengah
+\node[box, fill=primaryblue!25, draw=primaryblue, minimum width=2.5cm, minimum height=1.2cm] (esp) {\textbf{ESP32}\\ \footnotesize 1 unit};
 
-% NODE 1-6
-\foreach \x in {0,2,4,6,8,10} {
-    \pgfmathsetmacro{\petak}{int(\x/2+1)}
-    \node[nodec, fill=orange!10] at (\x+1, -1.5) {Petak\\\petak};
-    \draw[thick] (\x+1, -0.8) -- (\x+1, -1.2);
-    \node[circle, fill=orange!60, inner sep=1.5pt] at (\x+1, -1.2) {};
-    \node[circle, fill=cyan!60, inner sep=1.5pt] at (\x+1, -1.8) {};
+% Sensor (atas)
+\foreach \i/\x in {1/0,2/1.5,3/3,4/4.5,5/6,6/7.5} {
+    \node[box, fill=orange!15] at (\x, 1.5) {Sensor \i};
+    \draw[->, thick, green!50!black] (\x, 1.1) -- (\x, 0.3);
+    \node at (\x, 0.7) {\tiny 4-20mA};
 }
+\node[above, font=\footnotesize] at (3.75, 2) {\textbf{6 $\times$ Capacitive Soil Sensor + XTR116}};
 
-% PANEL UTAMA (kanan)
-\node[main, fill=primaryblue!20, draw=primaryblue, thick] at (13, -1.5) {\textbf{Panel}\\ \textbf{Kontrol}};
-\draw[thick] (12,0) -- (13,-1);
+% Relay
+\node[box, fill=gray!15] at (3.75, -1.2) {Relay 8-Ch};
+\draw[->, thick] (esp.south) -- (3.75, -0.8);
 
-% Relay ×6
-\node[main, fill=gray!10] at (13, -3) {Relay $\times$6};
-\draw[->, thick] (13, -2.3) -- (13, -2.7);
-
-% Solenoid valves
-\foreach \x in {0,2,4,6,8,10} {
-    \draw[->, thick, blue!50!black] (13, -3) -- (\x+1, -1.8);
+% Valve (bawah)
+\foreach \i/\x in {1/0,2/1.5,3/3,4/4.5,5/6,6/7.5} {
+    \node[box, fill=cyan!15] at (\x, -2.2) {Kran \i};
+    \draw[->, thick, blue!50!black] (\x, -1.6) -- (\x, -1.9);
 }
+\node[below, font=\footnotesize] at (3.75, -2.7) {\textbf{6 $\times$ Solenoid Valve 12V NC}};
 
 % Power
-\node[main, fill=red!10] at (13, -4.5) {Aki 12V \\ 100Ah};
-\draw[->, thick] (13, -3.5) -- (13, -4);
+\node[box, fill=red!15] at (9.5, 0) {Aki 12V};
+\node[box, fill=yellow!15] at (9.5, -1.2) {SCC 20A};
+\node[box, fill=orange!15] at (9.5, -2.4) {Solar 300Wp};
+\draw[->, thick] (9.5, 0.4) -| (esp.east);
+\draw[->, thick] (9.5, -0.8) -- (9.5, -0.4);
+\draw[->, thick] (9.5, -1.8) -- (9.5, -1.6);
 
-% Solar
-\node[main, fill=yellow!10] at (11, -5.5) {Solar Panel 300Wp};
-\node[main, fill=orange!10] at (13, -5.5) {SCC 20A};
-\draw[->, thick] (11, -5) -- (11, -5) -- (12, -5);
-\draw[->, thick] (12, -5) -- (13, -5);
-\draw[->, thick] (13, -5) -- (13, -4.5);
-\node at (12, -5.2) {};
+% LTE
+\node[box, fill=green!15] at (9.5, 1.2) {LTE Router};
+\draw[->, thick] (9.5, 1.6) -| (esp.east);
 
-% LTE Router
-\node[main, fill=green!10] at (15, -4.5) {LTE\\Router};
-\draw[->, thick] (14, -4.5) -- (15, -4.5);
-
-% Keterangan
-\node[below, font=\tiny] at (7, -6.2) {
-\begin{tabular}{l}
-\textbullet\ Backbone: 1 kabel untuk 6 node sensor \\
-\textbullet\ Power \& data dalam satu kabel \\
-\textbullet\ Solenoid valve via kabel terpisah dari panel
-\end{tabular}
-};
+% Tandon
+\node[box, fill=cyan!15] at (3.75, -3.4) {Tandon Air (Gravitasi)};
+\draw[->, thick, blue!50!black] (3.75, -2.6) -- (3.75, -3);
+\node at (6, -3.4) {$\to$ Drip Irrigation};
 
 \end{tikzpicture}
 }
-\caption{Skema RS485 backbone untuk 6 petak ANDROMEDA}
-\label{fig:rs485-6plot}
+\caption{Diagram blok sistem ANDROMEDA untuk 6 petak — 1 ESP32, 6 sensor, 6 kran}
+\label{fig:6-plot-block}
 \end{figure}
 
 
-\subsection{BOM Update untuk 6 Petak}
+\subsection{BOM untuk 6 Petak}
 
 \begin{table}[H]
 \centering
@@ -1989,52 +1923,56 @@ Berdasarkan analisis di atas, rekomendasi untuk implementasi 6 petak adalah:
 \toprule
 \textbf{No} & \textbf{Komponen} & \textbf{Qty} & \textbf{Estimasi} & \textbf{Link Shopee} \\
 \midrule
-\multicolumn{5}{l}{\textbf{Pusat (Panel Kontrol)}} \\
+\multicolumn{5}{l}{\textbf{Pusat (Panel Kontrol + Daya)}} \\
 1 & ESP32 DevKit Board 30 Pin & 1 & Rp 45.000 -- 60.000 & \href{https://shopee.co.id/search?keyword=ESP32+DevKit+Board+30+pin}{Cari} \\
 2 & Relay Module 8-Channel 5V & 1 & Rp 35.000 -- 50.000 & \href{https://shopee.co.id/search?keyword=relay+8+channel+5V}{Cari} \\
-3 & MAX485 RS485 Module & 1 & Rp 15.000 -- 25.000 & \href{https://shopee.co.id/search?keyword=MAX485+RS485+module}{Cari} \\
-4 & Huawei B535-932 4G LTE Router & 1 & Rp 400.000 -- 500.000 & \href{https://shopee.co.id/search?keyword=Huawei+B535+router+4G+LTE}{Cari} \\
-5 & Power Supply 12V 5A Adaptor & 1 & Rp 40.000 -- 60.000 & \href{https://shopee.co.id/search?keyword=power+supply+12V+5A}{Cari} \\
-6 & Aki Kering 100Ah (Yuasa NS70) & 1 & Rp 900.000 -- 1.200.000 & \href{https://shopee.co.id/search?keyword=aki+kering+100Ah+NS70}{Cari} \\
-7 & Solar Panel 300Wp Poly & 1 & Rp 1.000.000 -- 1.500.000 & \href{https://shopee.co.id/search?keyword=solar+panel+300wp+poly}{Cari} \\
-8 & Solar Charge Controller 20A PWM & 1 & Rp 100.000 -- 150.000 & \href{https://shopee.co.id/search?keyword=solar+charge+controller+20A+PWM}{Cari} \\
+3 & Huawei B535-932 4G LTE Router & 1 & Rp 400.000 -- 500.000 & \href{https://shopee.co.id/search?keyword=Huawei+B535+router+4G+LTE}{Cari} \\
+4 & Aki Kering 100Ah & 1 & Rp 900.000 -- 1.200.000 & \href{https://shopee.co.id/search?keyword=aki+kering+100Ah+NS70}{Cari} \\
+5 & Solar Panel 300Wp Poly & 1 & Rp 1.000.000 -- 1.500.000 & \href{https://shopee.co.id/search?keyword=solar+panel+300wp+poly}{Cari} \\
+6 & Solar Charge Controller 20A PWM & 1 & Rp 100.000 -- 150.000 & \href{https://shopee.co.id/search?keyword=solar+charge+controller+20A+PWM}{Cari} \\
+7 & Power Supply 12V 5A Adaptor & 1 & Rp 40.000 -- 60.000 & \href{https://shopee.co.id/search?keyword=power+supply+12V+5A}{Cari} \\
+8 & Step-Down LM2596 (12V$\to$5V untuk ESP32) & 1 & Rp 15.000 -- 25.000 & \href{https://shopee.co.id/search?keyword=LM2596+step+down}{Cari} \\
 9 & MCB 6A + Terminal Block + Box Panel & 1 set & Rp 70.000 -- 100.000 & \href{https://shopee.co.id/search?keyword=project+box+panel+listrik}{Cari} \\
 \midrule
-\multicolumn{5}{l}{\textbf{Per Petak ($\times$6)}} \\
+\multicolumn{5}{l}{\textbf{Sensor \& 4-20mA (per petak $\times$6)}} \\
 10 & Capacitive Soil Sensor v1.2 & 6 & Rp 90.000 -- 150.000 & \href{https://shopee.co.id/search?keyword=capacitive+soil+sensor}{Cari} \\
-11 & ADS1115 16-bit ADC Module & 6 & Rp 90.000 -- 120.000 & \href{https://shopee.co.id/search?keyword=ADS1115+ADC+16+bit}{Cari} \\
-12 & ESP32-C3 SuperMini & 6 & Rp 150.000 -- 180.000 & \href{https://shopee.co.id/search?keyword=ESP32+C3+SuperMini}{Cari} \\
-13 & MAX485 RS485 Module (node) & 6 & Rp 90.000 -- 150.000 & \href{https://shopee.co.id/search?keyword=MAX485+RS485+module}{Cari} \\
+11 & Modul XTR116 / XTR115 4-20mA TX & 6 & Rp 150.000 -- 210.000 & \href{https://shopee.co.id/search?keyword=XTR116+4-20mA+transmitter}{Cari} \\
+12 & Resistor Presisi 250$\Omega$ 0,1\% & 6 & Rp 12.000 -- 30.000 & \href{https://shopee.co.id/search?keyword=resistor+250+ohm+0.1}{Cari} \\
+13 & Kapasitor 100nF + 10$\mu$F & 6 pasang & Rp 6.000 -- 12.000 & \href{https://shopee.co.id/search?keyword=kondensator+100nF+10uF}{Cari} \\
+\midrule
+\multicolumn{5}{l}{\textbf{Aktuasi (per petak $\times$6)}} \\
 14 & Solenoid Valve 12V NC 1/2'' & 6 & Rp 300.000 -- 480.000 & \href{https://shopee.co.id/search?keyword=solenoid+valve+12V+NC}{Cari} \\
-15 & Project Box kecil (node) & 6 & Rp 60.000 -- 90.000 & \href{https://shopee.co.id/search?keyword=project+box+elektronik+kecil}{Cari} \\
 \midrule
-\multicolumn{5}{l}{\textbf{Kabel dan Irigasi}} \\
-16 & Kabel Belden 3107A backbone & 50m & Rp 500.000 -- 600.000 & \href{https://shopee.co.id/search?keyword=Belden+3107A+kabel+shielded}{Cari} \\
-17 & Kabel NYMHY 2$\times$1,5mm (valve) & 100m & Rp 100.000 -- 150.000 & \href{https://shopee.co.id/search?keyword=NYMHY+2x1.5+listrik}{Cari} \\
-18 & Selang Drip Irrigation PE 16mm & 50m & Rp 100.000 -- 150.000 & \href{https://shopee.co.id/search?keyword=selang+PE+drip+irrigation+16mm}{Cari} \\
-19 & Dripper / Emitter 4L/jam & 60 pcs & Rp 60.000 -- 120.000 & \href{https://shopee.co.id/search?keyword=dripper+irigasi+tetes+tanaman}{Cari} \\
-20 & Fitting Selang + Tee + Elbow & 1 set & Rp 80.000 -- 120.000 & \href{https://shopee.co.id/search?keyword=fitting+selang+irigasi+tetes+16mm}{Cari} \\
+\multicolumn{5}{l}{\textbf{Kabel \& Instalasi}} \\
+15 & Kabel Multi-Core 12 Pair Shielded (backbone) & 30m & Rp 300.000 -- 450.000 & \href{https://shopee.co.id/search?keyword=cable+multi+core+shielded+12+pair}{Cari} \\
+16 & Kabel NYMHY 2$\times$1,5mm (valve ke panel) & 100m & Rp 100.000 -- 150.000 & \href{https://shopee.co.id/search?keyword=NYMHY+2x1.5+listrik}{Cari} \\
+17 & Selang Drip Irrigation PE 16mm & 50m & Rp 100.000 -- 150.000 & \href{https://shopee.co.id/search?keyword=selang+PE+drip+irrigation+16mm}{Cari} \\
+18 & Dripper / Emitter 4L/jam & 60 pcs & Rp 60.000 -- 120.000 & \href{https://shopee.co.id/search?keyword=dripper+irigasi+tetes+tanaman}{Cari} \\
+19 & Fitting Selang (Tee, Elbow, Connector) & 1 set & Rp 80.000 -- 120.000 & \href{https://shopee.co.id/search?keyword=fitting+selang+irigasi+tetes+16mm}{Cari} \\
 \midrule
-\multicolumn{5}{l}{\textbf{Perkakas}} \\
+\multicolumn{5}{l}{\textbf{Perkakas \& Lainnya}} \\
+20 & Project Box (junction box outdoor) & 1 & Rp 25.000 -- 40.000 & \href{https://shopee.co.id/search?keyword=project+box+outdoor+elektronik}{Cari} \\
 21 & Timah Solder + Flux & 1 set & Rp 15.000 -- 25.000 & \href{https://shopee.co.id/search?keyword=timah+solder+flux+rosin}{Cari} \\
 22 & Crimping Tool + Skun Kabel & 1 set & Rp 30.000 -- 50.000 & \href{https://shopee.co.id/search?keyword=crimping+tool+skun+kabel}{Cari} \\
 23 & Multimeter Digital & 1 & Rp 50.000 -- 100.000 & \href{https://shopee.co.id/search?keyword=multimeter+digital}{Cari} \\
 \midrule
-\multicolumn{4}{l}{\textbf{Total Estimasi Keseluruhan (6 Petak)}} & \textbf{Rp 4.220.000 -- 6.110.000} \\
+\multicolumn{4}{l}{\textbf{Total Estimasi Keseluruhan (6 Petak)}} & \textbf{Rp 3.923.000 -- 5.782.000} \\
 \bottomrule
 \end{tabularx}
 \end{table}
+
+\textbf{Catatan:} Biaya ini sudah termasuk panel surya 300Wp dan aki 100Ah yang merupakan investasi jangka panjang. Tanpa solar + aki (jika listrik PLN tersedia), biaya turun menjadi \textbf{Rp 1.883.000 -- 2.932.000}.
 
 
 \subsection{Kesimpulan untuk 6 Petak}
 
 \begin{itemize}
-    \item \textbf{Arsitektur terbaik:} RS485 daisy-chain backbone \textbf{(bukan 6 $\times$ 4-20mA)} — menghemat Rp 2,8 juta dibanding 6 current loop individual.
-    \item \textbf{Total investasi:} Rp \textbf{4,2 -- 6,1 juta} untuk 6 petak (30 m²) — sudah termasuk panel surya + aki untuk daya mandiri.
-    \item \textbf{Biaya per petak:} Rp 700.000 -- 1.018.000 per petak (termasuk panel surya + aki yang dipakai bersama).
-    \item \textbf{Biaya bulanan:} Rp 15.000 -- 30.000 (paket data LTE, sama untuk 1 atau 6 petak).
-    \item \textbf{Skalabilitas:} Untuk 12 petak, cukup tambah node sensor di backbone yang sama. Biaya tambahan hanya komponen node + selang (tanpa kabel backbone baru).
-    \item \textbf{Solar + Aki:} Cukup untuk 6 solenoid valve (total 3A jika semua aktif bersamaan) + ESP32 + router LTE 24/7.
+    \item \textbf{Arsitektur:} 1 ESP32 — 6 sensor (via 4-20mA) — 6 kran (via relay 8-ch). Tidak perlu mikrokontroler tambahan.
+    \item \textbf{Total investasi:} Rp \textbf{3,9 -- 5,8 juta} (dengan solar + aki) atau Rp \textbf{1,9 -- 2,9 juta} (tanpa solar + aki).
+    \item \textbf{Biaya per petak:} Rp 650.000 -- 960.000 per petak (dengan solar + aki).
+    \item \textbf{Biaya bulanan:} Rp 15.000 -- 30.000 (paket data LTE — sama untuk 1 atau 6 petak).
+    \item \textbf{Skalabilitas:} ESP32 masih punya sisa 2 channel ADC (GPIO38-39) dan 2 pin digital untuk ekspansi ke 8 petak. Untuk >8 petak, gunakan multiplexer CD4051 atau tambah modul ADC eksternal (ADS1115 via I2C).
+    \item \textbf{Daya:} Aki 100Ah = 1.200Wh. ESP32 (0,3W) + router (10W) + 6 valve (maks 3A @ 12V = 36W, hanya saat aktif) = konsumsi harian \textasciitilde{}250--300Wh. Solar panel 300Wp di Indonesia (\textasciitilde{}4-5 sun hours) menghasilkan \textasciitilde{}1.200-1.500 Wh/hari — lebih dari cukup.
 \end{itemize}
 
 
