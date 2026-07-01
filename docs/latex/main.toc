@@ -34,24 +34,32 @@
 \contentsline {section}{\numberline {3.3}Perbandingan Perangkat Koneksi Internet untuk IoT}{22}{section.3.3}%
 \contentsline {subsection}{\numberline {3.3.1}Opsi 1: WiFi Rumahan (ISP)}{22}{subsection.3.3.1}%
 \contentsline {subsection}{\numberline {3.3.2}Opsi 2: Pocket Mifi (Huawei E5577Cs-321)}{22}{subsection.3.3.2}%
-\contentsline {subsection}{\numberline {3.3.3}Opsi 3: USB Modem (Huawei E3372h)}{22}{subsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.3.3}Opsi 3: USB Modem (Huawei E3372h)}{23}{subsection.3.3.3}%
 \contentsline {subsection}{\numberline {3.3.4}Opsi 4: 4G LTE Router (Huawei B535-932) — 🔥 REKOMENDASI}{23}{subsection.3.3.4}%
-\contentsline {subsection}{\numberline {3.3.5}Tabel Perbandingan Lengkap}{23}{subsection.3.3.5}%
+\contentsline {subsection}{\numberline {3.3.5}Tabel Perbandingan Lengkap}{24}{subsection.3.3.5}%
 \contentsline {subsection}{\numberline {3.3.6}Keputusan: Huawei B535-932}{24}{subsection.3.3.6}%
-\contentsline {subsection}{\numberline {3.3.7}Aplikasi Android}{24}{subsection.3.3.7}%
-\contentsline {section}{\numberline {3.4}Flowchart Sistem}{26}{section.3.4}%
-\contentsline {subsection}{\numberline {3.4.1}Alur Sistem Utama}{26}{subsection.3.4.1}%
-\contentsline {subsection}{\numberline {3.4.2}Alur Aplikasi Android}{27}{subsection.3.4.2}%
-\contentsline {section}{\numberline {3.5}Spesifikasi Hardware Lengkap}{28}{section.3.5}%
-\contentsline {section}{\numberline {3.6}Spesifikasi Software}{28}{section.3.6}%
-\contentsline {section}{\numberline {3.7}Rancangan Rangkaian}{29}{section.3.7}%
-\contentsline {subsection}{\numberline {3.7.1}Skematik ESP32 ke Sensor dan Relay}{29}{subsection.3.7.1}%
-\contentsline {subsection}{\numberline {3.7.2}Tabel Koneksi Pin}{29}{subsection.3.7.2}%
-\contentsline {chapter}{\numberline {4}RENCANA IMPLEMENTASI}{30}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Tahapan Pengembangan}{30}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Tabel Database Supabase}{31}{section.4.2}%
-\contentsline {section}{\numberline {4.3}Rencana Pengujian}{31}{section.4.3}%
-\contentsline {chapter}{\numberline {5}PENUTUP}{32}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Kesimpulan}{32}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Saran}{32}{section.5.2}%
-\contentsline {chapter}{DAFTAR PUSTAKA}{33}{chapter*.24}%
+\contentsline {subsection}{\numberline {3.3.7}Aplikasi Android}{25}{subsection.3.3.7}%
+\contentsline {section}{\numberline {3.4}Flowchart Sistem}{27}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Alur Sistem Utama}{27}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Alur Aplikasi Android}{28}{subsection.3.4.2}%
+\contentsline {section}{\numberline {3.5}Spesifikasi Hardware Lengkap}{29}{section.3.5}%
+\contentsline {section}{\numberline {3.6}Spesifikasi Software}{29}{section.3.6}%
+\contentsline {section}{\numberline {3.7}Rancangan Rangkaian}{30}{section.3.7}%
+\contentsline {subsection}{\numberline {3.7.1}Skematik ESP32 ke Sensor dan Relay}{30}{subsection.3.7.1}%
+\contentsline {subsection}{\numberline {3.7.2}Tabel Koneksi Pin}{30}{subsection.3.7.2}%
+\contentsline {section}{\numberline {3.8}Instalasi Sensor Jarak Jauh}{31}{section.3.8}%
+\contentsline {subsection}{\numberline {3.8.1}Permasalahan Jarak Sensor}{31}{subsection.3.8.1}%
+\contentsline {subsection}{\numberline {3.8.2}Opsi 1: 4--20mA Current Loop (Rekomendasi Utama)}{31}{subsection.3.8.2}%
+\contentsline {subsection}{\numberline {3.8.3}Opsi 2: RS485 Digital}{33}{subsection.3.8.3}%
+\contentsline {subsection}{\numberline {3.8.4}Opsi 3: LoRa Wireless (Tanpa Kabel)}{34}{subsection.3.8.4}%
+\contentsline {subsection}{\numberline {3.8.5}Perbandingan Lengkap}{35}{subsection.3.8.5}%
+\contentsline {subsection}{\numberline {3.8.6}Rekomendasi Kabel Spesifik}{35}{subsection.3.8.6}%
+\contentsline {subsection}{\numberline {3.8.7}Keputusan dan Rekomendasi Final}{36}{subsection.3.8.7}%
+\contentsline {chapter}{\numberline {4}RENCANA IMPLEMENTASI}{37}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Tahapan Pengembangan}{37}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Tabel Database Supabase}{38}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Rencana Pengujian}{38}{section.4.3}%
+\contentsline {chapter}{\numberline {5}PENUTUP}{39}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Kesimpulan}{39}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Saran}{40}{section.5.2}%
+\contentsline {chapter}{DAFTAR PUSTAKA}{41}{chapter*.32}%

@@ -6,11 +6,17 @@
 \contentsline {table}{\numberline {2.4}{\ignorespaces Perbandingan Protokol Komunikasi untuk IoT}}{18}{table.caption.9}%
 \contentsline {table}{\numberline {2.5}{\ignorespaces Perbandingan Metode Penyiraman Tanaman}}{19}{table.caption.11}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {3.1}{\ignorespaces Perbandingan perangkat koneksi internet untuk sistem IoT}}{23}{table.caption.13}%
-\contentsline {table}{\numberline {3.2}{\ignorespaces Daftar komponen hardware sistem ANDROMEDA}}{28}{table.caption.18}%
-\contentsline {table}{\numberline {3.3}{\ignorespaces Software yang digunakan dalam pengembangan sistem ANDROMEDA}}{28}{table.caption.19}%
-\contentsline {table}{\numberline {3.4}{\ignorespaces Koneksi pin ESP32 ke komponen}}{29}{table.caption.21}%
+\contentsline {table}{\numberline {3.1}{\ignorespaces Perbandingan perangkat koneksi internet untuk sistem IoT}}{24}{table.caption.13}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces Daftar komponen hardware sistem ANDROMEDA}}{29}{table.caption.18}%
+\contentsline {table}{\numberline {3.3}{\ignorespaces Software yang digunakan dalam pengembangan sistem ANDROMEDA}}{29}{table.caption.19}%
+\contentsline {table}{\numberline {3.4}{\ignorespaces Koneksi pin ESP32 ke komponen}}{30}{table.caption.21}%
+\contentsline {table}{\numberline {3.5}{\ignorespaces Komponen 4--20mA Current Loop}}{32}{table.caption.22}%
+\contentsline {table}{\numberline {3.6}{\ignorespaces Komponen RS485 per Titik Sensor}}{33}{table.caption.24}%
+\contentsline {table}{\numberline {3.7}{\ignorespaces Komponen LoRa Wireless}}{34}{table.caption.26}%
+\contentsline {table}{\numberline {3.8}{\ignorespaces Perbandingan seluruh opsi transmisi sinyal sensor jarak jauh}}{35}{table.caption.27}%
+\contentsline {table}{\numberline {3.9}{\ignorespaces Rekomendasi jenis kabel untuk setiap opsi transmisi}}{35}{table.caption.28}%
+\contentsline {table}{\numberline {3.10}{\ignorespaces Estimasi biaya kabel untuk jarak 50m (implementasi awal)}}{36}{table.caption.29}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {4.1}{\ignorespaces Daftar tabel database Supabase yang digunakan}}{31}{table.caption.22}%
-\contentsline {table}{\numberline {4.2}{\ignorespaces Rencana pengujian sistem}}{31}{table.caption.23}%
+\contentsline {table}{\numberline {4.1}{\ignorespaces Daftar tabel database Supabase yang digunakan}}{38}{table.caption.30}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Rencana pengujian sistem}}{38}{table.caption.31}%
 \addvspace {10\p@ }

@@ -731,10 +731,13 @@ Arsitektur sistem ANDROMEDA terdiri dari empat komponen utama yang saling terint
 \begin{itemize}
     \item \textbf{ESP32 DevKit} — Pengendali utama, membaca sensor, mengontrol relay, mengirim data via WiFi.
     \item \textbf{Capacitive Soil Sensor v1.2} — Mengukur kelembaban tanah (analog output).
-    \item \textbf{Relay 1-Channel 5V} — Mengontrol pompa dari sinyal digital ESP32.
-    \item \textbf{Pompa DC Mini 5V/12V} — Memompa air untuk irigasi tetes.
-    \item \textbf{Power Supply 5V/2A} — Memberi daya ke ESP32 dan relay.
-    \item \textbf{Power Supply 12V (opsional)} — Jika pompa 12V.
+    \item \textbf{Modul XTR116} — Current loop transmitter untuk mengirim sinyal sensor jarak jauh (10--100m) dengan noise immunity tinggi. Output 4--20mA.
+    \item \textbf{Resistor Presisi 250$\Omega$ 0,1\%} — Konversi arus 4--20mA menjadi tegangan 1--5V untuk ADC ESP32.
+    \item \textbf{Relay 1-Channel 5V} — Mengontrol solenoid valve dari sinyal digital ESP32.
+    \item \textbf{Solenoid Valve 12V NC} — Membuka/menutup aliran air dari tandon (gravitasi).
+    \item \textbf{Huawei B535-932 4G LTE Router} — Koneksi internet, daya 12V DC langsung dari aki.
+    \item \textbf{Power Supply 12V} — Memberi daya ke ESP32, relay, XTR116, dan router LTE.
+    \item \textbf{Kabel Belden 3107A} — 2-pair twisted shielded untuk sinyal 4--20mA dan power 12V ke sensor.
     \item \textbf{Selang Drip Irrigation} — Mendistribusikan air ke tanaman.
     \item \textbf{LED Indikator} — Status sistem (ON/OFF/Error).
 \end{itemize}
@@ -1139,14 +1142,334 @@ Berikut adalah arsitektur sistem secara detail:
 \toprule
 \textbf{Pin ESP32} & \textbf{Komponen} & \textbf{Keterangan} \\
 \midrule
-3.3V & Capacitive Sensor VCC & Catu daya sensor \\
+3.3V & Capacitive Sensor VCC & Catu daya sensor (via XTR116 loop) \\
 3.3V & Relay VCC & Catu daya relay \\
+3.3V & XTR116 \& Resistor 250$\Omega$ & Catu daya current loop RX \\
 GND & Semua komponen GND & Ground bersama \\
-GPIO34 (ADC) & Capacitive Sensor AOUT & Membaca analog kelembaban \\
-GPIO26 & Relay IN & Kontrol relay (HIGH = ON) \\
+GPIO34 (ADC) & Resistor 250$\Omega$ (output 1--5V) & Membaca sinyal 4--20mA dari sensor \\
+GPIO26 & Relay IN & Kontrol solenoid valve (HIGH = ON) \\
 GPIO27 & LED Indikator & Status sistem \\
 \bottomrule
 \end{tabular}
+\end{table}
+
+
+% ============================================================
+%  SECTION - INSTALASI SENSOR JARAK JAUH
+% ============================================================
+\newpage
+\section{Instalasi Sensor Jarak Jauh}
+
+\subsection{Permasalahan Jarak Sensor}
+
+Berdasarkan kondisi lapangan di PDB Desa Merayan, sensor kelembaban tanah ditempatkan di lahan yang berjarak sekitar \textbf{10--100 meter} dari panel kontrol yang berisi ESP32 dan sistem kelistrikan. Pada jarak tersebut, transmisi sinyal analog dari capacitive soil sensor (0--3,3V) melalui kabel panjang menghadapi beberapa masalah serius:
+
+\begin{enumerate}
+    \item \textbf{Voltage drop} --- Resistansi kabel panjang ($R_{kabel} \approx 0.1~\Omega/\text{m}$ untuk AWG24) menyebabkan tegangan yang sampai ke ADC ESP32 lebih rendah dari output sensor yang sebenarnya. Pada jarak 50m dengan kabel AWG24, tegangan turun hingga 0,3V --- cukup untuk menyebabkan error ADC lebih dari 10\%.
+    \item \textbf{Noise elektromagnetik} --- Kabel panjang berfungsi sebagai antena yang menangkap interferensi dari perangkat lain di sekitar: solenoid valve 12V (inductive kickback saat switching), router LTE, dan kabel power.
+    \item \textbf{Impedance mismatch} --- Sinyal analog dengan \textit{rise time} cepat dapat mengalami refleksi pada ujung kabel yang tidak terminated, menyebabkan \textit{ringing} dan osilasi.
+\end{enumerate}
+
+Oleh karena itu, sistem ANDROMEDA membutuhkan solusi transmisi sinyal yang andal untuk skala produksi --- bukan sekadar purwarupa laboratorium. Berikut adalah tiga opsi yang dipertimbangkan.
+
+
+% ----------------------------------------------------------------------
+\subsection{Opsi 1: 4--20mA Current Loop (Rekomendasi Utama)}
+% ----------------------------------------------------------------------
+
+\subsubsection*{Prinsip Kerja}
+
+\textit{Current loop} 4--20mA adalah standar industri untuk transmisi sinyal sensor jarak jauh. Tegangan dari capacitive soil sensor (0--3,3V) dikonversi menjadi arus searah 4--20mA menggunakan IC \textbf{XTR116} (\textit{Current Loop Transmitter}). Di sisi penerima (ESP32), arus dilewatkan melalui resistor presisi 250~$\Omega$ sehingga menghasilkan tegangan 1--5V yang dapat dibaca oleh ADC ESP32.
+
+\begin{equation}
+I_{out} = 4~\text{mA} + \left(\frac{V_{sensor}}{3,3~\text{V}} \times 16~\text{mA}\right)
+\end{equation}
+
+\begin{equation}
+V_{ADC} = I_{out} \times 250~\Omega \qquad \Rightarrow \qquad  1~\text{V} ~\text{(4mA)} ~~\text{s/d}~~ 5~\text{V} ~\text{(20mA)}
+\end{equation}
+
+\begin{equation}
+ADC_{raw} = \frac{V_{ADC}}{3,3~\text{V}} \times 4095
+\end{equation}
+
+\textbf{Contoh:} Sensor membaca 50\% kelembaban:
+\begin{itemize}
+    \item $V_{sensor} = 3,3~\text{V} \times 50\% = 1{,}65~\text{V}$
+    \item $I_{out} = 4~\text{mA} + (0{,}5 \times 16~\text{mA}) = 12~\text{mA}$
+    \item $V_{ADC} = 12~\text{mA} \times 250~\Omega = 3{,}0~\text{V}$
+    \item $ADC_{raw} = 3{,}0 / 3{,}3 \times 4095 \approx 3722$
+\end{itemize}
+
+\subsubsection*{Keunggulan}
+
+\begin{itemize}
+    \item \textbf{Noise immunity sangat tinggi} --- Sinyal arus tidak terpengaruh induksi elektromagnetik dari kabel lain. Voltage drop pada kabel panjang juga tidak memengaruhi akurasi karena informasi dibawa oleh besar arus, bukan tegangan.
+    \item \textbf{Jangkauan hingga 1 km} --- Lebih dari cukup untuk kebutuhan 10--100m.
+    \item \textbf{Hanya 2 kabel} --- Satu \textit{twisted pair} sudah cukup untuk transmisi sinyal.
+    \item \textbf{Standar industri global} --- Digunakan di pabrik dan otomasi di seluruh dunia. Komponen (XTR116) mudah didapat di toko elektronik atau \textit{online}.
+    \item \textbf{Sederhana} --- Tidak perlu protokol komunikasi, mikrokontroler tambahan, atau firmware kompleks.
+    \item \textbf{Linearitas tinggi} --- Akurasi $< \pm 0{,}05\%$ dengan XTR116.
+\end{itemize}
+
+\subsubsection*{Komponen yang Dibutuhkan per Titik Sensor}
+
+\begin{table}[H]
+\centering
+\caption{Komponen 4--20mA Current Loop}
+\label{tab:4-20ma-components}
+\begin{tabularx}{\textwidth}{l X c}
+\toprule
+\textbf{Komponen} & \textbf{Fungsi} & \textbf{Harga} \\
+\midrule
+IC XTR116 / XTR115 & Current loop transmitter & Rp 25.000 -- 35.000 \\
+Modul XTR116 siap pakai & PCB + komponen pendukung & Rp 40.000 -- 50.000 \\
+Resistor 250~$\Omega$ 0,1\% & Konversi arus $\to$ tegangan & Rp 2.000 \\
+Kapasitor 100nF + 10$\mu$F & Filter \textit{decoupling} & Rp 1.000 \\
+Kabel Belden 3107A & 2-pair twisted + foil shield & Rp 10.000 -- 12.000/m \\
+\midrule
+\multicolumn{2}{l}{\textbf{Total tambahan (tanpa kabel)}} & \textbf{Rp 44.000 -- 54.000} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsubsection*{Skema Wiring 4--20mA}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    comp/.style={rectangle, rounded corners, minimum width=3cm, minimum height=1.2cm, text centered, draw, font=\small},
+    wire/.style={thick},
+    label/.style={font=\small\itshape}
+]
+
+% Sisi Sensor
+\node (sensor) [comp, fill=orange!20] {Capacitive Soil \\ Sensor};
+\node (xtr) [comp, fill=blue!10, right=0.5cm of sensor] {XTR116 \\ (TX)};
+
+% Sisi ESP32
+\node (res) [comp, fill=gray!10, right=4.5cm of xtr] {250~$\Omega$ \\ 0,1\%};
+\node (esp) [comp, fill=primaryblue!20, right=0.5cm of res] {ESP32 \\ GPIO34 (ADC)};
+
+% Power
+\node (ps12) [comp, fill=red!10, below=1.2cm of xtr] {Power 12V \\ (dari aki)};
+
+% Kabel
+\draw[->, thick, blue!50!black] (sensor.east) -- node[above] {0--3,3V} (xtr.west);
+\draw[->, thick, red!50!black] (ps12.north) -- (xtr.south);
+\draw[thick, green!50!black] (xtr.east) -- node[above] {\textbf{4--20mA}} ++(1.5,0) node[circle,fill,inner sep=2pt]{} -- ++(1.5,0) -- (res.west);
+\draw[->, thick] (res.east) -- node[above] {1--5V} (esp.west);
+
+% Anotasi
+\node[below=0.3cm of ps12, font=\small] {12V dari aki / adaptor};
+
+% Kabel panjang annotation
+\draw[decorate, decoration={brace, amplitude=6pt, mirror}]
+    ([yshift=-0.3cm]xtr.east) -- node[below, font=\small] {\textbf{10--100m} (twisted pair shielded)} ([yshift=-0.3cm]res.west);
+
+\end{tikzpicture}
+\caption{Skema wiring 4--20mA current loop untuk sensor jarak jauh}
+\label{fig:4-20ma-wiring}
+\end{figure}
+
+
+% ----------------------------------------------------------------------
+\subsection{Opsi 2: RS485 Digital}
+% ----------------------------------------------------------------------
+
+\subsubsection*{Prinsip Kerja}
+
+RS485 adalah standar komunikasi serial diferensial (\textit{differential signaling}) yang mampu mentransmisikan data digital hingga jarak 1,2 km. Dengan menambahkan modul \textbf{MAX485} di kedua sisi (sisi sensor dan sisi ESP32 utama) serta \textbf{ADS1115} (ADC 16-bit, I2C) di sisi sensor, data kelembaban dikirim secara digital --- bukan analog --- sehingga sama sekali tidak terpengaruh oleh jarak kabel maupun noise.
+
+Keunggulan utama RS485 adalah kemampuannya untuk menghubungkan hingga \textbf{32 perangkat} dalam satu bus kabel yang sama (\textit{daisy-chain}). Hal ini sangat berguna jika ke depannya sistem diperluas dengan sensor suhu, pH tanah, atau titik kelembaban tambahan.
+
+\subsubsection*{Komponen yang Dibutuhkan per Titik Sensor}
+
+\begin{table}[H]
+\centering
+\caption{Komponen RS485 per Titik Sensor}
+\label{tab:rs485-components}
+\begin{tabularx}{\textwidth}{l X c}
+\toprule
+\textbf{Komponen} & \textbf{Fungsi} & \textbf{Harga} \\
+\midrule
+MAX485 module ($\times$2) & RS485 transceiver (dua sisi) & Rp 15.000 -- 25.000/pcs \\
+ADS1115 16-bit ADC & Membaca sensor analog, output I2C & Rp 15.000 -- 20.000 \\
+ESP32-C3 SuperMini (opsional) & Mikrokontroler node sensor & Rp 30.000 \\
+Kabel Belden 3107A & 2-pair twisted shielded & Rp 10.000 -- 12.000/m \\
+\midrule
+\multicolumn{2}{l}{\textbf{Total tambahan (tanpa kabel)}} & \textbf{Rp 75.000 -- 110.000} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsubsection*{Skema Wiring RS485}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    comp/.style={rectangle, rounded corners, minimum width=2.2cm, minimum height=1cm, text centered, draw, font=\small}
+]
+
+% Sisi Sensor Node
+\node (sensor) [comp, fill=orange!20] {Soil \\ Sensor};
+\node (ads) [comp, fill=yellow!20, right=0.3cm of sensor] {ADS1115 \\ ADC 16-bit};
+\node (max-s) [comp, fill=blue!10, right=0.3cm of ads] {MAX485};
+\node (mcus) [comp, fill=green!10, below=0.3cm of ads] {ESP32-C3};
+
+% Sisi ESP32 Utama
+\node (max-m) [comp, fill=blue!10, right=5.5cm of max-s] {MAX485};
+\node (esp) [comp, fill=primaryblue!20, right=0.3cm of max-m] {ESP32 \\ UART2};
+
+% Power
+\node (ps) [comp, fill=red!10, below=1.5cm of max-m] {Power 12V};
+
+% Koneksi
+\draw[->, thick] (sensor.east) -- (ads.west);
+\draw[<->, thick] (ads.east) -- node[above] {I2C} (mcus.north);
+\draw[<->, thick] (mcus.east) -- (max-s.west);
+\draw[thick, green!50!black] (max-s.east) -- node[above] {\textbf{RS485 Bus}} ++(2.5,0) -- (max-m.west);
+\draw[<->, thick] (max-m.east) -- (esp.west);
+\draw[->, thick] (ps.north) -- (max-m.south);
+
+% Annotation
+\node[below=0.2cm of mcus, font=\small] {\textit{Node Sensor}};
+\draw[decorate, decoration={brace, amplitude=6pt, mirror}]
+    ([yshift=-0.3cm]max-s.east) -- node[below, font=\small] {\textbf{100m+}} ([yshift=-0.3cm]max-m.west);
+
+% Daisy chain dots
+\node at ([yshift=0.3cm]max-s.east) {\vdots};
+\node[font=\small, above=0.1cm of max-m] {\textit{Gateway}};
+
+\end{tikzpicture}
+\caption{Skema wiring RS485 untuk sensor jarak jauh}
+\label{fig:rs485-wiring}
+\end{figure}
+
+
+% ----------------------------------------------------------------------
+\subsection{Opsi 3: LoRa Wireless (Tanpa Kabel)}
+% ----------------------------------------------------------------------
+
+\subsubsection*{Prinsip Kerja}
+
+LoRa (\textit{Long Range}) adalah teknologi radio jarak jauh yang mampu mentransmisikan data hingga 3 km dalam kondisi \textit{Line of Sight} (LOS). Dengan menempatkan modul \textbf{SX1278} di kedua sisi --- satu di \textit{node sensor} (ESP32-C3 + Soil Sensor) dan satu di \textit{gateway} (ESP32 utama) --- maka kebutuhan kabel fisik dapat dihilangkan sama sekali.
+
+Opsi ini cocok untuk lokasi yang sulit dijangkau kabel (misalnya melintasi jalan atau parit), namun membutuhkan daya mandiri di sisi sensor (baterai + solar panel).
+
+\subsubsection*{Komponen yang Dibutuhkan per Titik Sensor}
+
+\begin{table}[H]
+\centering
+\caption{Komponen LoRa Wireless}
+\label{tab:lora-components}
+\begin{tabularx}{\textwidth}{l X c}
+\toprule
+\textbf{Komponen} & \textbf{Fungsi} & \textbf{Harga} \\
+\midrule
+SX1278 LoRa module ($\times$2) & Transceiver radio jarak jauh & Rp 40.000 -- 60.000/pcs \\
+ESP32-C3 SuperMini ($\times$2) & Kontroler node + gateway & Rp 30.000/pcs \\
+Antena 433/868/915MHz ($\times$2) & Antena eksternal optimal & Rp 15.000/pcs \\
+Solar panel 10Wp + BMS + kabel & Daya mandiri node sensor & Rp 80.000 -- 120.000 \\
+\midrule
+\multicolumn{2}{l}{\textbf{Total tambahan (satu titik)}} & \textbf{Rp 250.000 -- 330.000} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+
+% ----------------------------------------------------------------------
+\subsection{Perbandingan Lengkap}
+% ----------------------------------------------------------------------
+
+\begin{table}[H]
+\centering
+\caption{Perbandingan seluruh opsi transmisi sinyal sensor jarak jauh}
+\label{tab:cable-compare}
+\begin{tabularx}{\textwidth}{l X X X}
+\toprule
+\textbf{Parameter} & \textbf{4--20mA} & \textbf{RS485 Digital} & \textbf{LoRa Wireless} \\
+\midrule
+Biaya tambahan/titik & \textbf{Rp 44--54rb} 💰 & Rp 75--110rb & Rp 250--330rb \\
+Jarak maksimal & $>$1 km & $>$1,2 km & 1--3 km (LOS) \\
+Noise immunity & \cellcolor{green!20}Sangat tinggi & \cellcolor{green!20}Sangat tinggi & \cellcolor{yellow!20}Sedang \\
+Multi-sensor (1 kabel) & $\times$ (1 loop/sensor) & \textbf{32+ perangkat} ✅ & ✅ Banyak node \\
+Kompleksitas hardware & \cellcolor{green!20}Rendah ✅ & \cellcolor{yellow!20}Sedang & \cellcolor{yellow!20}Menengah \\
+Kabel dibutuhkan & 2 core twisted pair & 4 core (daisy chain) & \textbf{Tidak ada} ✅ \\
+Power sensor & Via kabel (12V) & Via kabel (12V) & Mandiri (solar+batre) \\
+Kalibrasi & Satu kali & Tidak perlu (digital) & Tidak perlu (digital) \\
+Maintenance & Ganti modul RX/TX & Ganti node sensor & Ganti baterai/panel \\
+Cocok untuk & \textbf{1--3 titik sensor} & \textbf{3+ titik / future-proof} & Lokasi tanpa akses kabel \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+
+% ----------------------------------------------------------------------
+\subsection{Rekomendasi Kabel Spesifik}
+% ----------------------------------------------------------------------
+
+Berdasarkan hasil perbandingan, kabel yang direkomendasikan untuk setiap opsi adalah sebagai berikut:
+
+\begin{table}[H]
+\centering
+\caption{Rekomendasi jenis kabel untuk setiap opsi transmisi}
+\label{tab:cable-recommend}
+\begin{tabularx}{\textwidth}{l X c c}
+\toprule
+\textbf{Opsi} & \textbf{Jenis Kabel} & \textbf{Harga/m} & \textbf{Fungsi} \\
+\midrule
+\textbf{4--20mA} & \textbf{Belden 3107A} (2-pair twisted + foil) & Rp 10.000--12.000 & 1 pair: sinyal, 1 pair: power 12V \\
+ & Alternatif: NYMHY 2$\times$1,5mm + UTP Cat5e & Rp 3.000 + Rp 3.000 & Power 12V + sinyal terpisah \\
+\cmidrule{2-4}
+RS485 & Belden 3107A (2-pair twisted + shield) & Rp 10.000--12.000 & A, B, VCC, GND \\
+ & Alternatif: UTP Cat5e/6 & Rp 3.000--5.000 & 1 pair A+B, 1 pair power \\
+\cmidrule{2-4}
+LoRa & \textit{Tidak perlu kabel data} & Rp 0 & --- \\
+ & Kabel NYY 2$\times$2,5mm (solar panel) & Rp 8.000--12.000 & Power panel surya \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+
+% ----------------------------------------------------------------------
+\subsection{Keputusan dan Rekomendasi Final}
+% ----------------------------------------------------------------------
+
+\subsubsection*{Pilihan Utama: 4--20mA Current Loop 🔥}
+
+Untuk implementasi awal ANDROMEDA di PDB Desa Merayan dengan \textbf{1--3 titik sensor} pada jarak 10--100 meter, sistem \textbf{4--20mA Current Loop} adalah pilihan terbaik dengan alasan:
+
+\begin{enumerate}
+    \item \textbf{Paling sederhana} --- Hanya satu IC tambahan (XTR116) dan satu resistor 250~$\Omega$ di sisi ESP32. Tidak perlu mikrokontroler tambahan di sisi sensor, tidak perlu protokol komunikasi, tidak perlu manajemen daya baterai.
+    \item \textbf{Biaya paling rendah} --- Rp 44.000--54.000 per titik sensor (+ kabel). Kabel Belden 3107A dipasang sekali untuk jangka panjang.
+    \item \textbf{Noise immunity tertinggi} --- Sinyal arus 4--20mA tidak terpengaruh interferensi elektromagnetik dari solenoid valve, router LTE, atau kabel power yang berdekatan.
+    \item \textbf{Standar industri} --- Komponen mudah didapat, dokumentasi berlimpah, tenaga teknis lokal bisa memperbaiki jika rusak.
+    \item \textbf{Kalibrasi linear sederhana} --- Dua titik kalibrasi sudah cukup: 4mA = kering, 20mA = basah.
+    \item \textbf{Power sensor via kabel yang sama} --- Tidak perlu baterai/solar di sisi sensor. Cukup sambungkan 12V dari panel kontrol melalui kabel.
+\end{enumerate}
+
+\subsubsection*{Pilihan Masa Depan: RS485 (Ketika Skala Bertambah)}
+
+Jika sistem diperluas menjadi \textbf{5--10+ titik sensor} (misalnya menambah sensor pH tanah, suhu udara, atau kelembaban di berbagai titik lahan), disarankan beralih ke \textbf{RS485} yang memungkinkan semua sensor berbagi satu kabel backbone dengan konfigurasi \textit{daisy-chain}.
+
+\subsubsection*{Estimasi Biaya Kabel untuk 50m}
+
+\begin{table}[H]
+\centering
+\caption{Estimasi biaya kabel untuk jarak 50m (implementasi awal)}
+\label{tab:cable-cost}
+\begin{tabularx}{\textwidth}{l X c c}
+\toprule
+\textbf{Item} & \textbf{Jenis} & \textbf{Panjang} & \textbf{Total} \\
+\midrule
+Kabel sinyal + power & Belden 3107A & 50m & Rp 500.000 -- 600.000 \\
+Kabel power sensor (cadangan) & NYMHY 2$\times$1,5mm & 50m & Rp 150.000 -- 200.000 \\
+Konektor & Terminal screw + solder & 1 set & Rp 20.000 -- 30.000 \\
+\midrule
+\multicolumn{3}{l}{\textbf{Total estimasi kabel}} & \textbf{Rp 520.000 -- 630.000} \\
+\bottomrule
+\end{tabularx}
 \end{table}
 
 
@@ -1247,14 +1570,17 @@ Proyek ANDROMEDA dikembangkan dalam empat tahap utama:
 
 \section{Kesimpulan}
 
-Berdasarkan perancangan sistem ANDROMEDA (Internet of Things Irrigation), dapat disimpulkan bahwa:
+Berdasarkan perancangan sistem ANDROMEDA (Android Routine Monitoring Electronic Drip Automation), dapat disimpulkan bahwa:
 
 \begin{enumerate}
-    \item Sistem irigasi tetes otomatis berbasis IoT dapat dirancang menggunakan ESP32 sebagai mikrokontroler, capacitive soil sensor sebagai pembaca kelembaban, dan pompa DC sebagai aktuator.
-    \item Integrasi antara ESP32 dengan aplikasi Android dapat dilakukan melalui protokol MQTT yang ringan dan efisien untuk komunikasi \textit{real-time}.
-    \item Aplikasi Android dapat menjadi antarmuka utama untuk monitoring kelembaban tanah secara \textit{real-time} dan kontrol penyiraman baik otomatis maupun manual.
-    \item Sistem ini memiliki estimasi biaya yang terjangkau (Rp 305.000 -- Rp 375.000) sehingga dapat diadopsi oleh petani skala kecil dan menengah.
+    \item Sistem irigasi tetes otomatis berbasis IoT dapat dirancang menggunakan ESP32 sebagai mikrokontroler, capacitive soil sensor sebagai pembaca kelembaban, modul XTR116 sebagai current loop transmitter untuk transmisi sinyal jarak jauh (4--20mA), dan solenoid valve 12V NC sebagai aktuator irigasi.
+    \item Integrasi antara ESP32 dengan aplikasi Android dapat dilakukan melalui HTTP REST ke Supabase sebagai backend serverless. ESP32 mengirim data sensor dan membaca perintah pending secara periodik, sementara Android menggunakan Supabase SDK untuk sinkronisasi data otomatis.
+    \item Aplikasi Android dapat menjadi antarmuka utama untuk monitoring kelembaban tanah secara real-time dan kontrol penyiraman baik otomatis maupun manual, dilengkapi dashboard, grafik historis, dan pengaturan threshold.
+    \item Permasalahan jarak sensor 10--100 meter dari panel kontrol diselesaikan dengan menggunakan sistem \textbf{4--20mA current loop} (standar industri), yang memiliki noise immunity tinggi, mampu mentransmisikan sinyal hingga lebih dari 1 km, dan hanya membutuhkan tambahan IC XTR116 serta resistor 250$\Omega$.
+    \item Pemilihan solenoid valve 12V NC memungkinkan sistem memanfaatkan tandon air dengan gravitasi, menghemat daya secara signifikan (0W saat idle), dan menyediakan fail-safe (otomatis tertutup saat listrik padam).
     \item Penggunaan capacitive soil sensor dipilih karena ketahanan jangka panjang dan akurasi yang stabil, mengatasi kelemahan sensor resistif YL-69 yang mudah korosi.
+    \item Huawei B535-932 4G LTE Router dipilih sebagai perangkat koneksi internet karena daya 12V DC yang langsung cocok dengan aki, tanpa perlu inverter, dan biaya bulanan yang rendah (Rp 15.000--30.000/bulan).
+    \item Sistem ini memiliki estimasi biaya awal sekitar \textbf{Rp 1.230.000 -- 1.530.000} (termasuk ESP32, sensor, XTR116, solenoid valve, LTE router, aki 100Ah, solar panel 300Wp, dan kabel Belden 3107A 50m). Biaya operasional hanya Rp 15.000--30.000/bulan untuk paket data.
 \end{enumerate}
 
 \section{Saran}
@@ -1264,10 +1590,12 @@ Untuk pengembangan lebih lanjut, beberapa saran yang dapat diberikan:
 \begin{enumerate}
     \item \textbf{Fertigasi} — Menambahkan sistem pemupukan otomatis (nutrisi) yang terintegrasi dengan irigasi.
     \item \textbf{Sensor Tambahan} — Menambahkan sensor suhu, kelembaban udara, pH tanah, dan intensitas cahaya untuk analisis yang lebih komprehensif.
-    \item \textbf{Tenaga Surya} — Menggunakan panel surya + baterai agar sistem dapat beroperasi di lahan tanpa akses listrik PLN.
+    \item \textbf{RS485 untuk Skala Besar} — Jika sistem diperluas ke 5--10+ titik sensor, migrasi ke RS485 digital agar semua sensor berbagi satu kabel backbone dengan konfigurasi daisy-chain, mengurangi biaya kabel dan mempermudah maintenance.
+    \item \textbf{Tenaga Surya} — Menggunakan panel surya + baterai agar sistem dapat beroperasi di lahan tanpa akses listrik PLN (sudah termasuk dalam rancangan ANDROMEDA).
     \item \textbf{Machine Learning} — Menggunakan data historis untuk memprediksi kebutuhan air tanaman berdasarkan fase pertumbuhan dan cuaca.
     \item \textbf{Multi-Device} — Mengembangkan sistem agar dapat menangani banyak titik lahan dari satu aplikasi.
-    \item \textbf{Konektivitas Cellular} — Menggunakan modem 4G/LTE untuk area tanpa akses WiFi.
+    \item \textbf{LoRa untuk Lokasi Sulit} — Untuk titik sensor yang berada di lokasi sangat sulit dijangkau kabel (misalnya melintasi jalan umum atau sungai), gunakan LoRa wireless sebagai alternatif.
+    \item \textbf{Konektivitas Cellular} — Menggunakan modem 4G/LTE untuk area tanpa akses WiFi (sudah diimplementasikan dengan Huawei B535-932).
 \end{enumerate}
 
 

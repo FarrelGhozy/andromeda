@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.6.3)  28 JUN 2026 19:16
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.6.3)  1 JUL 2026 19:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -934,7 +934,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.2}) has
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.34 ...neksi Internet untuk IoT}{21}{section.3.3}
+l.34 ...neksi Internet untuk IoT}{22}{section.3.3}
                                                   % [2
 
 ]
@@ -946,7 +946,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.38 ...�� 🔥 REKOMENDASI}{22}{subsection.3.3.4}
+l.38 ...�� 🔥 REKOMENDASI}{23}{subsection.3.3.4}
                                                   %
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1540,14 +1540,14 @@ If that doesn't work, type  X <return>  to quit.
 [20
 
 ]
-Overfull \hbox (5.41716pt too wide) in paragraph at lines 753--754
+Overfull \hbox (5.41716pt too wide) in paragraph at lines 756--757
 []\T1/ptm/m/n/12 Proyek AN-DROMEDA meng-gu-nakan \T1/ptm/b/n/12 Su-pabase \T1/p
 tm/m/n/12 se-ba-gai \T1/ptm/m/it/12 Backend-as-a-Service \T1/ptm/m/n/12 yang me
 nan-
  []
 
 
-Overfull \hbox (19.15744pt too wide) in paragraph at lines 763--764
+Overfull \hbox (19.15744pt too wide) in paragraph at lines 766--767
 []\T1/ptm/m/n/12 Supabase memi-liki \T1/ptm/b/n/12 tingkat gratis (Free Tier) \
 T1/ptm/m/n/12 yang san-gat cukup un-tuk proyek AN-DROMEDA:
  []
@@ -1568,7 +1568,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.775 ...anan}: \textbf{Rp 150.000 -- 300.000} ❌
+l.778 ...anan}: \textbf{Rp 150.000 -- 300.000} ❌
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1581,20 +1581,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.787 ...ulanan}: \textbf{Rp 15.000 -- 30.000} ✅
-                                                  
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ✅ (U+2705)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.799 ...ulanan}: \textbf{Rp 15.000 -- 30.000} ✅
+l.790 ...ulanan}: \textbf{Rp 15.000 -- 30.000} ✅
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1608,6 +1595,19 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 [22]
 
+! LaTeX Error: Unicode character ✅ (U+2705)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.802 ...ulanan}: \textbf{Rp 15.000 -- 30.000} ✅
+                                                  
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
 ! LaTeX Error: Unicode character 🔥 (U+1F525)
                not set up for use with LaTeX.
 
@@ -1615,7 +1615,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.805 ...r (Huawei B535-932) — 🔥 REKOMENDASI}
+l.808 ...r (Huawei B535-932) — 🔥 REKOMENDASI}
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1628,7 +1628,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.811 ...ulanan}: \textbf{Rp 15.000 -- 30.000} ✅
+l.814 ...ulanan}: \textbf{Rp 15.000 -- 30.000} ✅
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1640,7 +1640,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1652,7 +1652,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1664,7 +1664,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1676,7 +1676,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1688,7 +1688,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1700,7 +1700,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1712,7 +1712,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1724,7 +1724,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1736,7 +1736,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1748,7 +1748,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1760,7 +1760,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1772,7 +1772,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1784,7 +1784,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1796,7 +1796,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1808,7 +1808,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1820,7 +1820,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1832,7 +1832,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1844,7 +1844,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1856,7 +1856,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1868,7 +1868,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1880,7 +1880,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1892,7 +1892,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1904,7 +1904,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1916,7 +1916,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1928,7 +1928,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1940,7 +1940,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1952,7 +1952,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1964,7 +1964,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1976,7 +1976,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1988,7 +1988,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2000,7 +2000,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2012,7 +2012,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2024,7 +2024,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2036,7 +2036,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2048,7 +2048,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2060,7 +2060,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2072,7 +2072,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2084,7 +2084,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2096,7 +2096,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2108,7 +2108,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2120,7 +2120,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2132,7 +2132,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2144,7 +2144,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2156,23 +2156,23 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
 
-Overfull \hbox (7.89328pt too wide) in paragraph at lines 837--837
+Overfull \hbox (7.89328pt too wide) in paragraph at lines 840--840
 []|\T1/ptm/b/n/12 Parameter| 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 837--837
+Underfull \hbox (badness 10000) in paragraph at lines 840--840
 []|\T1/ptm/m/n/12 Harga
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 837--837
+Underfull \hbox (badness 10000) in paragraph at lines 840--840
 []|\T1/ptm/m/n/12 Biaya
  []
 
@@ -2184,7 +2184,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2197,7 +2197,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2210,7 +2210,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2223,7 +2223,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2236,13 +2236,13 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 837--837
+Underfull \hbox (badness 10000) in paragraph at lines 840--840
 []|\T1/ptm/m/n/12 Cocok
  []
 
@@ -2254,7 +2254,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2267,7 +2267,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2280,7 +2280,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2293,7 +2293,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2306,7 +2306,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2319,13 +2319,13 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 837--837
+Underfull \hbox (badness 10000) in paragraph at lines 840--840
 []|\T1/ptm/m/n/12 Antena
  []
 
@@ -2337,7 +2337,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2350,13 +2350,13 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
 
-Overfull \hbox (6.03304pt too wide) in paragraph at lines 837--837
+Overfull \hbox (6.03304pt too wide) in paragraph at lines 840--840
 []|\T1/ptm/m/n/12 Pemakaian
  []
 
@@ -2368,7 +2368,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2381,7 +2381,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2394,7 +2394,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2407,13 +2407,13 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 837--837
+Underfull \hbox (badness 10000) in paragraph at lines 840--840
 []|\T1/ptm/m/n/12 Koneksi
  []
 
@@ -2425,7 +2425,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2438,7 +2438,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2451,7 +2451,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2464,7 +2464,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2477,11 +2477,19 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.837 \end{tabularx}
+l.840 \end{tabularx}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[23]
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
@@ -2493,7 +2501,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.851 \node (aki) [yes, below=0.3cm of judul] {✅
+l.854 \node (aki) [yes, below=0.3cm of judul] {✅
                                                    Colok langsung ke aki 12V...
 
 You may provide a definition with
@@ -2507,7 +2515,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.852 \node (solar) [yes, below=0.1cm of aki] {✅
+l.855 \node (solar) [yes, below=0.1cm of aki] {✅
                                                    Daya 12W saja — aki 100...
 
 You may provide a definition with
@@ -2521,7 +2529,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.853 ...outdoor) [yes, below=0.1cm of solar] {✅
+l.856 ...outdoor) [yes, below=0.1cm of solar] {✅
                                                    Bisa pasang antena outdoo...
 
 You may provide a definition with
@@ -2535,7 +2543,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.854 ...tabil) [yes, below=0.1cm of outdoor] {✅
+l.857 ...tabil) [yes, below=0.1cm of outdoor] {✅
                                                    Stabil 24/7 nonstop — t...
 
 You may provide a definition with
@@ -2549,7 +2557,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.855 ... (wifi) [yes, below=0.1cm of stabil] {✅
+l.858 ... (wifi) [yes, below=0.1cm of stabil] {✅
                                                    Dual-band WiFi — jangka...
 
 You may provide a definition with
@@ -2563,7 +2571,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.856 ...e (murah) [yes, below=0.1cm of wifi] {✅
+l.859 ...e (murah) [yes, below=0.1cm of wifi] {✅
                                                    Cukup paket data Rp 15.00...
 
 You may provide a definition with
@@ -2577,20 +2585,12 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.857 ...(sekali) [yes, below=0.1cm of murah] {✅
+l.860 ...(sekali) [yes, below=0.1cm of murah] {✅
                                                    Investasi sekali Rp 400-5...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 13.59999pt, for example:
-(fancyhdr)                \setlength{\headheight}{13.59999pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
-
-[23]
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 13.59999pt, for example:
@@ -2606,7 +2606,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.905 ...:{\\large SUPABASE (CLOUD, GRATIS)}}] {};
+l.908 ...:{\\large SUPABASE (CLOUD, GRATIS)}}] {};
                                                   
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -2618,7 +2618,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.912 ...fseries]above:{\\large ANDROID APP}}] {};
+l.915 ...fseries]above:{\\large ANDROID APP}}] {};
                                                   
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -2630,7 +2630,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.912 ...fseries]above:{\\large ANDROID APP}}] {};
+l.915 ...fseries]above:{\\large ANDROID APP}}] {};
                                                   
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -2642,7 +2642,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.913 \node at (android) {Monitor \\&
+l.916 \node at (android) {Monitor \\&
                                       Control \\ (Supabase SDK)};
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -2650,7 +2650,7 @@ If that doesn't work, type  X <return>  to quit.
 ! Misplaced alignment tab character &.
 <recently read> &
                  
-l.913 \node at (android) {Monitor \\&
+l.916 \node at (android) {Monitor \\&
                                       Control \\ (Supabase SDK)};
 I can't figure out why you would want to use a tab mark
 here. If you just want an ampersand, the remedy is
@@ -2666,7 +2666,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.913 \node at (android) {Monitor \\& Control \\ (
+l.916 \node at (android) {Monitor \\& Control \\ (
                                                   Supabase SDK)};
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -2678,11 +2678,19 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.923 ...hardware.east)!0.5!(supabase.west)$) {\\s
+l.926 ...hardware.east)!0.5!(supabase.west)$) {\\s
                                                   mall Internet};
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[25]
 
 ! LaTeX Error: Not allowed in LR mode.
 
@@ -2690,7 +2698,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.948 ...s, below=of start] {Inisialisasi ESP32\\K
+l.951 ...s, below=of start] {Inisialisasi ESP32\\K
                                                   oneksi WiFi};
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -2702,7 +2710,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.950 ...=of check, yshift=-0.5cm] {Baca Sensor\\K
+l.953 ...=of check, yshift=-0.5cm] {Baca Sensor\\K
                                                   elembaban};
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -2714,7 +2722,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.951 ...rocess, below=of read] {HTTP POST Data\\K
+l.954 ...rocess, below=of read] {HTTP POST Data\\K
                                                   e Supabase\\ (REST API)};
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -2726,7 +2734,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.951 ...of read] {HTTP POST Data\\Ke Supabase\\ (
+l.954 ...of read] {HTTP POST Data\\Ke Supabase\\ (
                                                   REST API)};
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -2738,7 +2746,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.952 ...n, below=of send, yshift=-0.3cm] {Mode\\O
+l.955 ...n, below=of send, yshift=-0.3cm] {Mode\\O
                                                   tomatis?};
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -2750,7 +2758,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.953 ..., right=of mode, xshift=2cm] {HTTP GET\\P
+l.956 ..., right=of mode, xshift=2cm] {HTTP GET\\P
                                                   ending Commands\\Dari Supa...
 
 You've lost some text.  Try typing  <return>  to proceed.
@@ -2763,7 +2771,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.953 ...shift=2cm] {HTTP GET\\Pending Commands\\D
+l.956 ...shift=2cm] {HTTP GET\\Pending Commands\\D
                                                   ari Supabase};
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -2775,7 +2783,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.954 ...ow=of mode, yshift=-0.5cm] {Kelembaban\\<
+l.957 ...ow=of mode, yshift=-0.5cm] {Kelembaban\\<
                                                    Threshold?};
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -2787,7 +2795,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.955 ... yshift=-0.3cm, fill=red!20] {Relay ON\\P
+l.958 ... yshift=-0.3cm, fill=red!20] {Relay ON\\P
                                                   ompa Aktif};
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -2799,7 +2807,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.956 ...=of pump_on, fill=green!20] {Relay OFF\\P
+l.959 ...=of pump_on, fill=green!20] {Relay OFF\\P
                                                   ompa Mati};
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -2811,13 +2819,13 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.957 ...right=of pump_on, xshift=2.5cm] {Delay\\1
+l.960 ...right=of pump_on, xshift=2.5cm] {Delay\\1
                                                   0 Detik};
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 
-Overfull \hbox (27.21323pt too wide) in paragraph at lines 975--976
+Overfull \hbox (27.21323pt too wide) in paragraph at lines 978--979
  [][] 
  []
 
@@ -2828,7 +2836,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[25]
+[26]
 Overfull \vbox (223.08417pt too high) has occurred while \output is active []
 
 
@@ -2839,7 +2847,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[26]
+[27]
 
 ! LaTeX Error: Not allowed in LR mode.
 
@@ -2847,7 +2855,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.995 ...) [process, below=of dash] {Konek MQTT\\k
+l.998 ...) [process, below=of dash] {Konek MQTT\\k
                                                   e Broker};
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -2859,7 +2867,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.996 ...p) [process, below=of mqtt] {Tampilkan\\K
+l.999 ...p) [process, below=of mqtt] {Tampilkan\\K
                                                   elembaban + Status};
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -2871,7 +2879,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.997 ...n, below=of disp, yshift=-0.3cm] {Mode\\O
+l.1000 ..., below=of disp, yshift=-0.3cm] {Mode\\O
                                                   tomatis/Manual?};
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -2883,7 +2891,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.998 ...ght=of mode_sel, xshift=2.5cm] {Tombol\\S
+l.1001 ...ht=of mode_sel, xshift=2.5cm] {Tombol\\S
                                                   iram/Mati};
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -2895,7 +2903,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.999 ...ess, below=of mode_sel] {Set Threshold\\K
+l.1002 ...ss, below=of mode_sel] {Set Threshold\\K
                                                   ering \& Basah};
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -2907,7 +2915,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.1000 ...ess, below=of auto_sel] {Log Historis\\H
+l.1003 ...ess, below=of auto_sel] {Log Historis\\H
                                                   arian/Mingguan};
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -2919,7 +2927,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.1001 ... mode_sel, xshift=-2.5cm] {Notifikasi\\J
+l.1004 ... mode_sel, xshift=-2.5cm] {Notifikasi\\J
                                                   ika Kritis};
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -2927,15 +2935,15 @@ If that doesn't work, type  X <return>  to quit.
 
 Package pgf Warning: Returning node center instead of a point on node border. D
 id you specify a point identical to the center of node ``login''? on input line
- 1003.
+ 1006.
 
 
 Package pgf Warning: Returning node center instead of a point on node border. D
 id you specify a point identical to the center of node ``start''? on input line
- 1003.
+ 1006.
 
 
-Overfull \hbox (102.80206pt too wide) in paragraph at lines 1015--1016
+Overfull \hbox (102.80206pt too wide) in paragraph at lines 1018--1019
  [][] 
  []
 
@@ -2946,8 +2954,8 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[27]
-Underfull \hbox (badness 1675) in paragraph at lines 1070--1070
+[28]
+Underfull \hbox (badness 1675) in paragraph at lines 1073--1073
 []|\T1/ptm/m/n/12 HTTP POST/GET ke Su-pabase REST
  []
 
@@ -2958,7 +2966,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.1099 ...ht=1.5cm, right=2.5cm of esp] {Sensor\\K
+l.1102 ...ht=1.5cm, right=2.5cm of esp] {Sensor\\K
                                                   elembaban};
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -2970,7 +2978,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.1106 ...ht=1.5cm, below=1cm of sensor] {Relay\\M
+l.1109 ...ht=1.5cm, below=1cm of sensor] {Relay\\M
                                                   odule};
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -2982,7 +2990,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.1113 ...t=0.8cm, right=1.5cm of relay] {Pompa\\D
+l.1116 ...t=0.8cm, right=1.5cm of relay] {Pompa\\D
                                                   C};
 You've lost some text.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -2994,7 +3002,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[28]
+[29]
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 13.59999pt, for example:
@@ -3002,42 +3010,101 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[29]
-Chapter 4.
-LaTeX Font Info:    Trying to load font information for T1+pcr on input line 11
-84.
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1pcr.fd
-File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
-)
-Overfull \hbox (52.28271pt too wide) in paragraph at lines 1184--1185
-[]\T1/ptm/m/n/12 Membuat tabel database: \T1/pcr/m/n/12 sensor_readings\T1/ptm/
-m/n/12 , \T1/pcr/m/n/12 pending_commands\T1/ptm/m/n/12 , \T1/pcr/m/n/12 system_
-config\T1/ptm/m/n/12 . 
- []
+[30]
+! Undefined control sequence.
+l.1168 ...ang ($R_{kabel} \approx 0.1~\Omega/\text
+                                                  {m}$ untuk AWG24) menyebab...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
+! Undefined control sequence.
+l.1185 I_{out} = 4~\text
+                        {mA} + \left(\frac{V_{sensor}}{3,3~\text{V}} \times ...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
-Underfull \hbox (badness 3568) in paragraph at lines 1215--1215
-[]|\T1/ptm/m/n/12 ESP32 (POST), An-droid
- []
+! Undefined control sequence.
+<argument> 3,3~\text 
+                     {V}
+l.1185 ... + \left(\frac{V_{sensor}}{3,3~\text{V}}
+                                                   \times 16~\text{mA}\right)
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
+! Undefined control sequence.
+l.1185 ..._{sensor}}{3,3~\text{V}} \times 16~\text
+                                                  {mA}\right)
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
-Underfull \hbox (badness 3568) in paragraph at lines 1215--1215
-[]|\T1/ptm/m/n/12 Android (POST), ESP32
- []
+! Undefined control sequence.
+l.1189 ...Omega \qquad \Rightarrow \qquad  1~\text
+                                                  {V} ~\text{(4mA)} ~~\text{...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
+! Undefined control sequence.
+l.1189 ...ad \Rightarrow \qquad  1~\text{V} ~\text
+                                                  {(4mA)} ~~\text{s/d}~~ 5~\...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1215--1215
-[]|\T1/ptm/m/n/12 Threshold, mode
- []
+! Undefined control sequence.
+l.1189 ...\qquad  1~\text{V} ~\text{(4mA)} ~~\text
+                                                  {s/d}~~ 5~\text{V} ~\text{...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
+! Undefined control sequence.
+l.1189 ...{V} ~\text{(4mA)} ~~\text{s/d}~~ 5~\text
+                                                  {V} ~\text{(20mA)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1215--1215
-[]|\T1/ptm/m/n/12 Android (RW), ESP32
- []
+! Undefined control sequence.
+l.1189 ...{(4mA)} ~~\text{s/d}~~ 5~\text{V} ~\text
+                                                  {(20mA)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
-[30
+! Undefined control sequence.
+<argument> 3,3~\text 
+                     {V}
+l.1193 ADC_{raw} = \frac{V_{ADC}}{3,3~\text{V}}
+                                                \times 4095
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
-]
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 13.59999pt, for example:
@@ -3046,16 +3113,723 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
 [31]
-Chapter 5.
-[32
+! Undefined control sequence.
+l.1198     \item $V_{sensor} = 3,3~\text
+                                        {V} \times 50\% = 1{,}65~\text{V}$
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.1198 ... 3,3~\text{V} \times 50\% = 1{,}65~\text
+                                                  {V}$
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.1199     \item $I_{out} = 4~\text
+                                   {mA} + (0{,}5 \times 16~\text{mA}) = 12~\...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.1199 ...} = 4~\text{mA} + (0{,}5 \times 16~\text
+                                                  {mA}) = 12~\text{mA}$
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.1199 ...+ (0{,}5 \times 16~\text{mA}) = 12~\text
+                                                  {mA}$
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.1200     \item $V_{ADC} = 12~\text
+                                    {mA} \times 250~\Omega = 3{,}0~\text{V}$
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.1200 ...text{mA} \times 250~\Omega = 3{,}0~\text
+                                                  {V}$
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+! LaTeX Error: Not allowed in LR mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1247 ...p, fill=orange!20] {Capacitive Soil \\ S
+                                                  ensor};
+You've lost some text.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+! LaTeX Error: Not allowed in LR mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1248 ...!10, right=0.5cm of sensor] {XTR116 \\ (
+                                                  TX)};
+You've lost some text.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <10.95> on input line 1251.
+
+! LaTeX Error: Not allowed in LR mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1251 ..., right=4.5cm of xtr] {250~$\Omega$ \\ 0
+                                                  ,1\%};
+You've lost some text.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+! LaTeX Error: Not allowed in LR mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1252 ...blue!20, right=0.5cm of res] {ESP32 \\ G
+                                                  PIO34 (ADC)};
+You've lost some text.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+! LaTeX Error: Not allowed in LR mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1255 ...!10, below=1.2cm of xtr] {Power 12V \\ (
+                                                  dari aki)};
+You've lost some text.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Overfull \hbox (85.6075pt too wide) in paragraph at lines 1270--1271
+ [][] 
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[32]
+Overfull \hbox (14.62245pt too wide) in paragraph at lines 1284--1285
+[]\T1/ptm/m/n/12 Keunggulan utama RS485 adalah ke-mam-puan-nya un-tuk menghubun
+gkan hingga \T1/ptm/b/n/12 32 perangkat
+ []
+
+
+! LaTeX Error: Not allowed in LR mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1315 ...ensor) [comp, fill=orange!20] {Soil \\ S
+                                                  ensor};
+You've lost some text.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+! LaTeX Error: Not allowed in LR mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1316 ...20, right=0.3cm of sensor] {ADS1115 \\ A
+                                                  DC 16-bit};
+You've lost some text.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+! LaTeX Error: Not allowed in LR mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1322 ...ue!20, right=0.3cm of max-m] {ESP32 \\ U
+                                                  ART2};
+You've lost some text.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Overfull \hbox (92.45409pt too wide) in paragraph at lines 1344--1345
+ [][] 
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[33]
+! LaTeX Error: Unicode character 💰 (U+1F4B0)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1404 \end{tabularx}
+                     
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+! Undefined control sequence.
+<inserted text> ...\\ Noise immunity & \cellcolor 
+                                                  {green!20}Sangat tinggi & ...
+l.1404 \end{tabularx}
+                     
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+<inserted text> ...!20}Sangat tinggi & \cellcolor 
+                                                  {green!20}Sangat tinggi & ...
+l.1404 \end{tabularx}
+                     
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+<inserted text> ...!20}Sangat tinggi & \cellcolor 
+                                                  {yellow!20}Sedang \\ Multi...
+l.1404 \end{tabularx}
+                     
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! LaTeX Error: Unicode character ✅ (U+2705)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1404 \end{tabularx}
+                     
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+! LaTeX Error: Unicode character ✅ (U+2705)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1404 \end{tabularx}
+                     
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+! Undefined control sequence.
+<inserted text> ...leksitas hardware & \cellcolor 
+                                                  {green!20}Rendah ✅ & \ce...
+l.1404 \end{tabularx}
+                     
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! LaTeX Error: Unicode character ✅ (U+2705)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1404 \end{tabularx}
+                     
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+! Undefined control sequence.
+<inserted text> ...een!20}Rendah ✅ & \cellcolor 
+                                                  {yellow!20}Sedang & \cellc...
+l.1404 \end{tabularx}
+                     
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+<inserted text> ...{yellow!20}Sedang & \cellcolor 
+                                                  {yellow!20}Menengah \\ Kab...
+l.1404 \end{tabularx}
+                     
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! LaTeX Error: Unicode character ✅ (U+2705)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1404 \end{tabularx}
+                     
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+! LaTeX Error: Unicode character 💰 (U+1F4B0)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1404 \end{tabularx}
+                     
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+! Undefined control sequence.
+<inserted text> ...\\ Noise immunity & \cellcolor 
+                                                  {green!20}Sangat tinggi & ...
+l.1404 \end{tabularx}
+                     
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+<inserted text> ...!20}Sangat tinggi & \cellcolor 
+                                                  {green!20}Sangat tinggi & ...
+l.1404 \end{tabularx}
+                     
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+<inserted text> ...!20}Sangat tinggi & \cellcolor 
+                                                  {yellow!20}Sedang \\ Multi...
+l.1404 \end{tabularx}
+                     
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! LaTeX Error: Unicode character ✅ (U+2705)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1404 \end{tabularx}
+                     
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+! LaTeX Error: Unicode character ✅ (U+2705)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1404 \end{tabularx}
+                     
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+! Undefined control sequence.
+<inserted text> ...leksitas hardware & \cellcolor 
+                                                  {green!20}Rendah ✅ & \ce...
+l.1404 \end{tabularx}
+                     
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! LaTeX Error: Unicode character ✅ (U+2705)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1404 \end{tabularx}
+                     
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+! Undefined control sequence.
+<inserted text> ...een!20}Rendah ✅ & \cellcolor 
+                                                  {yellow!20}Sedang & \cellc...
+l.1404 \end{tabularx}
+                     
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+<inserted text> ...{yellow!20}Sedang & \cellcolor 
+                                                  {yellow!20}Menengah \\ Kab...
+l.1404 \end{tabularx}
+                     
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! LaTeX Error: Unicode character ✅ (U+2705)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1404 \end{tabularx}
+                     
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+! LaTeX Error: Unicode character 💰 (U+1F4B0)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1404 \end{tabularx}
+                     
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+! Undefined control sequence.
+<inserted text> ...\\ Noise immunity & \cellcolor 
+                                                  {green!20}Sangat tinggi & ...
+l.1404 \end{tabularx}
+                     
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1404--1404
+[]|\T1/ptm/m/n/12 green!20Sangat
+ []
+
+! Undefined control sequence.
+<inserted text> ...!20}Sangat tinggi & \cellcolor 
+                                                  {green!20}Sangat tinggi & ...
+l.1404 \end{tabularx}
+                     
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1404--1404
+[]|\T1/ptm/m/n/12 green!20Sangat
+ []
+
+! Undefined control sequence.
+<inserted text> ...!20}Sangat tinggi & \cellcolor 
+                                                  {yellow!20}Sedang \\ Multi...
+l.1404 \end{tabularx}
+                     
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+! LaTeX Error: Unicode character ✅ (U+2705)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1404 \end{tabularx}
+                     
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+! LaTeX Error: Unicode character ✅ (U+2705)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1404 \end{tabularx}
+                     
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+! Undefined control sequence.
+<inserted text> ...leksitas hardware & \cellcolor 
+                                                  {green!20}Rendah ✅ & \ce...
+l.1404 \end{tabularx}
+                     
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+! LaTeX Error: Unicode character ✅ (U+2705)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1404 \end{tabularx}
+                     
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+! Undefined control sequence.
+<inserted text> ...een!20}Rendah ✅ & \cellcolor 
+                                                  {yellow!20}Sedang & \cellc...
+l.1404 \end{tabularx}
+                     
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+<inserted text> ...{yellow!20}Sedang & \cellcolor 
+                                                  {yellow!20}Menengah \\ Kab...
+l.1404 \end{tabularx}
+                     
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Overfull \hbox (0.90288pt too wide) in paragraph at lines 1404--1404
+[]|\T1/ptm/m/n/12 yellow!20Menengah| 
+ []
+
+
+! LaTeX Error: Unicode character ✅ (U+2705)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1404 \end{tabularx}
+                     
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1404--1404
+[]|\T1/ptm/m/n/12 Mandiri (so-
+ []
+
+
+Underfull \hbox (badness 2486) in paragraph at lines 1404--1404
+[]|\T1/ptm/b/n/12 3+ titik / future-
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[34]
+Underfull \hbox (badness 10000) in paragraph at lines 1431--1431
+\T1/ptm/m/n/12 2$\OMS/cmsy/m/n/12 ^^B$\T1/ptm/m/n/12 1,5mm + UTP
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1431--1431
+[]|\T1/ptm/m/n/12 Alternatif: UTP
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1431--1431
+[]|\T1/ptm/m/n/12 Kabel NYY
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1431--1431
+\T1/ptm/m/n/12 2$\OMS/cmsy/m/n/12 ^^B$\T1/ptm/m/n/12 2,5mm (so-lar
+ []
+
+
+! LaTeX Error: Unicode character 🔥 (U+1F525)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1439 ...ilihan Utama: 4--20mA Current Loop 🔥}
+                                                  
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[35]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[36]
+Chapter 4.
+LaTeX Font Info:    Trying to load font information for T1+pcr on input line 15
+07.
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1pcr.fd
+File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
+)
+Overfull \hbox (52.28271pt too wide) in paragraph at lines 1507--1508
+[]\T1/ptm/m/n/12 Membuat tabel database: \T1/pcr/m/n/12 sensor_readings\T1/ptm/
+m/n/12 , \T1/pcr/m/n/12 pending_commands\T1/ptm/m/n/12 , \T1/pcr/m/n/12 system_
+config\T1/ptm/m/n/12 . 
+ []
+
+
+Underfull \hbox (badness 3568) in paragraph at lines 1538--1538
+[]|\T1/ptm/m/n/12 ESP32 (POST), An-droid
+ []
+
+
+Underfull \hbox (badness 3568) in paragraph at lines 1538--1538
+[]|\T1/ptm/m/n/12 Android (POST), ESP32
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1538--1538
+[]|\T1/ptm/m/n/12 Threshold, mode
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1538--1538
+[]|\T1/ptm/m/n/12 Android (RW), ESP32
+ []
+
+[37
 
 ]
-Overfull \hbox (58.29362pt too wide) in paragraph at lines 1283--1285
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[38]
+Chapter 5.
+[39
+
+]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[40]
+Overfull \hbox (58.29362pt too wide) in paragraph at lines 1611--1613
 \T1/ptm/m/n/12 Available: [][]$\T1/pcr/m/n/12 https : / / www . espressif . com
  / sites / default / files / documentation /
  []
 
-[33
+[41
 
 ] (./main.aux)
  ***********
@@ -3066,31 +3840,49 @@ L3 programming layer <2026-01-19>
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 02D4CA4CE3573F7900958A271CFC2E85;10117.
+
+Package rerunfilecheck Warning: File `main.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `main.out':
+(rerunfilecheck)             Before: 02D4CA4CE3573F7900958A271CFC2E85;10117
+(rerunfilecheck)             After:  CC47A6337AAEEA6E388C6FBB7D71F04B;11856.
  ) 
 Here is how much of TeX's memory you used:
- 28268 strings out of 469514
- 551561 string characters out of 5470073
+ 28391 strings out of 469514
+ 553565 string characters out of 5470073
  1045609 words of memory out of 5000000
- 56264 multiletter control sequences out of 15000+600000
- 678450 words of font info for 87 fonts, out of 8000000 for 9000
+ 56343 multiletter control sequences out of 15000+600000
+ 682169 words of font info for 92 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  84i,12n,104p,588b,882s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
 pdfTeX warning (dest): name{Hfootnote.1} has been referenced but does not exist
 , replaced by a fixed one
 
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/
-share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/
-texlive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf
--dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/typ
-e1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/u
-tmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (35 pages, 162822 bytes).
+
+pdfTeX warning (dest): name{table.caption.23} has been referenced but does not 
+exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{chapter*.24} has been referenced but does not exist
+, replaced by a fixed one
+
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/
+share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/
+texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/ty
+pe1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times
+/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></
+usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on main.pdf (43 pages, 224628 bytes).
 PDF statistics:
- 641 PDF objects out of 1000 (max. 8388607)
- 582 compressed objects within 6 object streams
- 183 named destinations out of 1000 (max. 500000)
+ 743 PDF objects out of 1000 (max. 8388607)
+ 667 compressed objects within 7 object streams
+ 226 named destinations out of 1000 (max. 500000)
  481 words of extra memory for PDF output out of 10000 (max. 10000000)
 

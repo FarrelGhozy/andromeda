@@ -5,9 +5,11 @@
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {3.1}{\ignorespaces Diagram blok sistem ANDROMEDA}}{20}{figure.caption.12}%
 \contentsline {figure}{\numberline {3.2}{\ignorespaces Alasan pemilihan Huawei B535-932 sebagai perangkat koneksi internet}}{24}{figure.caption.14}%
-\contentsline {figure}{\numberline {3.3}{\ignorespaces Arsitektur sistem ANDROMEDA secara keseluruhan}}{25}{figure.caption.15}%
-\contentsline {figure}{\numberline {3.4}{\ignorespaces Flowchart sistem ANDROMEDA}}{26}{figure.caption.16}%
-\contentsline {figure}{\numberline {3.5}{\ignorespaces Flowchart aplikasi Android ANDROMEDA}}{27}{figure.caption.17}%
-\contentsline {figure}{\numberline {3.6}{\ignorespaces Skematik koneksi ESP32 ke sensor dan relay}}{29}{figure.caption.20}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Arsitektur sistem ANDROMEDA secara keseluruhan}}{26}{figure.caption.15}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Flowchart sistem ANDROMEDA}}{27}{figure.caption.16}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Flowchart aplikasi Android ANDROMEDA}}{28}{figure.caption.17}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces Skematik koneksi ESP32 ke sensor dan relay}}{30}{figure.caption.20}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Skema wiring 4--20mA current loop untuk sensor jarak jauh}}{33}{figure.caption.23}%
+\contentsline {figure}{\numberline {3.8}{\ignorespaces Skema wiring RS485 untuk sensor jarak jauh}}{34}{figure.caption.25}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
