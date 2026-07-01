@@ -59,7 +59,12 @@
 \contentsline {section}{\numberline {4.1}Tahapan Pengembangan}{37}{section.4.1}%
 \contentsline {section}{\numberline {4.2}Tabel Database Supabase}{38}{section.4.2}%
 \contentsline {section}{\numberline {4.3}Rencana Pengujian}{38}{section.4.3}%
-\contentsline {chapter}{\numberline {5}PENUTUP}{39}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Kesimpulan}{39}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Saran}{40}{section.5.2}%
-\contentsline {chapter}{DAFTAR PUSTAKA}{41}{chapter*.32}%
+\contentsline {section}{\numberline {4.4}Rincian Alat dan Bahan (Bill of Materials)}{39}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Tabel Bill of Materials (BOM)}{40}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2}Rekapitulasi Biaya}{41}{subsection.4.4.2}%
+\contentsline {subsection}{\numberline {4.4.3}Skema Wiring Terbaik — Final}{41}{subsection.4.4.3}%
+\contentsline {subsection}{\numberline {4.4.4}Alur Kerja Sistem Final}{42}{subsection.4.4.4}%
+\contentsline {chapter}{\numberline {5}PENUTUP}{44}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Kesimpulan}{44}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Saran}{45}{section.5.2}%
+\contentsline {chapter}{DAFTAR PUSTAKA}{46}{chapter*.35}%
