@@ -2,7 +2,7 @@
 %  LAPORAN RANCANG BANGUN SISTEM ANDROMEDA
 %  ANDROMEDA - Android Routine Monitoring Electronic Drip Automation
 %  Sistem Irigasi Tetes Otomatis Berbasis IoT
-%  dengan Monitoring dan Kontrol Android
+%  dengan Monitoring dan Kontrol Flutter
 % ============================================================
 \documentclass[12pt,a4paper,oneside]{report}
 
@@ -29,6 +29,7 @@
 \usepackage{lipsum}
 \usepackage{fancyhdr}
 \usepackage{indentfirst}
+\usepackage{pifont}
 \usepackage{listings}
 \usepackage{tabularx}
 
@@ -112,7 +113,7 @@
 \begin{tikzpicture}
 \shadedraw[top color=accentgreen!20,bottom color=accentgreen!80,draw=accentgreen,rounded corners=8pt]
 (0,0) rectangle (14,1.5);
-\node[text=white,font=\bfseries\large] at (7,0.75) {DENGAN MONITORING DAN KONTROL BERBASIS ANDROID};
+\node[text=white,font=\bfseries\large] at (7,0.75) {DENGAN MONITORING DAN KONTROL BERBASIS FLUTTER};
 \end{tikzpicture}
 
 \vspace{1.5cm}
@@ -135,7 +136,7 @@ NIM: 452024611053
 {\large
 \textbf{PROGRAM STUDI TEKNIK INFORMATIKA}\\[0.1cm]
 \textbf{UNIVERSITAS DARUSSALAM GONTOR}\\[0.1cm]
-\textbf{2025}
+\textbf{2025}}
 \end{center}
 \end{titlepage}
 
@@ -143,9 +144,9 @@ NIM: 452024611053
 \chapter*{KATA PENGANTAR}
 \addcontentsline{toc}{chapter}{KATA PENGANTAR}
 
-Puji syukur ke hadirat Allah SWT atas segala rahmat dan hidayah-Nya sehingga laporan rancang bangun \textit{Sistem Irigasi Tetes Otomatis Berbasis Internet of Things (IoT) dengan Monitoring dan Kontrol Berbasis Android} ini dapat diselesaikan dengan baik.
+Puji syukur ke hadirat Allah SWT atas segala rahmat dan hidayah-Nya sehingga laporan rancang bangun \textit{Sistem Irigasi Tetes Otomatis Berbasis Internet of Things (IoT) dengan Monitoring dan Kontrol Berbasis Flutter} ini dapat diselesaikan dengan baik.
 
-Laporan ini disusun sebagai dokumen perencanaan teknis untuk pengembangan sistem irigasi cerdas yang mengintegrasikan sensor kelembaban tanah, mikrokontroler ESP32, aktuator pompa air, serta aplikasi Android untuk monitoring dan kontrol secara \textit{real-time}. Sistem ini dirancang untuk mengoptimalkan penyiraman tanaman — khususnya benih padi, cabai, dan tanaman hortikultura lainnya — secara otomatis berdasarkan kondisi kelembaban tanah aktual.
+Laporan ini disusun sebagai dokumen perencanaan teknis untuk pengembangan sistem irigasi cerdas yang mengintegrasikan sensor kelembaban tanah, mikrokontroler ESP32, aktuator solenoid valve, serta aplikasi Flutter untuk monitoring dan kontrol secara \textit{real-time}. Sistem ini dirancang untuk mengoptimalkan penyiraman tanaman — khususnya benih padi, cabai, dan tanaman hortikultura lainnya — secara otomatis berdasarkan kondisi kelembaban tanah aktual.
 
 Kami menyadari bahwa laporan ini masih jauh dari sempurna. Oleh karena itu, kritik dan saran yang membangun sangat diharapkan untuk pengembangan lebih lanjut. Semoga laporan ini dapat memberikan manfaat dan menjadi referensi yang berguna dalam pengembangan sistem irigasi cerdas di masa mendatang.
 
@@ -179,7 +180,7 @@ Berdasarkan permasalahan tersebut, proyek \textbf{ANDROMEDA (Android Routine Mon
 \begin{enumerate}
     \item Memantau kondisi kelembaban tanah secara \textit{real-time}.
     \item Mengaktifkan penyiraman secara otomatis ketika kelembaban berada di bawah ambang batas.
-    \item Memberikan kontrol manual melalui aplikasi Android.
+    \item Memberikan kontrol manual melalui aplikasi Flutter.
     \item Menyediakan data historis untuk analisis pola penyiraman.
 \end{enumerate}
 
@@ -190,9 +191,9 @@ Dengan sistem ini, diharapkan penggunaan air menjadi lebih efisien, tanaman tumb
 Berdasarkan latar belakang di atas, rumusan masalah dalam proyek ini adalah sebagai berikut:
 \begin{enumerate}
     \item Bagaimana merancang sistem irigasi tetes otomatis yang dapat mengukur kelembaban tanah secara \textit{real-time}?
-    \item Bagaimana mengintegrasikan sensor kelembaban tanah dengan mikrokontroler ESP32 dan aktuator pompa air?
-    \item Bagaimana membangun sistem komunikasi data dari perangkat keras ke aplikasi Android melalui protokol MQTT?
-    \item Bagaimana merancang aplikasi Android untuk monitoring dan kontrol sistem irigasi?
+    \item Bagaimana mengintegrasikan sensor kelembaban tanah dengan mikrokontroler ESP32 dan aktuator solenoid valve?
+    \item Bagaimana membangun sistem komunikasi data dari perangkat keras ke aplikasi melalui HTTP REST ke Supabase?
+    \item Bagaimana merancang aplikasi Flutter untuk monitoring dan kontrol sistem irigasi?
 \end{enumerate}
 
 \section{Tujuan}
@@ -201,7 +202,7 @@ Tujuan dari proyek ANDROMEDA ini adalah:
 \begin{enumerate}
     \item Merancang dan membangun sistem irigasi tetes otomatis berbasis IoT yang terintegrasi dengan sensor kelembaban tanah.
     \item Mengimplementasikan mikrokontroler ESP32 sebagai pengendali utama sistem yang terhubung ke internet melalui WiFi.
-    \item Mengembangkan aplikasi Android untuk monitoring kondisi tanah dan kontrol penyiraman secara \textit{real-time}.
+    \item Mengembangkan aplikasi Flutter untuk monitoring kondisi tanah dan kontrol penyiraman secara \textit{real-time}.
     \item Menghasilkan dokumentasi teknis yang lengkap sebagai referensi pengembangan lebih lanjut.
 \end{enumerate}
 
@@ -220,12 +221,12 @@ Manfaat yang diharapkan dari proyek ANDROMEDA:
 
 Batasan masalah dalam proyek ini meliputi:
 \begin{enumerate}
-    \item Sistem dirancang untuk skala kecil hingga menengah (1-10 titik tanam).
+    \item Sistem dirancang untuk 1 titik tanam (1m × 7m) dengan 1 sensor dan 1 solenoid valve.
     \item Konektivitas menggunakan WiFi — sistem hanya berfungsi di area dengan akses internet.
-    \item Sumber daya listrik menggunakan adaptor PLN (belum menggunakan solar panel/baterai).
+    \item Sumber daya listrik menggunakan aki 100Ah + solar panel 300Wp (off-grid, mandiri energi).
     \item Sensor yang digunakan adalah sensor kelembaban tanah kapasitif (\textit{capacitive soil sensor}).
     \item Aktuator yang digunakan adalah solenoid valve 12V NC dengan selang drip \textit{irrigation}.
-    \item Aplikasi Android dikembangkan menggunakan Kotlin/Java dengan koneksi MQTT dan REST API.
+    \item Aplikasi dikembangkan menggunakan Flutter (Dart) dengan Supabase SDK dan REST API.
     \item Sistem belum mencakup pengaturan pH tanah atau nutrisi tanaman.
 \end{enumerate}
 
@@ -243,7 +244,7 @@ Arsitektur IoT umumnya terdiri dari tiga lapisan:
 \begin{enumerate}
     \item \textbf{Perception Layer} — Sensor dan aktuator yang berinteraksi langsung dengan lingkungan fisik.
     \item \textbf{Network Layer} — Infrastruktur komunikasi (WiFi, MQTT, HTTP) yang menghubungkan perangkat ke server.
-    \item \textbf{Application Layer} — Aplikasi pengguna (Android app, dashboard web) untuk visualisasi dan kontrol.
+    \item \textbf{Application Layer} — Aplikasi pengguna (Flutter app, dashboard web) untuk visualisasi dan kontrol.
 \end{enumerate}
 
 \begin{figure}[H]
@@ -251,9 +252,9 @@ Arsitektur IoT umumnya terdiri dari tiga lapisan:
 \begin{tikzpicture}[node distance=0.8cm, auto]
     \tikzstyle{layer} = [rectangle, rounded corners, minimum width=10cm, minimum height=1.2cm, text centered, font=\bfseries];
 
-    \node (app) [layer, fill=accentgreen!30, draw=accentgreen] {Application Layer (Android App, Dashboard)};
-    \node (net) [layer, fill=primaryblue!30, draw=primaryblue, below=of app] {Network Layer (WiFi, MQTT, REST API)};
-    \node (per) [layer, fill=orange!30, draw=orange, below=of net] {Perception Layer (Sensor, ESP32, Pompa)};
+    \node (app) [layer, fill=accentgreen!30, draw=accentgreen] {Application Layer (Flutter App, Dashboard)};
+    \node (net) [layer, fill=primaryblue!30, draw=primaryblue, below=of app] {Network Layer (WiFi, HTTP, REST API)};
+    \node (per) [layer, fill=orange!30, draw=orange, below=of net] {Perception Layer (Sensor, ESP32, Valve)};
 
     \draw[<->, thick] (app) -- (net);
     \draw[<->, thick] (net) -- (per);
@@ -279,7 +280,7 @@ Sensor resistif mengukur kelembaban berdasarkan perubahan resistansi listrik ant
     \item Tegangan operasi: 3.3V -- 5V DC
     \item Output: Analog (0 -- 3.3V) dan Digital (komparator LM393)
     \item Prinsip kerja: Resistif (konduktivitas listrik)
-    \item Dimensi: 6.3cm $\times$ 2.0cm
+    \item Dimensi: 6.3cm × 2.0cm
     \item Harga: Rp 5.000 -- Rp 15.000
 \end{itemize}
 
@@ -307,7 +308,7 @@ Sensor kapasitif mengukur kelembaban berdasarkan perubahan konstanta dielektrik 
     \item Tegangan operasi: 3.3V -- 5V DC
     \item Output: Analog (0 -- 3.3V)
     \item Prinsip kerja: Kapasitif (perubahan dielektrik)
-    \item Dimensi: 9.8cm $\times$ 2.3cm
+    \item Dimensi: 9.8cm × 2.3cm
     \item Harga: Rp 25.000 -- Rp 40.000
 \end{itemize}
 
@@ -343,7 +344,7 @@ Masa Pakai & 3--6 bulan & $>$ 2 tahun \\
 Akurasi Jangka Panjang & Menurun & Stabil \\
 Harga & Rp 5.000 -- 15.000 & Rp 25.000 -- 40.000 \\
 Respons & Cepat (ms) & Sedang (ms -- detik) \\
-Konsumsi Daya & $\sim$10 mA & $\sim$5 mA \\
+Konsumsi Daya & ∼10 mA & ∼5 mA \\
 Perawatan & Kalibrasi berkala & Minimal \\
 Ketersediaan & Sangat mudah & Mudah \\
 Kesesuaian Jangka Panjang & Tidak cocok & Sangat cocok \\
@@ -460,7 +461,7 @@ IoT Ready & Sangat cocok & Cukup & Tidak langsung \\
 \textbf{Keputusan:} Proyek ANDROMEDA menggunakan \textbf{ESP32} karena:
 \begin{enumerate}
     \item WiFi + Bluetooth terintegrasi — tidak perlu modul tambahan.
-    \item Dual-core — mampu menjalankan multiple task (baca sensor, kirim data, kontrol pompa) secara simultan.
+    \item Dual-core — mampu menjalankan multiple task (baca sensor, kirim data, kontrol valve) secara simultan.
     \item ADC 12-bit resolusi tinggi — menghasilkan data kelembaban yang lebih presisi.
     \item Banyak GPIO — memungkinkan penambahan sensor/aktuator di masa depan.
     \item OTA update — firmware dapat diperbarui dari jarak jauh tanpa harus melepas perangkat.
@@ -508,7 +509,7 @@ Biaya & Rp 40.000 -- 60.000 & Rp 25.000 -- 60.000 \\
 Prinsip kerja & Membuka/menutup aliran (gravitasi) & Memompa air (tekanan aktif) \\
 Daya aktif & \textbf{500 mA} (saat siram saja) & \textbf{200-1000 mA} (selama siram) \\
 Daya idle & \textbf{0 mA} ✅ & 0 mA \\
-Fail-safe & ✅ Otomatis tertutup saat mati listrik & ❌ Air tetap mengalir jika pompa di ON \\
+Fail-safe & ✅ Otomatis tertutup saat mati listrik & × Air tetap mengalir jika pompa di ON \\
 Kompleksitas & Sederhana (relay) & Sederhana (relay) \\
 Cocok tandon? & \textbf{✅ Sangat cocok} & ⚠️ Boros daya \\
 Perawatan & Minimal (tidak ada bagian bergerak) & Sikat karbon aus, seal bocor \\
@@ -522,7 +523,6 @@ Perawatan & Minimal (tidak ada bagian bergerak) & Sikat karbon aus, seal bocor \
 \begin{itemize}
     \item Debit terbatas — tidak cocok untuk lahan luas
     \item Kebisingan saat beroperasi
-    \item Memerlukan \textit{priming} (pengisian awal) jika posisi pompa di atas sumber air
 \end{itemize}
 
 \subsection{Solenoid Valve}
@@ -590,13 +590,13 @@ Komunikasi & Push & Polling & Polling \\
 Konsumsi Daya & Rendah & Tinggi & **Rendah** (Deep Sleep) \\
 Server diperlukan & Broker sendiri & VPS + DB & **Tidak perlu** \\
 Biaya Server & Rp 50-150rb/bln & Rp 50-150rb/bln & **Rp 0** (Gratis) \\
-SDK Android & Pustaka tambahan & Manual HTTP & SDK Resmi (auto sync) \\
+SDK Flutter & Pustaka tambahan & Manual HTTP & SDK Resmi (auto sync) \\
 ESP32 Library & PubSubClient & HTTPClient & HTTPClient \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\textbf{Keputusan:} Proyek ANDROMEDA menggunakan \textbf{HTTP REST ke Supabase} sebagai backend. Karena ESP32 menggunakan mode \textit{deep sleep} dan hanya terbangun secara periodik, komunikasi \textit{push} real-time (MQTT) tidak diperlukan. ESP32 cukup melakukan HTTP POST untuk mengirim data dan HTTP GET untuk memeriksa perintah yang tertunda. Android menggunakan \textbf{Supabase SDK} untuk sinkronisasi data secara otomatis tanpa perlu \textit{polling} manual. Pendekatan ini menghilangkan biaya server bulanan dan kompleksitas infrastruktur.
+\textbf{Keputusan:} Proyek ANDROMEDA menggunakan \textbf{HTTP REST ke Supabase} sebagai backend. Karena ESP32 menggunakan mode \textit{deep sleep} dan hanya terbangun secara periodik, komunikasi \textit{push} real-time (MQTT) tidak diperlukan. ESP32 cukup melakukan HTTP POST untuk mengirim data dan HTTP GET untuk memeriksa perintah yang tertunda. Aplikasi Flutter menggunakan \textbf{Supabase Flutter SDK} untuk sinkronisasi data secara otomatis tanpa perlu \textit{polling} manual. Pendekatan ini menghilangkan biaya server bulanan dan kompleksitas infrastruktur.
 
 \section{Sistem Irigasi Tetes (Drip Irrigation)}
 
@@ -624,14 +624,14 @@ Irigasi tetes adalah metode penyiraman di mana air diberikan secara perlahan-lah
     \draw[thick, blue!50!black] (4,0.3) -- (4,-0.3);
     \draw[thick, blue!50!black] (4,-0.3) -- (10,-0.3);
 
-    % Pompa
-    \node[circle, draw, fill=gray!20, minimum size=0.8cm] at (3,0.3) {P};
-
+    % Valve
+    \node[circle, draw, fill=gray!20, minimum size=0.8cm] at (3,0.3) {V};
+ 
     % Emitter
     \foreach \x in {5,7,9} {
         \draw[thick, blue!70!black] (\x,-0.3) -- (\x,-0.6);
         \draw[fill=green!40, draw=green!50!black] (\x-0.3,-0.6) rectangle (\x+0.3,-1.0);
-        \node at (\x,-0.8) {\tiny P};
+        \node at (\x,-0.8) {\tiny V};
         % Drops
         \draw[blue,->] (\x,-1.0) -- (\x,-1.4);
         \draw[blue] (\x-0.05,-1.4) -- (\x-0.05,-1.6);
@@ -639,7 +639,7 @@ Irigasi tetes adalah metode penyiraman di mana air diberikan secara perlahan-lah
     }
 
     % Keterangan
-    \node[right] at (3,0.8) {\small Pompa DC};
+    \node[right] at (3,0.8) {\small Solenoid Valve};
     \node[below] at (11,-0.3) {\small Drip Irrigation Line};
 \end{tikzpicture}
 \caption{Skema sederhana sistem irigasi tetes}
@@ -666,7 +666,7 @@ Irigasi tetes adalah metode penyiraman di mana air diberikan secara perlahan-lah
 Efisiensi Air & 40-50\% & 50-70\% & 90-95\% \\
 Kontrol Otomatis & Tidak & Terbatas & Ya (threshold) \\
 Monitoring & Visual & Tidak & Real-time \\
-Kontrol Jarak Jauh & Tidak & Tidak & Ya (Android) \\
+Kontrol Jarak Jauh & Tidak & Tidak & Ya (Aplikasi) \\
 Biaya Operasional & Tinggi (tenaga) & Sedang & Rendah \\
 Biaya Awal & Rendah & Sedang & Sedang \\
 Presisi Penyiraman & Rendah & Sedang & Tinggi \\
@@ -696,8 +696,8 @@ Diagram blok sistem secara keseluruhan menunjukkan hubungan antara komponen utam
 
 % Baris 1 - Sensor/Aktuator
 \node (sensor) [block, fill=orange!20] {Capacitive\\Soil Sensor};
-\node (pompa) [block, fill=red!20, right=of sensor] {Pompa DC};
-\node (lcd) [block, fill=yellow!20, right=of pompa] {LCD / LED\\Indikator};
+\node (valve) [block, fill=red!20, right=of sensor] {Solenoid\\Valve 12V NC};
+\node (lcd) [block, fill=yellow!20, right=of valve] {LCD / LED\\Indikator};
 
 % Baris 2 - ESP32
 \node (esp32) [block, fill=primaryblue!20, minimum width=5cm, below=1.5cm of sensor, xshift=2.5cm] {ESP32 \\ (Mikrokontroler)};
@@ -707,15 +707,15 @@ Diagram blok sistem secara keseluruhan menunjukkan hubungan antara komponen utam
 
 % Baris 4 - Backend (Supabase)
 \node (supabase) [block, fill=accentgreen!20, minimum width=4cm, below=1.2cm of wifi] {Supabase \\ (Backend-as-a-Service) \\ PostgreSQL + REST API};
-\node (android) [block, fill=primaryblue!30, below=1.5cm of supabase] {Aplikasi Android};
+\node (android) [block, fill=primaryblue!30, below=1.5cm of supabase] {Aplikasi Flutter};
 
 % Koneksi
 \draw[->, thick] (sensor) -- node[right] {Analog} (esp32);
-\draw[->, thick] (esp32) -- node[above] {Relay ON/OFF} (pompa);
+\draw[->, thick] (esp32) -- node[above] {Relay ON/OFF} (valve);
 \draw[->, thick] (esp32) -- (lcd);
 \draw[<->, thick] (esp32) -- (wifi);
 \draw[<->, thick] (wifi) -- node[right] {HTTP POST/GET} (supabase);
-\draw[<->, thick] (supabase) -- node[right] {SDK auto sync} (android);
+\draw[<->, thick] (supabase) -- node[right] {Flutter SDK auto sync} (android);
 
 \end{tikzpicture}
 \caption{Diagram blok sistem ANDROMEDA}
@@ -731,13 +731,11 @@ Arsitektur sistem ANDROMEDA terdiri dari empat komponen utama yang saling terint
 \begin{itemize}
     \item \textbf{ESP32 DevKit} — Pengendali utama, membaca sensor, mengontrol relay, mengirim data via WiFi.
     \item \textbf{Capacitive Soil Sensor v1.2} — Mengukur kelembaban tanah (analog output).
-    \item \textbf{Modul XTR116} — Current loop transmitter untuk mengirim sinyal sensor jarak jauh (10--100m) dengan noise immunity tinggi. Output 4--20mA.
-    \item \textbf{Resistor Presisi 250$\Omega$ 0,1\%} — Konversi arus 4--20mA menjadi tegangan 1--5V untuk ADC ESP32.
     \item \textbf{Relay 1-Channel 5V} — Mengontrol solenoid valve dari sinyal digital ESP32.
     \item \textbf{Solenoid Valve 12V NC} — Membuka/menutup aliran air dari tandon (gravitasi).
     \item \textbf{Huawei B535-932 4G LTE Router} — Koneksi internet, daya 12V DC langsung dari aki.
-    \item \textbf{Power Supply 12V} — Memberi daya ke ESP32, relay, XTR116, dan router LTE.
-    \item \textbf{Kabel Belden 3107A} — 2-pair twisted shielded untuk sinyal 4--20mA dan power 12V ke sensor.
+    \item \textbf{Power Supply 12V} — Memberi daya ke ESP32, relay, dan router LTE.
+    \item \textbf{Kabel Belden 3107A / UTP Cat5e} — Kabel twisted pair shielded untuk sinyal sensor ke ESP32 (\textasciitilde10--20m).
     \item \textbf{Selang Drip Irrigation} — Mendistribusikan air ke tanaman.
     \item \textbf{LED Indikator} — Status sistem (ON/OFF/Error).
 \end{itemize}
@@ -745,10 +743,10 @@ Arsitektur sistem ANDROMEDA terdiri dari empat komponen utama yang saling terint
 \subsection{Jaringan dan Komunikasi}
 
 \begin{itemize}
-    \item \textbf{WiFi 2.4 GHz} — Koneksi internet dari ESP32 ke Mifi.
-    \item \textbf{Mifi (Modem WiFi Portable)} — Menyediakan hotspot WiFi dari kartu SIM dengan paket data.
+    \item \textbf{WiFi 2.4 GHz} — Koneksi internet dari ESP32 ke Huawei B535-932.
+    \item \textbf{Huawei B535-932 4G LTE Router} — Menyediakan hotspot WiFi dari kartu SIM dengan paket data. Daya 12V DC langsung dari aki.
     \item \textbf{HTTP REST (Supabase API)} — ESP32 mengirim data sensor (POST) dan memeriksa perintah pending (GET).
-    \item \textbf{Supabase Android SDK} — Android otomatis sinkron data dari Supabase tanpa perlu \textit{polling} manual.
+    \item \textbf{Supabase Flutter SDK} — Aplikasi Flutter otomatis sinkron data dari Supabase tanpa perlu \textit{polling} manual.
 \end{itemize}
 
 \subsection{Backend — Supabase (Cloud, Gratis)}
@@ -758,8 +756,8 @@ Proyek ANDROMEDA menggunakan \textbf{Supabase} sebagai \textit{Backend-as-a-Serv
 \begin{itemize}
     \item \textbf{PostgreSQL Database} — Menyimpan log sensor, konfigurasi, riwayat perintah.
     \item \textbf{REST API} — Auto-generated dari tabel database, langsung bisa dipakai ESP32.
-    \item \textbf{Autentikasi} — Login pengguna Android.
-    \item \textbf{Realtime Subscription} — Android mendapat update data secara otomatis.
+    \item \textbf{Autentikasi} — Login pengguna aplikasi.
+    \item \textbf{Realtime Subscription} — Aplikasi mendapat update data secara otomatis.
     \item \textbf{Edge Functions (opsional)} — Logika backend tambahan.
 \end{itemize}
 
@@ -775,7 +773,7 @@ Menggunakan layanan \textit{Internet Service Provider} (ISP) seperti IndiHome, F
 
 \begin{itemize}
     \item \textbf{Biaya awal}: Rp 250.000 -- 500.000 (instalasi)
-    \item \textbf{Biaya bulanan}: \textbf{Rp 150.000 -- 300.000} ❌
+    \item \textbf{Biaya bulanan}: \textbf{Rp 150.000 -- 300.000} ×
     \item \textbf{Daya}: 220V AC (perlu inverter jika dari aki)
     \item \textbf{Kelebihan}: Koneksi stabil, bandwidth besar
     \item \textbf{Kekurangan}: Biaya bulanan sangat tinggi, instalasi permanen, tidak cocok untuk lokasi sawah/ladang
@@ -829,12 +827,12 @@ Router 4G lengkap dengan WiFi, port LAN, dan dukungan antena eksternal.
  & \textbf{Rumahan} & \textbf{(E5577)} & \textbf{(E3372)} & \textbf{(B535)} \\
 \midrule
 Harga Awal & Rp 250-500rb & Rp 250-350rb & Rp 200-300rb & \textbf{Rp 400-500rb} \\
-Biaya Bulanan & \textbf{Rp 150-300rb} ❌ & Rp 15-30rb ✅ & Rp 15-30rb ✅ & \textbf{Rp 15-30rb} ✅ \\
+Biaya Bulanan & \textbf{Rp 150-300rb} × & Rp 15-30rb ✅ & Rp 15-30rb ✅ & \textbf{Rp 15-30rb} ✅ \\
 Daya & 220V AC & 5V USB & 5V USB & \textbf{12V DC langsung} 🔥 \\
-Cocok Aki 12V? & ❌ (butuh inverter) & ⚠️ (butuh stepdown) & ⚠️ (butuh stepdown) & \textbf{✅ Langsung colok} \\
+Cocok Aki 12V? & × (butuh inverter) & ⚠️ (butuh stepdown) & ⚠️ (butuh stepdown) & \textbf{✅ Langsung colok} \\
 Antena Outdoor? & Tidak & Tidak & ✅ Bisa & \textbf{✅ Bisa} \\
-Pemakaian 24/7? & ✅ Stabil & ❌ Baterai ngembung & ✅ Stabil & \textbf{✅ Stabil} \\
-Koneksi WiFi & ✅ Built-in & ✅ Built-in & ❌ Butuh router & \textbf{✅ Built-in} \\
+Pemakaian 24/7? & ✅ Stabil & × Baterai ngembung & ✅ Stabil & \textbf{✅ Stabil} \\
+Koneksi WiFi & ✅ Built-in & ✅ Built-in & × Butuh router & \textbf{✅ Built-in} \\
 Maturity & Sangat cocok & Kurang cocok & Cukup & \textbf{Sangat cocok} 🔥 \\
 \bottomrule
 \end{tabularx}
@@ -872,13 +870,13 @@ Maturity & Sangat cocok & Kurang cocok & Cukup & \textbf{Sangat cocok} 🔥 \\
     \item \textbf{WiFi dual-band} — memberikan jangkauan WiFi yang luas untuk ESP32 dan perangkat lain di area tanam.
 \end{enumerate}
 
-Dengan aki 100Ah dan solar panel 300Wp yang tersedia, konsumsi daya B535 (12W) sangat kecil — aki dapat bertahan sekitar 100 jam tanpa sinar matahari, dan panel 300Wp akan mengisi ulang aki dalam waktu 3-4 jam. Sistem kelistrikan lebih dari cukup untuk menjalankan router 24/7 beserta ESP32 dan pompa.
+Dengan aki 100Ah dan solar panel 300Wp yang tersedia, konsumsi daya B535 (12W) sangat kecil — aki dapat bertahan sekitar 100 jam tanpa sinar matahari, dan panel 300Wp akan mengisi ulang aki dalam waktu 3-4 jam. Sistem kelistrikan lebih dari cukup untuk menjalankan router 24/7 beserta ESP32 dan solenoid valve.
 
-\subsection{Aplikasi Android}
+\subsection{Aplikasi Flutter}
 
 \begin{itemize}
-    \item \textbf{Dashboard} — Menampilkan kelembaban terkini, status pompa.
-    \item \textbf{Kontrol Manual} — Tombol ON/OFF pompa.
+    \item \textbf{Dashboard} — Menampilkan kelembaban terkini, status valve.
+    \item \textbf{Kontrol Manual} — Tombol BUKA/TUTUP solenoid valve.
     \item \textbf{Mode Otomatis} — Sistem menyiram berdasarkan threshold.
     \item \textbf{Pengaturan Threshold} — Atur batas kering dan basah.
     \item \textbf{Log Historis} — Grafik kelembaban harian/mingguan.
@@ -902,7 +900,7 @@ Berikut adalah arsitektur sistem secara detail:
 \node (esp) [iot, below=0.2cm of hardware.north] {ESP32 DevKit};
 \node (sensor) [iot, below=0.1cm of esp] {Capacitive Soil Sensor};
 \node (relay) [iot, below=0.1cm of sensor] {Relay 1ch};
-\node (pump) [iot, below=0.1cm of relay] {Pompa DC + Drip};
+\node (valve) [iot, below=0.1cm of relay] {Solenoid Valve\\12V NC + Drip};
 
 % Box besar - Supabase Cloud
 \node (supabase) [box, fill=blue!10, minimum width=5.5cm, minimum height=3.0cm, right=2cm of hardware, label={[font=\bfseries]above:{\\large SUPABASE (CLOUD, GRATIS)}}] {};
@@ -911,13 +909,13 @@ Berikut adalah arsitektur sistem secara detail:
 \node (auth) [server, below=0.1cm of api] {Authentication};
 \node (rt) [server, below=0.1cm of auth] {Realtime Subscription};
 
-% Android
-\node (android) [box, fill=orange!15, minimum width=4.5cm, minimum height=1.2cm, below=2cm of supabase, label={[font=\\bfseries]above:{\\large ANDROID APP}}] {};
-\node at (android) {Monitor \\& Control \\ (Supabase SDK)};
+% Flutter App
+\node (android) [box, fill=orange!15, minimum width=4.5cm, minimum height=1.2cm, below=2cm of supabase, label={[font=\\bfseries]above:{\\large FLUTTER APP}}] {};
+\node at (android) {Monitor \\& Control \\ (Supabase Flutter SDK)};
 
 % Koneksi
 \draw[<->, thick, primaryblue] (esp.east) -- node[above] {HTTP POST/GET} (api.west);
-\draw[<->, thick, primaryblue] (api.east) -- ++(1,0) -- ++(0,-3.0) -- node[above] {SDK auto sync} (android.east);
+\draw[<->, thick, primaryblue] (api.east) -- ++(1,0) -- ++(0,-3.0) -- node[above] {Flutter SDK auto sync} (android.east);
 \draw[<->, thick] (db.south) -- (api.north);
 \draw[<->, thick] (api.south) -- (rt.north);
 \draw[<->, thick] (auth.south) -- (rt.north);
@@ -955,8 +953,8 @@ Berikut adalah arsitektur sistem secara detail:
 \node (mode) [decision, below=of send, yshift=-0.3cm] {Mode\\Otomatis?};
 \node (manual) [process, right=of mode, xshift=2cm] {HTTP GET\\Pending Commands\\Dari Supabase};
 \node (dry) [decision, below=of mode, yshift=-0.5cm] {Kelembaban\\< Threshold?};
-\node (pump_on) [process, below=of dry, yshift=-0.3cm, fill=red!20] {Relay ON\\Pompa Aktif};
-\node (pump_off) [process, below=of pump_on, fill=green!20] {Relay OFF\\Pompa Mati};
+\node (pump_on) [process, below=of dry, yshift=-0.3cm, fill=red!20] {Relay ON\\Valve Terbuka};
+\node (pump_off) [process, below=of pump_on, fill=green!20] {Relay OFF\\Valve Tertutup};
 \node (wait) [process, right=of pump_on, xshift=2.5cm] {Delay\\10 Detik};
 
 % Arrows
@@ -980,7 +978,7 @@ Berikut adalah arsitektur sistem secara detail:
 \label{fig:flowchart}
 \end{figure}
 
-\subsection{Alur Aplikasi Android}
+\subsection{Alur Aplikasi Flutter}
 
 \begin{figure}[H]
 \centering
@@ -995,8 +993,8 @@ Berikut adalah arsitektur sistem secara detail:
 \node (start) [startstop] {Buka Aplikasi};
 \node (login) [process] {Login / Register};
 \node (dash) [process, below=of login] {Dashboard Utama};
-\node (mqtt) [process, below=of dash] {Konek MQTT\\ke Broker};
-\node (disp) [process, below=of mqtt] {Tampilkan\\Kelembaban + Status};
+\node (sync) [process, below=of dash] {Sync Data\\dari Supabase};
+\node (disp) [process, below=of sync] {Tampilkan\\Kelembaban + Status};
 \node (mode_sel) [decision, below=of disp, yshift=-0.3cm] {Mode\\Otomatis/Manual?};
 \node (btn_man) [process, right=of mode_sel, xshift=2.5cm] {Tombol\\Siram/Mati};
 \node (auto_sel) [process, below=of mode_sel] {Set Threshold\\Kering \& Basah};
@@ -1005,8 +1003,8 @@ Berikut adalah arsitektur sistem secara detail:
 
 \draw[arrow] (start) -- (login);
 \draw[arrow] (login) -- (dash);
-\draw[arrow] (dash) -- (mqtt);
-\draw[arrow] (mqtt) -- (disp);
+\draw[arrow] (dash) -- (sync);
+\draw[arrow] (sync) -- (disp);
 \draw[arrow] (disp) -- (mode_sel);
 \draw[arrow] (mode_sel.east) -- node[above] {Manual} (btn_man);
 \draw[arrow] (mode_sel) -- node[right] {Otomatis} (auto_sel);
@@ -1016,7 +1014,7 @@ Berikut adalah arsitektur sistem secara detail:
 \draw[arrow] (btn_man.south) -- ++(0,-0.5) -- ++(-3,0) |- (hist);
 
 \end{tikzpicture}
-\caption{Flowchart aplikasi Android ANDROMEDA}
+\caption{Flowchart aplikasi Flutter ANDROMEDA}
 \label{fig:android-flow}
 \end{figure}
 
@@ -1031,11 +1029,10 @@ Berikut adalah arsitektur sistem secara detail:
 \textbf{No} & \textbf{Komponen} & \textbf{Qty} & \textbf{Harga} \\
 \midrule
 1 & ESP32 DevKit (WiFi + Bluetooth) & 1 & Rp 65.000 \\
-2 & Capacitive Soil Sensor v1.2 & 1--5 & Rp 35.000/pc \\
+2 & Capacitive Soil Sensor v1.2 & 1 & Rp 35.000 \\
 3 & Relay Module 1 Channel 5V & 1 & Rp 12.000 \\
 4 & Solenoid Valve 12V NC & 1 & Rp 50.000 \\
-5 & Power Supply 5V/2A (USB) & 1 & Rp 18.000 \\
-6 & Power Supply 12V/2A (utk pompa) & 1 & Rp 25.000 \\
+5 & Power Supply 12V (dari aki via step-down) & 1 & Rp 25.000 \\
 7 & Selang Drip Irrigation 10m & 1 & Rp 30.000 \\
 8 & Dripper / Emitter (10 pcs) & 1 pack & Rp 15.000 \\
 9 & Kabel Jumper (M-M, M-F, F-F) & 1 set & Rp 15.000 \\
@@ -1044,10 +1041,10 @@ Berikut adalah arsitektur sistem secara detail:
 12 & PCB Prototype / Breadboard & 1 & Rp 10.000 \\
 13 & Konektor dan terminal & 1 set & Rp 10.000 \\
 \midrule
-\multicolumn{3}{r}{\textbf{Total Hardware (1 titik)}} & \textbf{Rp 270.000} \\
+\multicolumn{3}{r}{\textbf{Total Hardware (1 titik)}} & \textbf{Rp 292.000} \\
 \multicolumn{3}{r}{} & \\
-\multicolumn{3}{r}{\textbf{+ Mifi Device (sekali beli)}} & \textbf{Rp 200.000} \\
-\multicolumn{3}{r}{\textbf{Total Awal}} & \textbf{Rp 470.000} \\
+\multicolumn{3}{r}{\textbf{+ LTE Router (sekali beli)}} & \textbf{Rp 450.000} \\
+\multicolumn{3}{r}{\textbf{Total Awal}} & \textbf{Rp 742.000} \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -1064,11 +1061,11 @@ Berikut adalah arsitektur sistem secara detail:
 \midrule
 1 & Arduino IDE / PlatformIO & Programming ESP32 (C/C++) \\
 2 & \textbf{Supabase (Backend-as-a-Service)} & Database, REST API, Auth — \textbf{gratis} \\
-3 & Android Studio (Kotlin/Java) & Pengembangan aplikasi Android \\
-4 & Supabase Android SDK & Sinkronisasi data real-time di Android \\
+3 & Flutter SDK (Dart) & Pengembangan aplikasi lintas platform \\
+4 & Supabase Flutter SDK & Sinkronisasi data real-time \\
 5 & HTTPClient Library (ESP32) & HTTP POST/GET ke Supabase REST API \\
 6 & ArduinoJson & Parsing JSON dari Supabase \\
-7 & MPAndroidChart & Grafik data historis di Android \\
+7 & fl\_chart & Grafik data historis \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -1112,8 +1109,8 @@ Berikut adalah arsitektur sistem secara detail:
 \node (rgnd) [pin, fill=black!20] at ($(relay.north west)+(0.3,-0.8)$) {GND};
 \node (rin) [pin, fill=yellow!20] at ($(relay.north west)+(0.3,-1.3)$) {IN};
 
-% Pompa
-\node (pomp) [component, fill=cyan!10, minimum width=1.5cm, minimum height=0.8cm, right=1.5cm of relay] {Pompa\\DC};
+% Solenoid Valve
+\node (pomp) [component, fill=cyan!10, minimum width=2cm, minimum height=0.8cm, right=1.5cm of relay] {Solenoid\\Valve 12V NC};
 \node at ($(relay.east)!0.5!(pomp.west)$) {\small COM \& NO};
 
 % Power Supply
@@ -1142,11 +1139,10 @@ Berikut adalah arsitektur sistem secara detail:
 \toprule
 \textbf{Pin ESP32} & \textbf{Komponen} & \textbf{Keterangan} \\
 \midrule
-3.3V & Capacitive Sensor VCC & Catu daya sensor (via XTR116 loop) \\
+3.3V & Capacitive Sensor VCC & Catu daya sensor \\
 3.3V & Relay VCC & Catu daya relay \\
-3.3V & XTR116 \& Resistor 250$\Omega$ & Catu daya current loop RX \\
 GND & Semua komponen GND & Ground bersama \\
-GPIO34 (ADC) & Resistor 250$\Omega$ (output 1--5V) & Membaca sinyal 4--20mA dari sensor \\
+GPIO34 (ADC) & Capacitive Sensor AOUT & Membaca sinyal analog sensor langsung \\
 GPIO26 & Relay IN & Kontrol solenoid valve (HIGH = ON) \\
 GPIO27 & LED Indikator & Status sistem \\
 \bottomrule
@@ -1155,322 +1151,75 @@ GPIO27 & LED Indikator & Status sistem \\
 
 
 % ============================================================
-%  SECTION - INSTALASI SENSOR JARAK JAUH
+%  SECTION - TRANSMISI SINYAL SENSOR
 % ============================================================
 \newpage
-\section{Instalasi Sensor Jarak Jauh}
+\section{Transmisi Sinyal Sensor}
 
-\subsection{Permasalahan Jarak Sensor}
+\subsection{Pertimbangan Jarak}
 
-Berdasarkan kondisi lapangan di PDB Desa Merayan, sensor kelembaban tanah ditempatkan di lahan yang berjarak sekitar \textbf{10--100 meter} dari panel kontrol yang berisi ESP32 dan sistem kelistrikan. Pada jarak tersebut, transmisi sinyal analog dari capacitive soil sensor (0--3,3V) melalui kabel panjang menghadapi beberapa masalah serius:
+Berdasarkan kondisi lapangan di PDB Desa Merayan, sensor kelembaban tanah ditempatkan di lahan yang berjarak sekitar \textbf{10--20 meter} dari panel kontrol yang berisi ESP32 dan sistem kelistrikan. Untuk jarak tersebut, pendekatan yang digunakan adalah koneksi langsung menggunakan kabel \textit{twisted pair shielded} dengan pertimbangan:
 
 \begin{enumerate}
-    \item \textbf{Voltage drop} --- Resistansi kabel panjang ($R_{kabel} \approx 0.1~\Omega/\text{m}$ untuk AWG24) menyebabkan tegangan yang sampai ke ADC ESP32 lebih rendah dari output sensor yang sebenarnya. Pada jarak 50m dengan kabel AWG24, tegangan turun hingga 0,3V --- cukup untuk menyebabkan error ADC lebih dari 10\%.
-    \item \textbf{Noise elektromagnetik} --- Kabel panjang berfungsi sebagai antena yang menangkap interferensi dari perangkat lain di sekitar: solenoid valve 12V (inductive kickback saat switching), router LTE, dan kabel power.
-    \item \textbf{Impedance mismatch} --- Sinyal analog dengan \textit{rise time} cepat dapat mengalami refleksi pada ujung kabel yang tidak terminated, menyebabkan \textit{ringing} dan osilasi.
+    \item \textbf{Voltage drop minimal} --- Pada jarak 20m dengan kabel AWG24, resistansi total hanya ∼3,4$\Omega$. Dengan arus output sensor ∼5 mA, drop tegangan hanya ∼17 mV --- tidak signifikan untuk ADC 12-bit ESP32.
+    \item \textbf{Noise elektromagnetik} --- Diredam dengan kabel \textit{twisted pair shielded} (Belden 3107A atau UTP Cat5e) yang meminimalkan induksi dari solenoid valve dan router LTE di sekitar.
+    \item \textbf{Sederhana dan andal} --- Tidak perlu IC tambahan seperti XTR116, tidak perlu rangkaian konversi 4-20mA, tidak perlu kalibrasi khusus.
 \end{enumerate}
 
-Oleh karena itu, sistem ANDROMEDA membutuhkan solusi transmisi sinyal yang andal untuk skala produksi --- bukan sekadar purwarupa laboratorium. Berikut adalah tiga opsi yang dipertimbangkan.
+\subsection{Solusi: Koneksi Langsung via Kabel Shielded}
 
-
-% ----------------------------------------------------------------------
-\subsection{Opsi 1: 4--20mA Current Loop (Rekomendasi Utama)}
-% ----------------------------------------------------------------------
-
-\subsubsection*{Prinsip Kerja}
-
-\textit{Current loop} 4--20mA adalah standar industri untuk transmisi sinyal sensor jarak jauh. Tegangan dari capacitive soil sensor (0--3,3V) dikonversi menjadi arus searah 4--20mA menggunakan IC \textbf{XTR116} (\textit{Current Loop Transmitter}). Di sisi penerima (ESP32), arus dilewatkan melalui resistor presisi 250~$\Omega$ sehingga menghasilkan tegangan 1--5V yang dapat dibaca oleh ADC ESP32.
-
-\begin{equation}
-I_{out} = 4~\text{mA} + \left(\frac{V_{sensor}}{3,3~\text{V}} \times 16~\text{mA}\right)
-\end{equation}
-
-\begin{equation}
-V_{ADC} = I_{out} \times 250~\Omega \qquad \Rightarrow \qquad  1~\text{V} ~\text{(4mA)} ~~\text{s/d}~~ 5~\text{V} ~\text{(20mA)}
-\end{equation}
-
-\begin{equation}
-ADC_{raw} = \frac{V_{ADC}}{3,3~\text{V}} \times 4095
-\end{equation}
-
-\textbf{Contoh:} Sensor membaca 50\% kelembaban:
-\begin{itemize}
-    \item $V_{sensor} = 3,3~\text{V} \times 50\% = 1{,}65~\text{V}$
-    \item $I_{out} = 4~\text{mA} + (0{,}5 \times 16~\text{mA}) = 12~\text{mA}$
-    \item $V_{ADC} = 12~\text{mA} \times 250~\Omega = 3{,}0~\text{V}$
-    \item $ADC_{raw} = 3{,}0 / 3{,}3 \times 4095 \approx 3722$
-\end{itemize}
-
-\subsubsection*{Keunggulan}
+Capacitive Soil Sensor v1.2 dihubungkan langsung ke ESP32 melalui kabel \textit{twisted pair shielded} sebagai berikut:
 
 \begin{itemize}
-    \item \textbf{Noise immunity sangat tinggi} --- Sinyal arus tidak terpengaruh induksi elektromagnetik dari kabel lain. Voltage drop pada kabel panjang juga tidak memengaruhi akurasi karena informasi dibawa oleh besar arus, bukan tegangan.
-    \item \textbf{Jangkauan hingga 1 km} --- Lebih dari cukup untuk kebutuhan 10--100m.
-    \item \textbf{Hanya 2 kabel} --- Satu \textit{twisted pair} sudah cukup untuk transmisi sinyal.
-    \item \textbf{Standar industri global} --- Digunakan di pabrik dan otomasi di seluruh dunia. Komponen (XTR116) mudah didapat di toko elektronik atau \textit{online}.
-    \item \textbf{Sederhana} --- Tidak perlu protokol komunikasi, mikrokontroler tambahan, atau firmware kompleks.
-    \item \textbf{Linearitas tinggi} --- Akurasi $< \pm 0{,}05\%$ dengan XTR116.
+    \item \textbf{VCC Sensor} $\to$ 3.3V ESP32 (via kabel twisted pair)
+    \item \textbf{GND Sensor} $\to$ GND ESP32 (via kabel twisted pair)
+    \item \textbf{AOUT Sensor} $\to$ GPIO34 (ADC) ESP32 (via kabel twisted pair)
+    \item Kapasitor 100nF dipasang di pin ADC ESP32 sebagai filter \textit{decoupling} untuk meredam noise frekuensi tinggi.
 \end{itemize}
-
-\subsubsection*{Komponen yang Dibutuhkan per Titik Sensor}
-
-\begin{table}[H]
-\centering
-\caption{Komponen 4--20mA Current Loop}
-\label{tab:4-20ma-components}
-\begin{tabularx}{\textwidth}{l X c}
-\toprule
-\textbf{Komponen} & \textbf{Fungsi} & \textbf{Harga} \\
-\midrule
-IC XTR116 / XTR115 & Current loop transmitter & Rp 25.000 -- 35.000 \\
-Modul XTR116 siap pakai & PCB + komponen pendukung & Rp 40.000 -- 50.000 \\
-Resistor 250~$\Omega$ 0,1\% & Konversi arus $\to$ tegangan & Rp 2.000 \\
-Kapasitor 100nF + 10$\mu$F & Filter \textit{decoupling} & Rp 1.000 \\
-Kabel Belden 3107A & 2-pair twisted + foil shield & Rp 10.000 -- 12.000/m \\
-\midrule
-\multicolumn{2}{l}{\textbf{Total tambahan (tanpa kabel)}} & \textbf{Rp 44.000 -- 54.000} \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-\subsubsection*{Skema Wiring 4--20mA}
 
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[
-    comp/.style={rectangle, rounded corners, minimum width=3cm, minimum height=1.2cm, text centered, draw, font=\small},
-    wire/.style={thick},
-    label/.style={font=\small\itshape}
+    comp/.style={rectangle, rounded corners, minimum width=2.5cm, minimum height=1cm, text centered, draw, font=\small}
 ]
 
-% Sisi Sensor
-\node (sensor) [comp, fill=orange!20] {Capacitive Soil \\ Sensor};
-\node (xtr) [comp, fill=blue!10, right=0.5cm of sensor] {XTR116 \\ (TX)};
-
-% Sisi ESP32
-\node (res) [comp, fill=gray!10, right=4.5cm of xtr] {250~$\Omega$ \\ 0,1\%};
-\node (esp) [comp, fill=primaryblue!20, right=0.5cm of res] {ESP32 \\ GPIO34 (ADC)};
-
-% Power
-\node (ps12) [comp, fill=red!10, below=1.2cm of xtr] {Power 12V \\ (dari aki)};
-
-% Kabel
-\draw[->, thick, blue!50!black] (sensor.east) -- node[above] {0--3,3V} (xtr.west);
-\draw[->, thick, red!50!black] (ps12.north) -- (xtr.south);
-\draw[thick, green!50!black] (xtr.east) -- node[above] {\textbf{4--20mA}} ++(1.5,0) node[circle,fill,inner sep=2pt]{} -- ++(1.5,0) -- (res.west);
-\draw[->, thick] (res.east) -- node[above] {1--5V} (esp.west);
-
-% Anotasi
-\node[below=0.3cm of ps12, font=\small] {12V dari aki / adaptor};
-
-% Kabel panjang annotation
-\draw[decorate, decoration={brace, amplitude=6pt, mirror}]
-    ([yshift=-0.3cm]xtr.east) -- node[below, font=\small] {\textbf{10--100m} (twisted pair shielded)} ([yshift=-0.3cm]res.west);
-
-\end{tikzpicture}
-\caption{Skema wiring 4--20mA current loop untuk sensor jarak jauh}
-\label{fig:4-20ma-wiring}
-\end{figure}
-
-
-% ----------------------------------------------------------------------
-\subsection{Opsi 2: RS485 Digital}
-% ----------------------------------------------------------------------
-
-\subsubsection*{Prinsip Kerja}
-
-RS485 adalah standar komunikasi serial diferensial (\textit{differential signaling}) yang mampu mentransmisikan data digital hingga jarak 1,2 km. Dengan menambahkan modul \textbf{MAX485} di kedua sisi (sisi sensor dan sisi ESP32 utama) serta \textbf{ADS1115} (ADC 16-bit, I2C) di sisi sensor, data kelembaban dikirim secara digital --- bukan analog --- sehingga sama sekali tidak terpengaruh oleh jarak kabel maupun noise.
-
-Keunggulan utama RS485 adalah kemampuannya untuk menghubungkan hingga \textbf{32 perangkat} dalam satu bus kabel yang sama (\textit{daisy-chain}). Hal ini sangat berguna jika ke depannya sistem diperluas dengan sensor suhu, pH tanah, atau titik kelembaban tambahan.
-
-\subsubsection*{Komponen yang Dibutuhkan per Titik Sensor}
-
-\begin{table}[H]
-\centering
-\caption{Komponen RS485 per Titik Sensor}
-\label{tab:rs485-components}
-\begin{tabularx}{\textwidth}{l X c}
-\toprule
-\textbf{Komponen} & \textbf{Fungsi} & \textbf{Harga} \\
-\midrule
-MAX485 module ($\times$2) & RS485 transceiver (dua sisi) & Rp 15.000 -- 25.000/pcs \\
-ADS1115 16-bit ADC & Membaca sensor analog, output I2C & Rp 15.000 -- 20.000 \\
-ESP32-C3 SuperMini (opsional) & Mikrokontroler node sensor & Rp 30.000 \\
-Kabel Belden 3107A & 2-pair twisted shielded & Rp 10.000 -- 12.000/m \\
-\midrule
-\multicolumn{2}{l}{\textbf{Total tambahan (tanpa kabel)}} & \textbf{Rp 75.000 -- 110.000} \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-\subsubsection*{Skema Wiring RS485}
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[
-    comp/.style={rectangle, rounded corners, minimum width=2.2cm, minimum height=1cm, text centered, draw, font=\small}
-]
-
-% Sisi Sensor Node
-\node (sensor) [comp, fill=orange!20] {Soil \\ Sensor};
-\node (ads) [comp, fill=yellow!20, right=0.3cm of sensor] {ADS1115 \\ ADC 16-bit};
-\node (max-s) [comp, fill=blue!10, right=0.3cm of ads] {MAX485};
-\node (mcus) [comp, fill=green!10, below=0.3cm of ads] {ESP32-C3};
-
-% Sisi ESP32 Utama
-\node (max-m) [comp, fill=blue!10, right=5.5cm of max-s] {MAX485};
-\node (esp) [comp, fill=primaryblue!20, right=0.3cm of max-m] {ESP32 \\ UART2};
-
-% Power
-\node (ps) [comp, fill=red!10, below=1.5cm of max-m] {Power 12V};
+% Sensor
+\node (sensor) [comp, fill=orange!20] {Capacitive Soil \\ Sensor v1.2};
+\node (esp) [comp, fill=primaryblue!20, right=4cm of sensor] {ESP32 \\ GPIO34 (ADC)};
+\node (cap) [comp, fill=gray!10, below=0.5cm of esp] {100nF \\ Filter};
 
 % Koneksi
-\draw[->, thick] (sensor.east) -- (ads.west);
-\draw[<->, thick] (ads.east) -- node[above] {I2C} (mcus.north);
-\draw[<->, thick] (mcus.east) -- (max-s.west);
-\draw[thick, green!50!black] (max-s.east) -- node[above] {\textbf{RS485 Bus}} ++(2.5,0) -- (max-m.west);
-\draw[<->, thick] (max-m.east) -- (esp.west);
-\draw[->, thick] (ps.north) -- (max-m.south);
+\draw[->, thick, red!50!black] (sensor.east) -- node[above] {VCC (3.3V)} ++(1.5,0.15) -- ++(1.5,0.15) -- (esp.west);
+\draw[->, thick, black] (sensor.east) -- node[above] {GND} ++(1.5,-0.15) -- ++(1.5,-0.15) -- (esp.west);
+\draw[->, thick, green!50!black] ([yshift=-0.3cm]sensor.east) -- node[below] {AOUT (0--3.3V)} ++(1.5,0) -- ++(1.5,0) -- ([yshift=-0.3cm]esp.west);
+\draw[->, thick] (cap.north) -- (esp.south);
 
-% Annotation
-\node[below=0.2cm of mcus, font=\small] {\textit{Node Sensor}};
-\draw[decorate, decoration={brace, amplitude=6pt, mirror}]
-    ([yshift=-0.3cm]max-s.east) -- node[below, font=\small] {\textbf{100m+}} ([yshift=-0.3cm]max-m.west);
-
-% Daisy chain dots
-\node at ([yshift=0.3cm]max-s.east) {\vdots};
-\node[font=\small, above=0.1cm of max-m] {\textit{Gateway}};
+% Anotasi kabel
+\draw[decorate, decoration={brace, amplitude=4pt, mirror}]
+    ([yshift=0.5cm]sensor.east) -- node[below, font=\small] {\textbf{10--20m} (twisted pair shielded)} ([yshift=0.5cm]esp.west);
 
 \end{tikzpicture}
-\caption{Skema wiring RS485 untuk sensor jarak jauh}
-\label{fig:rs485-wiring}
+\caption{Koneksi langsung sensor ke ESP32 via kabel twisted pair shielded}
+\label{fig:direct-wiring}
 \end{figure}
 
-
-% ----------------------------------------------------------------------
-\subsection{Opsi 3: LoRa Wireless (Tanpa Kabel)}
-% ----------------------------------------------------------------------
-
-\subsubsection*{Prinsip Kerja}
-
-LoRa (\textit{Long Range}) adalah teknologi radio jarak jauh yang mampu mentransmisikan data hingga 3 km dalam kondisi \textit{Line of Sight} (LOS). Dengan menempatkan modul \textbf{SX1278} di kedua sisi --- satu di \textit{node sensor} (ESP32-C3 + Soil Sensor) dan satu di \textit{gateway} (ESP32 utama) --- maka kebutuhan kabel fisik dapat dihilangkan sama sekali.
-
-Opsi ini cocok untuk lokasi yang sulit dijangkau kabel (misalnya melintasi jalan atau parit), namun membutuhkan daya mandiri di sisi sensor (baterai + solar panel).
-
-\subsubsection*{Komponen yang Dibutuhkan per Titik Sensor}
+\subsection{Rekomendasi Kabel}
 
 \begin{table}[H]
 \centering
-\caption{Komponen LoRa Wireless}
-\label{tab:lora-components}
-\begin{tabularx}{\textwidth}{l X c}
-\toprule
-\textbf{Komponen} & \textbf{Fungsi} & \textbf{Harga} \\
-\midrule
-SX1278 LoRa module ($\times$2) & Transceiver radio jarak jauh & Rp 40.000 -- 60.000/pcs \\
-ESP32-C3 SuperMini ($\times$2) & Kontroler node + gateway & Rp 30.000/pcs \\
-Antena 433/868/915MHz ($\times$2) & Antena eksternal optimal & Rp 15.000/pcs \\
-Solar panel 10Wp + BMS + kabel & Daya mandiri node sensor & Rp 80.000 -- 120.000 \\
-\midrule
-\multicolumn{2}{l}{\textbf{Total tambahan (satu titik)}} & \textbf{Rp 250.000 -- 330.000} \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-
-% ----------------------------------------------------------------------
-\subsection{Perbandingan Lengkap}
-% ----------------------------------------------------------------------
-
-\begin{table}[H]
-\centering
-\caption{Perbandingan seluruh opsi transmisi sinyal sensor jarak jauh}
-\label{tab:cable-compare}
-\begin{tabularx}{\textwidth}{l X X X}
-\toprule
-\textbf{Parameter} & \textbf{4--20mA} & \textbf{RS485 Digital} & \textbf{LoRa Wireless} \\
-\midrule
-Biaya tambahan/titik & \textbf{Rp 44--54rb} 💰 & Rp 75--110rb & Rp 250--330rb \\
-Jarak maksimal & $>$1 km & $>$1,2 km & 1--3 km (LOS) \\
-Noise immunity & \cellcolor{green!20}Sangat tinggi & \cellcolor{green!20}Sangat tinggi & \cellcolor{yellow!20}Sedang \\
-Multi-sensor (1 kabel) & $\times$ (1 loop/sensor) & \textbf{32+ perangkat} ✅ & ✅ Banyak node \\
-Kompleksitas hardware & \cellcolor{green!20}Rendah ✅ & \cellcolor{yellow!20}Sedang & \cellcolor{yellow!20}Menengah \\
-Kabel dibutuhkan & 2 core twisted pair & 4 core (daisy chain) & \textbf{Tidak ada} ✅ \\
-Power sensor & Via kabel (12V) & Via kabel (12V) & Mandiri (solar+batre) \\
-Kalibrasi & Satu kali & Tidak perlu (digital) & Tidak perlu (digital) \\
-Maintenance & Ganti modul RX/TX & Ganti node sensor & Ganti baterai/panel \\
-Cocok untuk & \textbf{1--3 titik sensor} & \textbf{3+ titik / future-proof} & Lokasi tanpa akses kabel \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-
-% ----------------------------------------------------------------------
-\subsection{Rekomendasi Kabel Spesifik}
-% ----------------------------------------------------------------------
-
-Berdasarkan hasil perbandingan, kabel yang direkomendasikan untuk setiap opsi adalah sebagai berikut:
-
-\begin{table}[H]
-\centering
-\caption{Rekomendasi jenis kabel untuk setiap opsi transmisi}
-\label{tab:cable-recommend}
+\caption{Rekomendasi kabel untuk koneksi sensor}
+\label{tab:cable-rec}
 \begin{tabularx}{\textwidth}{l X c c}
 \toprule
-\textbf{Opsi} & \textbf{Jenis Kabel} & \textbf{Harga/m} & \textbf{Fungsi} \\
+\textbf{Jenis Kabel} & \textbf{Keunggulan} & \textbf{Harga/m} & \textbf{Kebutuhan} \\
 \midrule
-\textbf{4--20mA} & \textbf{Belden 3107A} (2-pair twisted + foil) & Rp 10.000--12.000 & 1 pair: sinyal, 1 pair: power 12V \\
- & Alternatif: NYMHY 2$\times$1,5mm + UTP Cat5e & Rp 3.000 + Rp 3.000 & Power 12V + sinyal terpisah \\
-\cmidrule{2-4}
-RS485 & Belden 3107A (2-pair twisted + shield) & Rp 10.000--12.000 & A, B, VCC, GND \\
- & Alternatif: UTP Cat5e/6 & Rp 3.000--5.000 & 1 pair A+B, 1 pair power \\
-\cmidrule{2-4}
-LoRa & \textit{Tidak perlu kabel data} & Rp 0 & --- \\
- & Kabel NYY 2$\times$2,5mm (solar panel) & Rp 8.000--12.000 & Power panel surya \\
+\textbf{Belden 3107A} & 2-pair twisted + foil shield, noise immunity tinggi & Rp 10.000--12.000 & 20m \\
+Alternatif: UTP Cat5e & 4-pair twisted, mudah didapat, murah & Rp 3.000--5.000 & 20m \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-
-% ----------------------------------------------------------------------
-\subsection{Keputusan dan Rekomendasi Final}
-% ----------------------------------------------------------------------
-
-\subsubsection*{Pilihan Utama: 4--20mA Current Loop 🔥}
-
-Untuk implementasi awal ANDROMEDA di PDB Desa Merayan dengan \textbf{1--3 titik sensor} pada jarak 10--100 meter, sistem \textbf{4--20mA Current Loop} adalah pilihan terbaik dengan alasan:
-
-\begin{enumerate}
-    \item \textbf{Paling sederhana} --- Hanya satu IC tambahan (XTR116) dan satu resistor 250~$\Omega$ di sisi ESP32. Tidak perlu mikrokontroler tambahan di sisi sensor, tidak perlu protokol komunikasi, tidak perlu manajemen daya baterai.
-    \item \textbf{Biaya paling rendah} --- Rp 44.000--54.000 per titik sensor (+ kabel). Kabel Belden 3107A dipasang sekali untuk jangka panjang.
-    \item \textbf{Noise immunity tertinggi} --- Sinyal arus 4--20mA tidak terpengaruh interferensi elektromagnetik dari solenoid valve, router LTE, atau kabel power yang berdekatan.
-    \item \textbf{Standar industri} --- Komponen mudah didapat, dokumentasi berlimpah, tenaga teknis lokal bisa memperbaiki jika rusak.
-    \item \textbf{Kalibrasi linear sederhana} --- Dua titik kalibrasi sudah cukup: 4mA = kering, 20mA = basah.
-    \item \textbf{Power sensor via kabel yang sama} --- Tidak perlu baterai/solar di sisi sensor. Cukup sambungkan 12V dari panel kontrol melalui kabel.
-\end{enumerate}
-
-\subsubsection*{Pilihan Masa Depan: RS485 (Ketika Skala Bertambah)}
-
-Jika sistem diperluas menjadi \textbf{5--10+ titik sensor} (misalnya menambah sensor pH tanah, suhu udara, atau kelembaban di berbagai titik lahan), disarankan beralih ke \textbf{RS485} yang memungkinkan semua sensor berbagi satu kabel backbone dengan konfigurasi \textit{daisy-chain}.
-
-\subsubsection*{Estimasi Biaya Kabel untuk 50m}
-
-\begin{table}[H]
-\centering
-\caption{Estimasi biaya kabel untuk jarak 50m (implementasi awal)}
-\label{tab:cable-cost}
-\begin{tabularx}{\textwidth}{l X c c}
-\toprule
-\textbf{Item} & \textbf{Jenis} & \textbf{Panjang} & \textbf{Total} \\
-\midrule
-Kabel sinyal + power & Belden 3107A & 50m & Rp 500.000 -- 600.000 \\
-Kabel power sensor (cadangan) & NYMHY 2$\times$1,5mm & 50m & Rp 150.000 -- 200.000 \\
-Konektor & Terminal screw + solder & 1 set & Rp 20.000 -- 30.000 \\
-\midrule
-\multicolumn{3}{l}{\textbf{Total estimasi kabel}} & \textbf{Rp 520.000 -- 630.000} \\
-\bottomrule
-\end{tabularx}
-\end{table}
+Kabel Belden 3107A direkomendasikan untuk instalasi permanen di luar ruangan karena konstruksinya yang lebih kokoh dan shielded yang lebih baik. Sebagai alternatif hemat, UTP Cat5e juga cukup memadai untuk jarak 10--20m.
 
 
 % ============================================================
@@ -1485,9 +1234,9 @@ Proyek ANDROMEDA dikembangkan dalam empat tahap utama:
 \begin{enumerate}
     \item \textbf{Tahap 1: Perakitan Hardware}
     \begin{itemize}
-        \item Menyiapkan dan menguji komponen (ESP32, sensor, relay, pompa).
+        \item Menyiapkan dan menguji komponen (ESP32, sensor, relay, solenoid valve).
         \item Merangkai komponen sesuai skematik.
-        \item Uji coba pembacaan sensor dan aktuasi pompa.
+        \item Uji coba pembacaan sensor dan aktuasi valve.
     \end{itemize}
     
     \item \textbf{Tahap 2: Firmware ESP32}
@@ -1506,16 +1255,16 @@ Proyek ANDROMEDA dikembangkan dalam empat tahap utama:
         \item Membuat project di Supabase (\textbf{Free Tier} — Rp 0/bulan).
         \item Membuat tabel database: \texttt{sensor\_readings}, \texttt{pending\_commands}, \texttt{system\_config}.
         \item Mengaktifkan REST API (auto-generated, langsung bisa dipakai).
-        \item Setup Authentication untuk login aplikasi Android.
-        \item Uji coba HTTP POST dari ESP32 dan HTTP GET dari Android.
+        \item Setup Authentication untuk login aplikasi Flutter.
+        \item Uji coba HTTP POST dari ESP32 dan HTTP GET dari Flutter.
     \end{itemize}
     
-    \item \textbf{Tahap 4: Aplikasi Android}
+    \item \textbf{Tahap 4: Aplikasi Flutter}
     \begin{itemize}
-        \item UI/UX Design (Dashboard, Control, Settings).
-        \item Integrasi Supabase Android SDK (auto sync data).
+        \item UI/UX Design (Dashboard, Control, Settings) menggunakan Flutter (Dart).
+        \item Integrasi Supabase Flutter SDK (auto sync data real-time).
         \item Autentikasi login pengguna.
-        \item Grafik data historis.
+        \item Grafik data historis menggunakan fl\_chart.
         \item Notifikasi push.
     \end{itemize}
 \end{enumerate}
@@ -1530,10 +1279,10 @@ Proyek ANDROMEDA dikembangkan dalam empat tahap utama:
 \toprule
 \textbf{No} & \textbf{Tabel} & \textbf{Fungsi} & \textbf{Diakses Oleh} \\
 \midrule
-1 & \texttt{sensor\_readings} & Menyimpan log kelembaban + timestamp & ESP32 (POST), Android (GET) \\
-2 & \texttt{pending\_commands} & Antrian perintah dari Android ke ESP32 & Android (POST), ESP32 (GET) \\
-3 & \texttt{system\_config} & Threshold, mode Auto/Manual & Android (RW), ESP32 (GET) \\
-4 & \texttt{users} & Data login pengguna Android & Android (Auth) \\
+1 & \texttt{sensor\_readings} & Menyimpan log kelembaban + timestamp & ESP32 (POST), Flutter (GET) \\
+2 & \texttt{pending\_commands} & Antrian perintah dari Flutter ke ESP32 & Flutter (POST), ESP32 (GET) \\
+3 & \texttt{system\_config} & Threshold, mode Auto/Manual & Flutter (RW), ESP32 (GET) \\
+4 & \texttt{users} & Data login pengguna aplikasi & Flutter (Auth) \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -1552,11 +1301,11 @@ Proyek ANDROMEDA dikembangkan dalam empat tahap utama:
 2 & Sensor membaca tanah basah & Output ADC $<$ 1500 (basah) \\
 3 & ESP32 konek WiFi & LED biru menyala, log sukses \\
 4 & ESP32 HTTP POST ke Supabase & Data masuk di tabel sensor\_readings \\
-5 & Android baca dari Supabase & Dashboard menampilkan data \\
-6 & Threshold kering tercapai & Pompa otomatis ON \\
-7 & Threshold basah tercapai & Pompa otomatis OFF \\
-8 & Android kirim perintah Siram & Entry muncul di pending\_commands \\
-9 & ESP32 ambil perintah pending & Pompa menyala sesuai perintah \\
+5 & Flutter baca dari Supabase & Dashboard menampilkan data \\
+6 & Threshold kering tercapai & Valve otomatis terbuka (ON) \\
+7 & Threshold basah tercapai & Valve otomatis tertutup (OFF) \\
+8 & Flutter kirim perintah Siram & Entry muncul di pending\_commands \\
+9 & ESP32 ambil perintah pending & Valve menyala sesuai perintah \\
 10 & Data historis tersimpan & Tabel sensor\_readings terisi \\
 \bottomrule
 \end{tabularx}
@@ -1584,29 +1333,27 @@ Berikut adalah daftar lengkap seluruh komponen yang dibutuhkan untuk implementas
 \midrule
 1 & ESP32 DevKit Board 30 Pin & 1 & Rp 45.000 -- 60.000 & \href{https://shopee.co.id/search?keyword=ESP32+DevKit+Board+30+pin}{Cari di Shopee} \\
 2 & Capacitive Soil Sensor v1.2 & 1 & Rp 15.000 -- 25.000 & \href{https://shopee.co.id/search?keyword=capacitive+soil+sensor+arduino}{Cari di Shopee} \\
-3 & IC XTR116 / XTR115 Current Loop TX & 1 & Rp 25.000 -- 35.000 & \href{https://shopee.co.id/search?keyword=XTR116+4-20mA}{Cari di Shopee} \\
-4 & Resistor Presisi 250$\Omega$ 0,1\% & 1 & Rp 2.000 -- 5.000 & \href{https://shopee.co.id/search?keyword=resistor+250+ohm+0.1}{Cari di Shopee} \\
-5 & Kapasitor 100nF + 10$\mu$F & 2 & Rp 1.000 -- 2.000 & \href{https://shopee.co.id/search?keyword=kondensator+100nF+10uF}{Cari di Shopee} \\
-6 & Relay Module 1-Channel 5V Optocoupler & 1 & Rp 8.000 -- 15.000 & \href{https://shopee.co.id/search?keyword=relay+1+channel+5V+optocoupler}{Cari di Shopee} \\
-7 & Solenoid Valve 12V NC 1/2 inch & 1 & Rp 50.000 -- 80.000 & \href{https://shopee.co.id/search?keyword=solenoid+valve+12V+NC+1+2+inch+air}{Cari di Shopee} \\
-8 & LED Indikator 5mm (biru/merah) & 2 & Rp 1.000 -- 2.000 & \href{https://shopee.co.id/search?keyword=LED+5mm+indikator+merah+biru}{Cari di Shopee} \\
-9 & Resistor 220$\Omega$ (untuk LED) & 2 & Rp 500 -- 1.000 & \href{https://shopee.co.id/search?keyword=resistor+220+ohm}{Cari di Shopee} \\
-10 & Huawei B535-932 4G LTE Router & 1 & Rp 400.000 -- 500.000 & \href{https://shopee.co.id/search?keyword=Huawei+B535+router+4G+LTE}{Cari di Shopee} \\
-11 & Power Supply 12V 2A Adaptor & 1 & Rp 25.000 -- 40.000 & \href{https://shopee.co.id/search?keyword=power+supply+12V+2A+adaptor}{Cari di Shopee} \\
-12 & Aki Kering 100Ah (Yuasa NS70 or setara) & 1 & Rp 900.000 -- 1.200.000 & \href{https://shopee.co.id/search?keyword=aki+kering+100Ah+NS70}{Cari di Shopee} \\
-13 & Solar Panel 300Wp Polycrystalline & 1 & Rp 1.000.000 -- 1.500.000 & \href{https://shopee.co.id/search?keyword=solar+panel+300wp+polycrystalline}{Cari di Shopee} \\
-14 & Solar Charge Controller 12/24V 20A PWM & 1 & Rp 100.000 -- 150.000 & \href{https://shopee.co.id/search?keyword=solar+charge+controller+20A+PWM}{Cari di Shopee} \\
-15 & Kabel Belden 3107A (2-pair shielded) & 50m & Rp 500.000 -- 600.000 & \href{https://shopee.co.id/search?keyword=Belden+3107A+kabel+shielded}{Cari di Shopee} \\
-16 & Kabel NYMHY 2$\times$1,5mm & 10m & Rp 30.000 -- 50.000 & \href{https://shopee.co.id/search?keyword=NYMHY+2x1.5+listrik}{Cari di Shopee} \\
-17 & Kabel Jumper Male-Female 20cm & 20 pcs & Rp 5.000 -- 10.000 & \href{https://shopee.co.id/search?keyword=kabel+jumper+male+female+arduino}{Cari di Shopee} \\
-18 & Project Box Panel 200$\times$150$\times$100mm & 1 & Rp 35.000 -- 60.000 & \href{https://shopee.co.id/search?keyword=project+box+panel+listrik+200x150}{Cari di Shopee} \\
-19 & Selang Drip Irrigation PE 16mm & 50m & Rp 100.000 -- 150.000 & \href{https://shopee.co.id/search?keyword=selang+PE+drip+irrigation+16mm}{Cari di Shopee} \\
-20 & Dripper / Emitter Irigasi Tetes & 20 pcs & Rp 20.000 -- 40.000 & \href{https://shopee.co.id/search?keyword=dripper+irigasi+tetes+tanaman}{Cari di Shopee} \\
-21 & Fitting Selang (Tee, Elbow, Connector) & 1 set & Rp 50.000 -- 80.000 & \href{https://shopee.co.id/search?keyword=fitting+selang+irigasi+tetes+16mm}{Cari di Shopee} \\
-22 & MCB 1 Phase 6A (pengaman listrik) & 1 & Rp 25.000 -- 40.000 & \href{https://shopee.co.id/search?keyword=MCB+1+phase+6A+ampere}{Cari di Shopee} \\
-23 & Terminal Block / Konektor 12 pin & 2 & Rp 10.000 -- 15.000 & \href{https://shopee.co.id/search?keyword=terminal+block+12+pin+kabel}{Cari di Shopee} \\
-24 & Timah Solder + Flux & 1 set & Rp 15.000 -- 25.000 & \href{https://shopee.co.id/search?keyword=timah+solder+flux+rosin}{Cari di Shopee} \\
-25 & Skun Kabel + Crimping Tool & 1 set & Rp 30.000 -- 50.000 & \href{https://shopee.co.id/search?keyword=crimping+tool+skun+kabel}{Cari di Shopee} \\
+3 & Relay Module 1-Channel 5V Optocoupler & 1 & Rp 8.000 -- 15.000 & \href{https://shopee.co.id/search?keyword=relay+1+channel+5V+optocoupler}{Cari di Shopee} \\
+4 & Solenoid Valve 12V NC 1/2 inch & 1 & Rp 50.000 -- 80.000 & \href{https://shopee.co.id/search?keyword=solenoid+valve+12V+NC+1+2+inch+air}{Cari di Shopee} \\
+5 & LED Indikator 5mm (biru/merah) & 2 & Rp 1.000 -- 2.000 & \href{https://shopee.co.id/search?keyword=LED+5mm+indikator+merah+biru}{Cari di Shopee} \\
+6 & Resistor 220$\Omega$ (untuk LED) & 2 & Rp 500 -- 1.000 & \href{https://shopee.co.id/search?keyword=resistor+220+ohm}{Cari di Shopee} \\
+7 & Huawei B535-932 4G LTE Router & 1 & Rp 400.000 -- 500.000 & \href{https://shopee.co.id/search?keyword=Huawei+B535+router+4G+LTE}{Cari di Shopee} \\
+8 & Power Supply 12V 2A Adaptor & 1 & Rp 25.000 -- 40.000 & \href{https://shopee.co.id/search?keyword=power+supply+12V+2A+adaptor}{Cari di Shopee} \\
+9 & Aki Kering 100Ah (Yuasa NS70 or setara) & 1 & Rp 900.000 -- 1.200.000 & \href{https://shopee.co.id/search?keyword=aki+kering+100Ah+NS70}{Cari di Shopee} \\
+10 & Solar Panel 300Wp Polycrystalline & 1 & Rp 1.000.000 -- 1.500.000 & \href{https://shopee.co.id/search?keyword=solar+panel+300wp+polycrystalline}{Cari di Shopee} \\
+11 & Solar Charge Controller 12/24V 20A PWM & 1 & Rp 100.000 -- 150.000 & \href{https://shopee.co.id/search?keyword=solar+charge+controller+20A+PWM}{Cari di Shopee} \\
+12 & Kabel Belden 3107A / UTP Cat5e (shielded) & 20m & Rp 60.000 -- 240.000 & \href{https://shopee.co.id/search?keyword=Belden+3107A+kabel+shielded}{Cari di Shopee} \\
+13 & Kabel NYMHY 2×1,5mm & 10m & Rp 30.000 -- 50.000 & \href{https://shopee.co.id/search?keyword=NYMHY+2x1.5+listrik}{Cari di Shopee} \\
+14 & Kabel Jumper Male-Female 20cm & 20 pcs & Rp 5.000 -- 10.000 & \href{https://shopee.co.id/search?keyword=kabel+jumper+male+female+arduino}{Cari di Shopee} \\
+15 & Kapasitor 100nF (filter ADC) & 1 & Rp 500 -- 1.000 & \href{https://shopee.co.id/search?keyword=kondensator+100nF+ceramic}{Cari di Shopee} \\
+16 & Project Box Panel 200×150×100mm & 1 & Rp 35.000 -- 60.000 & \href{https://shopee.co.id/search?keyword=project+box+panel+listrik+200x150}{Cari di Shopee} \\
+17 & Selang Drip Irrigation PE 16mm & 20m & Rp 40.000 -- 60.000 & \href{https://shopee.co.id/search?keyword=selang+PE+drip+irrigation+16mm}{Cari di Shopee} \\
+18 & Dripper / Emitter Irigasi Tetes & 10 pcs & Rp 10.000 -- 20.000 & \href{https://shopee.co.id/search?keyword=dripper+irigasi+tetes+tanaman}{Cari di Shopee} \\
+19 & Fitting Selang (Tee, Elbow, Connector) & 1 set & Rp 30.000 -- 50.000 & \href{https://shopee.co.id/search?keyword=fitting+selang+irigasi+tetes+16mm}{Cari di Shopee} \\
+20 & MCB 1 Phase 6A (pengaman listrik) & 1 & Rp 25.000 -- 40.000 & \href{https://shopee.co.id/search?keyword=MCB+1+phase+6A+ampere}{Cari di Shopee} \\
+21 & Terminal Block / Konektor 12 pin & 2 & Rp 10.000 -- 15.000 & \href{https://shopee.co.id/search?keyword=terminal+block+12+pin+kabel}{Cari di Shopee} \\
+22 & Timah Solder + Flux & 1 set & Rp 15.000 -- 25.000 & \href{https://shopee.co.id/search?keyword=timah+solder+flux+rosin}{Cari di Shopee} \\
+23 & Skun Kabel + Crimping Tool & 1 set & Rp 30.000 -- 50.000 & \href{https://shopee.co.id/search?keyword=crimping+tool+skun+kabel}{Cari di Shopee} \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -1622,15 +1369,15 @@ Berikut adalah daftar lengkap seluruh komponen yang dibutuhkan untuk implementas
 \toprule
 \textbf{Kategori} & \textbf{Komponen} & \textbf{Estimasi Total} \\
 \midrule
-Mikrokontroler \& Sensor & ESP32 + Soil Sensor + XTR116 + Resistor + Kapasitor & Rp 88.000 -- 127.000 \\
+Mikrokontroler \& Sensor & ESP32 + Soil Sensor + Kapasitor & Rp 60.500 -- 86.000 \\
 Aktuasi & Relay Module + Solenoid Valve 12V NC & Rp 58.000 -- 95.000 \\
 Konektivitas & Huawei B535-932 4G Router & Rp 400.000 -- 500.000 \\
-Kabel \& Instalasi & Belden 3107A 50m + NYMHY + Jumper + Terminal + MCB & Rp 600.000 -- 755.000 \\
+Kabel \& Instalasi & Belden/UTP 20m + NYMHY + Jumper + Terminal + MCB & Rp 130.000 -- 395.000 \\
 Listrik \& Daya & Aki 100Ah + Solar Panel 300Wp + SCC 20A + Adaptor 12V & Rp 2.025.000 -- 2.890.000 \\
-Irigasi & Selang PE 16mm + Dripper + Fitting & Rp 170.000 -- 270.000 \\
+Irigasi & Selang PE 16mm + Dripper + Fitting & Rp 80.000 -- 130.000 \\
 Perkakas & Project Box + Timah Solder + Crimping + Skun & Rp 90.000 -- 150.000 \\
 \midrule
-\textbf{Total Keseluruhan} & & \textbf{Rp 3.431.000 -- 4.787.000} \\
+\textbf{Total Keseluruhan} & & \textbf{Rp 2.843.500 -- 4.246.000} \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -1641,7 +1388,7 @@ Perkakas & Project Box + Timah Solder + Crimping + Skun & Rp 90.000 -- 150.000 \
     \item Biaya \textbf{bulanan} hanya untuk paket data LTE: Rp 15.000 -- 30.000/bulan.
     \item Biaya di luar ongkos kirim (\textit{shipping fee}) dari masing-masing toko.
     \item Aki dan solar panel merupakan investasi jangka panjang (lifetime 3-5 tahun untuk aki, 20+ tahun untuk panel surya).
-    \item Komponen IC XTR116 dapat dibeli di toko komponen elektronik atau \textit{marketplace} seperti Shopee, Tokopedia, atau AliExpress.
+    \item Biaya dapat ditekan dengan menggunakan UTP Cat5e sebagai alternatif kabel Belden 3107A.
 \end{itemize}
 
 
@@ -1663,24 +1410,17 @@ Berdasarkan seluruh analisis, skema terbaik untuk implementasi ANDROMEDA di PDB 
 
 % === SISI SENSOR (LUAR) ===
 \node (soil) [comp, fill=orange!20, above left=0.5cm and 0.5cm of panel.south west] {Capacitive \\ Soil Sensor};
-\node (xtr) [comp, fill=blue!10, right=0.3cm of soil] {XTR116 \\ TX};
 
 \node at ($(soil.north west)+(0.5,0.3)$) {\textbf{\small SISI SENSOR (Lahan)}};
 
-% Garis dari sensor ke XTR
-\draw[->, thick] (soil.east) -- node[above] {0--3,3V} (xtr.west);
+% === KABEL LANGSUNG ===
+\draw[thick, green!50!black] (soil.east) -- node[above] {\textbf{Sinyal 0--3,3V}} ++(1.2,0);
+\draw[thick, green!50!black] ([xshift=1.2cm]soil.east) -- ++(0,-1.3) -- ++(5,0) node[midway, above, sloped] {\small \textbf{Kabel Belden/UTP (10--20m)}} -- ++(0,1.3);
+\draw[decorate, decoration={brace, amplitude=4pt}] ([xshift=1.2cm, yshift=-0.3cm]soil.east) -- node[below] {VCC + GND + AOUT} ([xshift=6.2cm, yshift=-0.3cm]soil.east);
 
-% === KABEL PANJANG ===
-\draw[thick, green!50!black] (xtr.east) -- node[above] {\textbf{4--20mA}} ++(1.2,0);
-\draw[thick, green!50!black] ([xshift=1.2cm]xtr.east) -- ++(0,-1.3) -- ++(5,0) node[midway, above, sloped] {\small \textbf{Kabel Belden 3107A (10--100m)}} -- ++(0,1.3);
-\draw[decorate, decoration={brace, amplitude=4pt}] ([xshift=1.2cm, yshift=-0.3cm]xtr.east) -- node[below] {Loop 4-20mA} ([xshift=6.2cm, yshift=-0.3cm]xtr.east);
-
-% === RECEIVER DI PANEL ===
-\node (res) [comp, fill=gray!10, right=0.5cm of xtr, xshift=4cm] {250$\Omega$ \\ 0,1\%};
-\draw[->, thick, green!50!black] ([xshift=6.2cm, yshift=0cm]xtr.east) -- (res.west);
-
-\node (esp) [comp, fill=primaryblue!20, right=0.3cm of res] {ESP32 \\ GPIO34};
-\draw[->, thick] (res.east) -- node[above] {1--5V} (esp.west);
+% === ESP32 DI PANEL ===
+\node (esp) [comp, fill=primaryblue!20, right=0.5cm of soil, xshift=4cm] {ESP32 \\ GPIO34 (ADC)};
+\draw[->, thick, green!50!black] ([xshift=6.2cm, yshift=0cm]soil.east) -- (esp.west);
 
 % === RELAY & SOLENOID ===
 \node (relay) [comp, fill=gray!10, below=0.3cm of esp] {Relay 5V};
@@ -1714,16 +1454,16 @@ Berdasarkan seluruh analisis, skema terbaik untuk implementasi ANDROMEDA di PDB 
 \draw[->, thick, blue!50!black] (tandon.east) -- ++(1,0);
 
 % WiFi link
-\node (wifi) at ($(esp.north)+(1.5,0.5)$) {$\sim$ WiFi $\sim$};
+\node (wifi) at ($(esp.north)+(1.5,0.5)$) {∼ WiFi ∼};
 \draw[dashed, thick] (esp.north) -- (wifi);
 \draw[dashed, thick] (wifi) -- ($(lte.north)+(0,0.5)$);
 
 % Legend
-\node[below=0.2cm of panel3.south, font=\footnotesize, text=gray] {Gambar 3.17: Skema wiring final ANDROMEDA — 4-20mA Current Loop dengan daya mandiri solar};
+\node[below=0.2cm of panel3.south, font=\footnotesize, text=gray] {Gambar 3.17: Skema wiring final ANDROMEDA — koneksi langsung sensor ke ESP32 dengan daya mandiri solar};
 
 \end{tikzpicture}
 }
-\caption{Skema wiring final ANDROMEDA — implementasi 4-20mA Current Loop}
+\caption{Skema wiring final ANDROMEDA — koneksi langsung sensor ke ESP32 via kabel shielded}
 \label{fig:final-wiring}
 \end{figure}
 
@@ -1732,248 +1472,15 @@ Berdasarkan seluruh analisis, skema terbaik untuk implementasi ANDROMEDA di PDB 
 
 \begin{enumerate}
     \item \textbf{Sensor membaca kelembaban} — Capacitive Soil Sensor mengukur kelembaban tanah, output tegangan analog 0--3,3V.
-    \item \textbf{Konversi 4-20mA} — XTR116 mengkonversi tegangan sensor menjadi arus 4-20mA, dikirim melalui kabel Belden 3107A sepanjang 10--100m.
-    \item \textbf{Penerimaan di ESP32} — Arus 4-20mA melewati resistor 250$\Omega \to$ 1-5V, dibaca oleh ADC ESP32 (GPIO34).
+    \item \textbf{Dikirim ke ESP32} — Sinyal sensor dikirim langsung melalui kabel twisted pair shielded (\textasciitilde10--20m) ke pin ADC ESP32 (GPIO34).
     \item \textbf{Koneksi internet} — ESP32 terhubung ke WiFi dari Huawei B535-932 (4G LTE, daya dari aki 12V).
     \item \textbf{Data ke Supabase} — ESP32 mengirim data sensor \texttt{(moisture, timestamp)} via HTTP POST ke Supabase REST API.
     \item \textbf{Kontrol otomatis} — Jika kelembaban $<$ threshold $\to$ ESP32 mengaktifkan relay $\to$ Solenoid Valve terbuka $\to$ air menetes dari tandon.
-    \item \textbf{Monitoring Android} — Aplikasi Android membaca data dari Supabase SDK secara real-time. Pengguna dapat melihat dashboard, grafik historis, dan mengirim perintah siram manual.
+    \item \textbf{Monitoring Aplikasi} — Aplikasi Flutter membaca data dari Supabase Flutter SDK secara real-time. Pengguna dapat melihat dashboard, grafik historis, dan mengirim perintah siram manual.
     \item \textbf{Daya mandiri} — Solar panel 300Wp mengisi aki 100Ah melalui SCC 20A. Aki memberi daya ke router LTE, ESP32, dan solenoid valve 24/7.
 \end{enumerate}
 
 
-% ============================================================
-%  SECTION - SKENARIO IMPLEMENTASI 6 PETAK LAHAN
-% ============================================================
-\newpage
-\section{Skenario Implementasi 6 Petak Lahan}
-
-\subsection{Spesifikasi Lahan}
-
-Berdasarkan kebutuhan pengembangan, sistem ANDROMEDA akan diterapkan pada \textbf{6 petak lahan} yang berada dalam \textbf{satu area} (bersebelahan), masing-masing berukuran \textbf{5 m $\times$ 1 m} (total luas 30 m²). Setiap petak akan memiliki:
-
-\begin{itemize}
-    \item 1 buah capacitive soil sensor — memonitor kelembaban tanah secara independen
-    \item 1 buah solenoid valve 12V NC (kran air otomatis) — mengontrol irigasi per petak
-    \item 1 jalur drip irrigation (selang PE 16mm + dripper) — distribusi air merata
-\end{itemize}
-
-Panel kontrol utama ditempatkan di \textbf{tepi area lahan}, dengan jarak kabel ke petak terjauh diperkirakan \textbf{10--30 meter}. Semua sensor dan kran dikendalikan oleh \textbf{1 (satu) ESP32 DevKit} yang sama.
-
-
-\subsection{Tata Letak Lahan (Layout)}
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[
-    petak/.style={rectangle, minimum width=1.8cm, minimum height=0.7cm, text centered, draw, font=\footnotesize},
-]
-
-% Grid 6 petak (3 baris $\times$ 2 kolom) dalam 1 area
-\draw[thick, primaryblue!50, rounded corners] (-0.3, 0.8) rectangle (6.3, -4.7);
-\node[above, font=\small] at (3, 0.8) {\textbf{AREA LAHAN (30 m²)}};
-
-\foreach \x in {0,1,2} {
-    \foreach \y in {0,1} {
-        \node[petak, fill=green!10] at (\y*3, -\x*1.7) {Petak \pgfmathparse{int(\x*2+\y+1)}\pgfmathresult};
-    }
-}
-
-% Panel kontrol di sisi kiri
-\node[rectangle, fill=primaryblue!25, draw=primaryblue, thick, minimum width=1.8cm, minimum height=0.9cm, rounded corners, font=\footnotesize] at (-1.6, -2) {\textbf{Panel}\\ \textbf{Kontrol}};
-
-% Kabel backbone dari panel ke junction box
-\node[circle, fill=gray!40, inner sep=2pt, font=\tiny] at (0, -2) {};
-\node[above, font=\tiny] at (0, -2) {JB};
-
-\draw[thick, green!50!black] (-0.7, -2) -- (0, -2);
-\node[above, font=\tiny] at (-0.35, -2) {Kabel utama};
-
-% Kabel dari junction box ke setiap petak
-\foreach \x in {0,1,2} {
-    \foreach \y in {0,1} {
-        \draw[thick, green!50!black] (0, -2) -- (\y*3-0.9, -\x*1.7);
-    }
-}
-
-% Keterangan
-\node[below, font=\footnotesize] at (3, -5.2) {
-\begin{tabular}{l}
-\textbullet\ 1 ESP32 DevKit — kontrol semua sensor \& kran \\
-\textbullet\ Panel kontrol di tepi area — kabel pendek ke petak \\
-\textbullet\ Tandon air di posisi lebih tinggi (gravitasi) \\
-\textbullet\ ---------------------------------------------------- \\
-$\,$ Ukuran petak: 5m $\times$ 1m \; Lebar area: 10m \; Panjang area: 15m
-\end{tabular}
-};
-
-% Ukuran
-\draw[<->, thick] (6.5, 0.5) -- (0.5, 0.5) node[midway, above, font=\footnotesize] {$\sim$10 m};
-\draw[<->, thick] (-0.5, 0.6) -- (-0.5, -0.8) node[midway, left, font=\footnotesize] {1 m};
-
-\end{tikzpicture}
-\caption{Tata letak 6 petak lahan — 1 area, 1 ESP32, junction box di tengah}
-\label{fig:6-plot-layout}
-\end{figure}
-
-
-\subsection{Arsitektur Sistem: 1 ESP32 — 6 Sensor — 6 Kran}
-
-Karena semua petak berada dalam satu area, arsitektur yang digunakan sangat sederhana:
-
-\begin{itemize}
-    \item \textbf{1 ESP32 DevKit} — sebagai satu-satunya mikrokontroler yang membaca semua sensor dan mengontrol semua kran.
-    \item \textbf{Junction Box (JB)} di tengah area — tempat percabangan kabel dari panel ke tiap petak. Memudahkan instalasi dan maintenance.
-    \item \textbf{Kabel backbone} — satu kabel multi-core (12 pair twisted shielded) dari panel ke junction box (\textasciitilde10--30m). Dari JB, kabel pendek (\textasciitilde1--3m) ke tiap sensor/kran.
-\end{itemize}
-
-\subsubsection{Koneksi Pin ESP32}
-
-\begin{table}[H]
-\centering
-\caption{Koneksi pin ESP32 untuk 6 petak}
-\label{tab:esp32-6pin}
-\begin{tabularx}{\textwidth}{c c c X}
-\toprule
-\textbf{GPIO} & \textbf{Fungsi} & \textbf{Terhubung ke} & \textbf{Keterangan} \\
-\midrule
-32 & ADC1\_CH0 & Sensor 1 (via 4-20mA + 250$\Omega$) & Petak 1 \\
-33 & ADC1\_CH1 & Sensor 2 (via 4-20mA + 250$\Omega$) & Petak 2 \\
-34 & ADC1\_CH2 & Sensor 3 (via 4-20mA + 250$\Omega$) & Petak 3 \\
-35 & ADC1\_CH3 & Sensor 4 (via 4-20mA + 250$\Omega$) & Petak 4 \\
-36 & ADC1\_CH4 & Sensor 5 (via 4-20mA + 250$\Omega$) & Petak 5 \\
-37 & ADC1\_CH5 & Sensor 6 (via 4-20mA + 250$\Omega$) & Petak 6 \\
-\midrule
-26 & Digital Out & Relay CH1 $\to$ Solenoid Valve 1 & Petak 1 \\
-27 & Digital Out & Relay CH2 $\to$ Solenoid Valve 2 & Petak 2 \\
-14 & Digital Out & Relay CH3 $\to$ Solenoid Valve 3 & Petak 3 \\
-12 & Digital Out & Relay CH4 $\to$ Solenoid Valve 4 & Petak 4 \\
-13 & Digital Out & Relay CH5 $\to$ Solenoid Valve 5 & Petak 5 \\
-15 & Digital Out & Relay CH6 $\to$ Solenoid Valve 6 & Petak 6 \\
-\midrule
-23 & Output & LED Indikator Biru (sistem hidup) & Panel \\
-22 & Output & Buzzer / alarm & Panel \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-\subsubsection{Diagram Blok Sistem 6 Petak}
-
-\begin{figure}[H]
-\centering
-\resizebox{0.9\textwidth}{!}{%
-\begin{tikzpicture}[
-    box/.style={rectangle, rounded corners, minimum width=2.2cm, minimum height=0.8cm, text centered, draw, font=\small},
-    wire/.style={thick}
-]
-
-% ESP32 di tengah
-\node[box, fill=primaryblue!25, draw=primaryblue, minimum width=2.5cm, minimum height=1.2cm] (esp) {\textbf{ESP32}\\ \footnotesize 1 unit};
-
-% Sensor (atas)
-\foreach \i/\x in {1/0,2/1.5,3/3,4/4.5,5/6,6/7.5} {
-    \node[box, fill=orange!15] at (\x, 1.5) {Sensor \i};
-    \draw[->, thick, green!50!black] (\x, 1.1) -- (\x, 0.3);
-    \node at (\x, 0.7) {\tiny 4-20mA};
-}
-\node[above, font=\footnotesize] at (3.75, 2) {\textbf{6 $\times$ Capacitive Soil Sensor + XTR116}};
-
-% Relay
-\node[box, fill=gray!15] at (3.75, -1.2) {Relay 8-Ch};
-\draw[->, thick] (esp.south) -- (3.75, -0.8);
-
-% Valve (bawah)
-\foreach \i/\x in {1/0,2/1.5,3/3,4/4.5,5/6,6/7.5} {
-    \node[box, fill=cyan!15] at (\x, -2.2) {Kran \i};
-    \draw[->, thick, blue!50!black] (\x, -1.6) -- (\x, -1.9);
-}
-\node[below, font=\footnotesize] at (3.75, -2.7) {\textbf{6 $\times$ Solenoid Valve 12V NC}};
-
-% Power
-\node[box, fill=red!15] at (9.5, 0) {Aki 12V};
-\node[box, fill=yellow!15] at (9.5, -1.2) {SCC 20A};
-\node[box, fill=orange!15] at (9.5, -2.4) {Solar 300Wp};
-\draw[->, thick] (9.5, 0.4) -| (esp.east);
-\draw[->, thick] (9.5, -0.8) -- (9.5, -0.4);
-\draw[->, thick] (9.5, -1.8) -- (9.5, -1.6);
-
-% LTE
-\node[box, fill=green!15] at (9.5, 1.2) {LTE Router};
-\draw[->, thick] (9.5, 1.6) -| (esp.east);
-
-% Tandon
-\node[box, fill=cyan!15] at (3.75, -3.4) {Tandon Air (Gravitasi)};
-\draw[->, thick, blue!50!black] (3.75, -2.6) -- (3.75, -3);
-\node at (6, -3.4) {$\to$ Drip Irrigation};
-
-\end{tikzpicture}
-}
-\caption{Diagram blok sistem ANDROMEDA untuk 6 petak — 1 ESP32, 6 sensor, 6 kran}
-\label{fig:6-plot-block}
-\end{figure}
-
-
-\subsection{BOM untuk 6 Petak}
-
-\begin{table}[H]
-\centering
-\caption{Bill of Materials — 6 Petak ANDROMEDA}
-\label{tab:bom-6plot}
-\begin{tabularx}{\textwidth}{c X c c c}
-\toprule
-\textbf{No} & \textbf{Komponen} & \textbf{Qty} & \textbf{Estimasi} & \textbf{Link Shopee} \\
-\midrule
-\multicolumn{5}{l}{\textbf{Pusat (Panel Kontrol + Daya)}} \\
-1 & ESP32 DevKit Board 30 Pin & 1 & Rp 45.000 -- 60.000 & \href{https://shopee.co.id/search?keyword=ESP32+DevKit+Board+30+pin}{Cari} \\
-2 & Relay Module 8-Channel 5V & 1 & Rp 35.000 -- 50.000 & \href{https://shopee.co.id/search?keyword=relay+8+channel+5V}{Cari} \\
-3 & Huawei B535-932 4G LTE Router & 1 & Rp 400.000 -- 500.000 & \href{https://shopee.co.id/search?keyword=Huawei+B535+router+4G+LTE}{Cari} \\
-4 & Aki Kering 100Ah & 1 & Rp 900.000 -- 1.200.000 & \href{https://shopee.co.id/search?keyword=aki+kering+100Ah+NS70}{Cari} \\
-5 & Solar Panel 300Wp Poly & 1 & Rp 1.000.000 -- 1.500.000 & \href{https://shopee.co.id/search?keyword=solar+panel+300wp+poly}{Cari} \\
-6 & Solar Charge Controller 20A PWM & 1 & Rp 100.000 -- 150.000 & \href{https://shopee.co.id/search?keyword=solar+charge+controller+20A+PWM}{Cari} \\
-7 & Power Supply 12V 5A Adaptor & 1 & Rp 40.000 -- 60.000 & \href{https://shopee.co.id/search?keyword=power+supply+12V+5A}{Cari} \\
-8 & Step-Down LM2596 (12V$\to$5V untuk ESP32) & 1 & Rp 15.000 -- 25.000 & \href{https://shopee.co.id/search?keyword=LM2596+step+down}{Cari} \\
-9 & MCB 6A + Terminal Block + Box Panel & 1 set & Rp 70.000 -- 100.000 & \href{https://shopee.co.id/search?keyword=project+box+panel+listrik}{Cari} \\
-\midrule
-\multicolumn{5}{l}{\textbf{Sensor \& 4-20mA (per petak $\times$6)}} \\
-10 & Capacitive Soil Sensor v1.2 & 6 & Rp 90.000 -- 150.000 & \href{https://shopee.co.id/search?keyword=capacitive+soil+sensor}{Cari} \\
-11 & Modul XTR116 / XTR115 4-20mA TX & 6 & Rp 150.000 -- 210.000 & \href{https://shopee.co.id/search?keyword=XTR116+4-20mA+transmitter}{Cari} \\
-12 & Resistor Presisi 250$\Omega$ 0,1\% & 6 & Rp 12.000 -- 30.000 & \href{https://shopee.co.id/search?keyword=resistor+250+ohm+0.1}{Cari} \\
-13 & Kapasitor 100nF + 10$\mu$F & 6 pasang & Rp 6.000 -- 12.000 & \href{https://shopee.co.id/search?keyword=kondensator+100nF+10uF}{Cari} \\
-\midrule
-\multicolumn{5}{l}{\textbf{Aktuasi (per petak $\times$6)}} \\
-14 & Solenoid Valve 12V NC 1/2'' & 6 & Rp 300.000 -- 480.000 & \href{https://shopee.co.id/search?keyword=solenoid+valve+12V+NC}{Cari} \\
-\midrule
-\multicolumn{5}{l}{\textbf{Kabel \& Instalasi}} \\
-15 & Kabel Multi-Core 12 Pair Shielded (backbone) & 30m & Rp 300.000 -- 450.000 & \href{https://shopee.co.id/search?keyword=cable+multi+core+shielded+12+pair}{Cari} \\
-16 & Kabel NYMHY 2$\times$1,5mm (valve ke panel) & 100m & Rp 100.000 -- 150.000 & \href{https://shopee.co.id/search?keyword=NYMHY+2x1.5+listrik}{Cari} \\
-17 & Selang Drip Irrigation PE 16mm & 50m & Rp 100.000 -- 150.000 & \href{https://shopee.co.id/search?keyword=selang+PE+drip+irrigation+16mm}{Cari} \\
-18 & Dripper / Emitter 4L/jam & 60 pcs & Rp 60.000 -- 120.000 & \href{https://shopee.co.id/search?keyword=dripper+irigasi+tetes+tanaman}{Cari} \\
-19 & Fitting Selang (Tee, Elbow, Connector) & 1 set & Rp 80.000 -- 120.000 & \href{https://shopee.co.id/search?keyword=fitting+selang+irigasi+tetes+16mm}{Cari} \\
-\midrule
-\multicolumn{5}{l}{\textbf{Perkakas \& Lainnya}} \\
-20 & Project Box (junction box outdoor) & 1 & Rp 25.000 -- 40.000 & \href{https://shopee.co.id/search?keyword=project+box+outdoor+elektronik}{Cari} \\
-21 & Timah Solder + Flux & 1 set & Rp 15.000 -- 25.000 & \href{https://shopee.co.id/search?keyword=timah+solder+flux+rosin}{Cari} \\
-22 & Crimping Tool + Skun Kabel & 1 set & Rp 30.000 -- 50.000 & \href{https://shopee.co.id/search?keyword=crimping+tool+skun+kabel}{Cari} \\
-23 & Multimeter Digital & 1 & Rp 50.000 -- 100.000 & \href{https://shopee.co.id/search?keyword=multimeter+digital}{Cari} \\
-\midrule
-\multicolumn{4}{l}{\textbf{Total Estimasi Keseluruhan (6 Petak)}} & \textbf{Rp 3.923.000 -- 5.782.000} \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-\textbf{Catatan:} Biaya ini sudah termasuk panel surya 300Wp dan aki 100Ah yang merupakan investasi jangka panjang. Tanpa solar + aki (jika listrik PLN tersedia), biaya turun menjadi \textbf{Rp 1.883.000 -- 2.932.000}.
-
-
-\subsection{Kesimpulan untuk 6 Petak}
-
-\begin{itemize}
-    \item \textbf{Arsitektur:} 1 ESP32 — 6 sensor (via 4-20mA) — 6 kran (via relay 8-ch). Tidak perlu mikrokontroler tambahan.
-    \item \textbf{Total investasi:} Rp \textbf{3,9 -- 5,8 juta} (dengan solar + aki) atau Rp \textbf{1,9 -- 2,9 juta} (tanpa solar + aki).
-    \item \textbf{Biaya per petak:} Rp 650.000 -- 960.000 per petak (dengan solar + aki).
-    \item \textbf{Biaya bulanan:} Rp 15.000 -- 30.000 (paket data LTE — sama untuk 1 atau 6 petak).
-    \item \textbf{Skalabilitas:} ESP32 masih punya sisa 2 channel ADC (GPIO38-39) dan 2 pin digital untuk ekspansi ke 8 petak. Untuk >8 petak, gunakan multiplexer CD4051 atau tambah modul ADC eksternal (ADS1115 via I2C).
-    \item \textbf{Daya:} Aki 100Ah = 1.200Wh. ESP32 (0,3W) + router (10W) + 6 valve (maks 3A @ 12V = 36W, hanya saat aktif) = konsumsi harian \textasciitilde{}250--300Wh. Solar panel 300Wp di Indonesia (\textasciitilde{}4-5 sun hours) menghasilkan \textasciitilde{}1.200-1.500 Wh/hari — lebih dari cukup.
-\end{itemize}
 
 
 % ============================================================
@@ -1986,14 +1493,14 @@ Karena semua petak berada dalam satu area, arsitektur yang digunakan sangat sede
 Berdasarkan perancangan sistem ANDROMEDA (Android Routine Monitoring Electronic Drip Automation), dapat disimpulkan bahwa:
 
 \begin{enumerate}
-    \item Sistem irigasi tetes otomatis berbasis IoT dapat dirancang menggunakan ESP32 sebagai mikrokontroler, capacitive soil sensor sebagai pembaca kelembaban, modul XTR116 sebagai current loop transmitter untuk transmisi sinyal jarak jauh (4--20mA), dan solenoid valve 12V NC sebagai aktuator irigasi.
-    \item Integrasi antara ESP32 dengan aplikasi Android dapat dilakukan melalui HTTP REST ke Supabase sebagai backend serverless. ESP32 mengirim data sensor dan membaca perintah pending secara periodik, sementara Android menggunakan Supabase SDK untuk sinkronisasi data otomatis.
-    \item Aplikasi Android dapat menjadi antarmuka utama untuk monitoring kelembaban tanah secara real-time dan kontrol penyiraman baik otomatis maupun manual, dilengkapi dashboard, grafik historis, dan pengaturan threshold.
-    \item Permasalahan jarak sensor 10--100 meter dari panel kontrol diselesaikan dengan menggunakan sistem \textbf{4--20mA current loop} (standar industri), yang memiliki noise immunity tinggi, mampu mentransmisikan sinyal hingga lebih dari 1 km, dan hanya membutuhkan tambahan IC XTR116 serta resistor 250$\Omega$.
+    \item Sistem irigasi tetes otomatis berbasis IoT dapat dirancang menggunakan ESP32 sebagai mikrokontroler, capacitive soil sensor sebagai pembaca kelembaban, dan solenoid valve 12V NC sebagai aktuator irigasi.
+    \item Integrasi antara ESP32 dengan aplikasi Flutter dapat dilakukan melalui HTTP REST ke Supabase sebagai backend serverless. ESP32 mengirim data sensor dan membaca perintah pending secara periodik, sementara aplikasi menggunakan Supabase Flutter SDK untuk sinkronisasi data otomatis.
+    \item Aplikasi Flutter dapat menjadi antarmuka utama untuk monitoring kelembaban tanah secara real-time dan kontrol penyiraman baik otomatis maupun manual, dilengkapi dashboard, grafik historis, dan pengaturan threshold.
+    \item Transmisi sinyal sensor dari lahan ke ESP32 (jarak \textasciitilde10--20 meter) dilakukan dengan koneksi langsung menggunakan kabel \textit{twisted pair shielded} (Belden 3107A atau UTP Cat5e), dengan kapasitor 100nF sebagai filter \textit{decoupling} di pin ADC. Pendekatan ini sederhana, andal, dan tidak memerlukan IC tambahan.
     \item Pemilihan solenoid valve 12V NC memungkinkan sistem memanfaatkan tandon air dengan gravitasi, menghemat daya secara signifikan (0W saat idle), dan menyediakan fail-safe (otomatis tertutup saat listrik padam).
     \item Penggunaan capacitive soil sensor dipilih karena ketahanan jangka panjang dan akurasi yang stabil, mengatasi kelemahan sensor resistif YL-69 yang mudah korosi.
     \item Huawei B535-932 4G LTE Router dipilih sebagai perangkat koneksi internet karena daya 12V DC yang langsung cocok dengan aki, tanpa perlu inverter, dan biaya bulanan yang rendah (Rp 15.000--30.000/bulan).
-    \item Sistem ini memiliki estimasi biaya awal sekitar \textbf{Rp 1.230.000 -- 1.530.000} (termasuk ESP32, sensor, XTR116, solenoid valve, LTE router, aki 100Ah, solar panel 300Wp, dan kabel Belden 3107A 50m). Biaya operasional hanya Rp 15.000--30.000/bulan untuk paket data.
+    \item Sistem ini memiliki estimasi biaya awal sekitar \textbf{Rp 2.843.500 -- 4.246.000} (termasuk ESP32, sensor, solenoid valve, LTE router, aki 100Ah, solar panel 300Wp, dan kabel Belden/UTP 20m). Biaya operasional hanya Rp 15.000--30.000/bulan untuk paket data.
 \end{enumerate}
 
 \section{Saran}
@@ -2003,12 +1510,10 @@ Untuk pengembangan lebih lanjut, beberapa saran yang dapat diberikan:
 \begin{enumerate}
     \item \textbf{Fertigasi} — Menambahkan sistem pemupukan otomatis (nutrisi) yang terintegrasi dengan irigasi.
     \item \textbf{Sensor Tambahan} — Menambahkan sensor suhu, kelembaban udara, pH tanah, dan intensitas cahaya untuk analisis yang lebih komprehensif.
-    \item \textbf{RS485 untuk Skala Besar} — Jika sistem diperluas ke 5--10+ titik sensor, migrasi ke RS485 digital agar semua sensor berbagi satu kabel backbone dengan konfigurasi daisy-chain, mengurangi biaya kabel dan mempermudah maintenance.
-    \item \textbf{Tenaga Surya} — Menggunakan panel surya + baterai agar sistem dapat beroperasi di lahan tanpa akses listrik PLN (sudah termasuk dalam rancangan ANDROMEDA).
+    \item \textbf{Ekspansi Multi-Petak} — Jika sistem diperluas ke beberapa petak, gunakan multiplexer CD4051 atau modul ADC eksternal (ADS1115 via I2C) untuk menambah channel sensor.
     \item \textbf{Machine Learning} — Menggunakan data historis untuk memprediksi kebutuhan air tanaman berdasarkan fase pertumbuhan dan cuaca.
     \item \textbf{Multi-Device} — Mengembangkan sistem agar dapat menangani banyak titik lahan dari satu aplikasi.
-    \item \textbf{LoRa untuk Lokasi Sulit} — Untuk titik sensor yang berada di lokasi sangat sulit dijangkau kabel (misalnya melintasi jalan umum atau sungai), gunakan LoRa wireless sebagai alternatif.
-    \item \textbf{Konektivitas Cellular} — Menggunakan modem 4G/LTE untuk area tanpa akses WiFi (sudah diimplementasikan dengan Huawei B535-932).
+    \item \textbf{Notifikasi Push} — Menambahkan notifikasi real-time ke aplikasi saat kelembaban kritis atau valve error.
 \end{enumerate}
 
 
@@ -2025,10 +1530,6 @@ Espressif Systems. (2023). \textit{ESP32 Series Datasheet}. [Online] \\
 Available: \url{https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf}
 
 \item
-MQTT.org. (2023). \textit{MQTT Version 5.0 Specification}. [Online] \\
-Available: \url{https://mqtt.org/mqtt-specification/}
-
-\item
 R. A. Ramadhani, D. S. Wibowo, dan M. F. Rahman. (2022). "Rancang Bangun Sistem Irigasi Otomatis Berbasis IoT Menggunakan ESP32 dan Sensor Kelembaban Tanah." \textit{Jurnal Teknik Informatika}, vol. 14, no. 2, pp. 87--95.
 
 \item
@@ -2038,12 +1539,12 @@ E. A. Hapsari dan I. W. Mustika. (2021). "Performance Analysis of Capacitive Soi
 A. S. Nugroho dan B. P. Putra. (2023). "Perbandingan Sensor Kelembaban Tanah Resistif dan Kapasitif untuk Sistem Irigasi Cerdas." \textit{Jurnal Sistem Komputer}, vol. 12, no. 1, pp. 34--42.
 
 \item
-Mosquitto. (2023). \textit{Eclipse Mosquitto — An Open Source MQTT Broker}. [Online] \\
-Available: \url{https://mosquitto.org/}
+Google LLC. (2024). \textit{Flutter Documentation}. [Online] \\
+Available: \url{https://docs.flutter.dev}
 
 \item
-Google Developers. (2023). \textit{Android Developer Documentation}. [Online] \\
-Available: \url{https://developer.android.com/docs}
+Supabase. (2024). \textit{Supabase Flutter SDK Documentation}. [Online] \\
+Available: \url{https://supabase.com/docs/reference/dart/introduction}
 
 \end{enumerate}
 
