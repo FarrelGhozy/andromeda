@@ -8,13 +8,13 @@ Program PDB (Program Desa Binaan) — **Desa Merayan**
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 ![Platform](https://img.shields.io/badge/Platform-ESP32-blue)
 ![Backend](https://img.shields.io/badge/Backend-Supabase-orange)
-![Mobile](https://img.shields.io/badge/Mobile-Android-brightgreen)
+![Mobile](https://img.shields.io/badge/Mobile-Flutter-02569B)
 
 ---
 
 ## 📖 Tentang ANDROMEDA
 
-**ANDROMEDA** adalah sistem irigasi tetes otomatis berbasis IoT yang dirancang untuk membantu petani di **Desa Merayan** dalam mengoptimalkan penyiraman tanaman — khususnya **benih padi, cabai, dan tanaman hortikultura** — secara efisien, hemat biaya, dan dapat dikendalikan dari jarak jauh melalui smartphone Android.
+**ANDROMEDA** adalah sistem irigasi tetes otomatis berbasis IoT yang dirancang untuk membantu petani di **Desa Merayan** dalam mengoptimalkan penyiraman tanaman — khususnya **benih padi, cabai, dan tanaman hortikultura** — secara efisien, hemat biaya, dan dapat dikendalikan dari jarak jauh melalui aplikasi Flutter.
 
 Sistem ini memanfaatkan **ESP32** sebagai pengendali utama, **sensor kelembaban tanah kapasitif** untuk membaca kondisi tanah, dan **solenoid valve** (kran otomatis) yang memanfaatkan tekanan gravitasi dari **tandon air** yang sudah tersedia di lokasi. Data dikirim ke **Supabase** (cloud gratis) melalui koneksi **4G LTE Router (Huawei B535)** yang ditenagai oleh **aki 100Ah + solar panel 300Wp**.
 
@@ -24,7 +24,7 @@ Sistem ini memanfaatkan **ESP32** sebagai pengendali utama, **sensor kelembaban 
 |---------|------------------|
 | Penyiraman manual tidak efisien | Otomatis berdasarkan threshold kelembaban tanah |
 | Pemborosan air irigasi | Irigasi tetes presisi — air cuma netes pas dibutuhkan |
-| Petani harus ke sawah tiap hari | Monitoring & kontrol dari Android, dari mana aja |
+| Petani harus ke sawah tiap hari | Monitoring & kontrol dari HP, dari mana aja |
 | Biaya WiFi rumahan mahal (Rp 150rb+/bln) | Cukup **Rp 15.000/bulan** via router 4G + paket data |
 | Listrik PLN tidak sampai ke sawah | Daya dari **aki 100Ah + solar panel 300Wp** |
 | Harus beli pompa air tambahan | Manfaatin **tandon + solenoid valve** — gravity aja cukup |
@@ -108,13 +108,13 @@ Sistem ini memanfaatkan **ESP32** sebagai pengendali utama, **sensor kelembaban 
 |----|----------|--------|
 | 1 | **Arduino IDE / PlatformIO** | Programming ESP32 (C/C++) |
 | 2 | **Supabase (Free Tier)** | Backend: PostgreSQL + REST API — **Rp 0/bulan** |
-| 3 | **Android Studio (Kotlin)** | Pengembangan aplikasi Android |
-| 4 | **Supabase Android SDK** | Sinkronisasi data real-time otomatis |
-| 5 | **MPAndroidChart** | Grafik kelembaban historis |
+| 3 | **Flutter SDK (Dart)** | Pengembangan aplikasi lintas platform (Android/iOS/Web) |
+| 4 | **Supabase Flutter SDK** | Sinkronisasi data real-time otomatis |
+| 5 | **fl\_chart** | Grafik kelembaban historis |
 
 ---
 
-## 📱 Fitur Aplikasi Android
+## 📱 Fitur Aplikasi Flutter
 
 | Fitur | Deskripsi |
 |-------|-----------|
@@ -147,18 +147,18 @@ ESP32 tidur nyenyak (deep sleep ~5µA)
   ↓ Tidur lagi zzz...
 ```
 
-### Mode Manual (Dari Android)
+### Mode Manual (Dari Aplikasi)
 
 ```
 User buka ANDROMEDA App
-  ↓ Data auto sync dari Supabase SDK
+  ↓ Data auto sync dari Supabase Flutter SDK
   ↓ Lihat dashboard: kelembaban 45%, valve CLOSED
 User tap "BUKA VALVE" — isi durasi: 30 detik
-  ↓ Android POST → Supabase pending_commands: VALVE_ON:30
+  ↓ Flutter POST → Supabase pending_commands: VALVE_ON:30
   ↓ ESP32 bangun → GET pending_commands
   ↓ Relay ON → Solenoid OPEN → Air netes 30 detik
   ↓ Update status ke Supabase
-  ↓ Android auto sync → lihat valve: OPEN → CLOSED ✅
+  ↓ Flutter auto sync → lihat valve: OPEN → CLOSED ✅
 ```
 
 ---
@@ -182,10 +182,10 @@ User tap "BUKA VALVE" — isi durasi: 30 detik
 
 | Tabel | Fungsi | Write | Read |
 |-------|--------|:-----:|:----:|
-| `sensor_readings` | Log kelembaban + timestamp | ESP32 | Android |
-| `pending_commands` | Antrian perintah dari Android | Android | ESP32 |
-| `system_config` | Threshold, mode, durasi | Android | ESP32 |
-| `users` | Autentikasi pengguna | Android | Auth |
+| `sensor_readings` | Log kelembaban + timestamp | ESP32 | Flutter |
+| `pending_commands` | Antrian perintah dari aplikasi | Flutter | ESP32 |
+| `system_config` | Threshold, mode, durasi | Flutter | ESP32 |
+| `users` | Autentikasi pengguna | Flutter | Auth |
 
 ---
 
@@ -226,12 +226,12 @@ User tap "BUKA VALVE" — isi durasi: 30 detik
 - [ ] Migrasi database schema
 - [ ] Uji REST API
 
-### ⏳ Fase 5 — Aplikasi Android
-- [ ] UI/UX Dashboard
-- [ ] Integrasi Supabase SDK
+### ⏳ Fase 5 — Aplikasi Flutter
+- [ ] UI/UX Dashboard (Flutter/Dart)
+- [ ] Integrasi Supabase Flutter SDK
 - [ ] Kontrol valve + mode auto/manual
-- [ ] Grafik historis
-- [ ] Notifikasi
+- [ ] Grafik historis (fl\_chart)
+- [ ] Notifikasi push
 
 ### ⏳ Fase 6 — Uji Coba Lapangan
 - [ ] Deploy di Desa Merayan
@@ -254,8 +254,8 @@ andromeda/
 │   ├── src/               ← ESP32 source code
 │   ├── lib/               ← Libraries
 │   └── config/            ← WiFi, API config
-├── android/
-│   └── app/               ← Android app source
+├── flutter/
+│   └── app/               ← Flutter app source
 ├── database/
 │   └── schema.sql         ← PostgreSQL schema
 └── docs/
