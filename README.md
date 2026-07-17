@@ -215,22 +215,23 @@ User tap "BUKA VALVE" — isi durasi: 30 detik
 - [ ] Setup router B535 + antena outdoor
 - [ ] Koneksi ke aki + solar panel
 
-### ⏳ Fase 3 — Firmware ESP32
-- [ ] Programming WiFi + HTTP client
-- [ ] Kalibrasi sensor kelembaban
-- [ ] Logika kontrol threshold
-- [ ] Mode deep sleep
+### ✅ Fase 3 — Firmware ESP32
+- [x] Programming WiFi + HTTP client
+- [x] Kalibrasi sensor kelembaban
+- [x] Logika kontrol threshold
+- [x] Mode deep sleep
 
-### ⏳ Fase 4 — Backend Supabase
-- [ ] Setup project Supabase
-- [ ] Migrasi database schema
-- [ ] Uji REST API
+### ✅ Fase 4 — Backend Supabase
+- [x] Database schema multi-device
+- [x] RLS policies (no auth)
+- [x] Realtime + seed 6 petak
+- [ ] Setup project Supabase (perlu akun & URL/key)
 
-### ⏳ Fase 5 — Aplikasi Flutter
-- [ ] UI/UX Dashboard (Flutter/Dart)
-- [ ] Integrasi Supabase Flutter SDK
-- [ ] Kontrol valve + mode auto/manual
-- [ ] Grafik historis (fl\_chart)
+### ✅ Fase 5 — Aplikasi Flutter
+- [x] UI/UX Dashboard (Flutter/Dart)
+- [x] Integrasi Supabase Flutter SDK
+- [x] Kontrol valve + mode auto/manual
+- [x] Grafik historis (fl_chart)
 - [ ] Notifikasi push
 
 ### ⏳ Fase 6 — Uji Coba Lapangan
@@ -245,21 +246,30 @@ User tap "BUKA VALVE" — isi durasi: 30 detik
 ```
 andromeda/
 ├── README.md
-├── LICENSE
-├── hardware/
-│   ├── schematics/        ← Skematik rangkaian
-│   ├── pinout.md          ← Pin connections
-│   └── bom.md             ← Bill of Materials
-├── firmware/
-│   ├── src/               ← ESP32 source code
-│   ├── lib/               ← Libraries
-│   └── config/            ← WiFi, API config
-├── flutter/
-│   └── app/               ← Flutter app source
+├── SETUP.md               ← Panduan setup cepat
 ├── database/
-│   └── schema.sql         ← PostgreSQL schema
+│   └── schema.sql         ← PostgreSQL schema + RLS + seed 6 petak
+├── hardware/
+│   ├── firmware/          ← PlatformIO project ESP32
+│   │   ├── platformio.ini
+│   │   ├── include/
+│   │   │   ├── config.h
+│   │   │   └── devices/   ← petak_01.h … petak_06.h
+│   │   └── src/
+│   │       ├── main.cpp
+│   │       ├── wifi_manager.cpp
+│   │       ├── sensor.cpp
+│   │       ├── valve.cpp
+│   │       ├── supabase_client.cpp
+│   │       └── deep_sleep.cpp
+│   ├── schematics/
+│   └── belanja.md         ← Bill of Materials
+├── mobile_app/            ← Flutter project
+│   ├── pubspec.yaml
+│   └── lib/
 └── docs/
-    └── proposal.pdf       ← Proposal lengkap
+    └── latex/
+        └── main.tex       ← Proposal lengkap
 ```
 
 ---
