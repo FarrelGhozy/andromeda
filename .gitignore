@@ -3,12 +3,18 @@ hardware/firmware/build/
 hardware/firmware/.pio/
 hardware/firmware/.vscode/
 
-# Android
-android/.gradle/
-android/build/
-android/app/build/
-android/local.properties
-android/.idea/
+# Flutter
+mobile_app/.dart_tool/
+mobile_app/build/
+mobile_app/.flutter-plugins
+mobile_app/.flutter-plugins-dependencies
+mobile_app/.packages
+mobile_app/.metadata
+mobile_app/android/.gradle/
+mobile_app/android/.idea/
+mobile_app/android/local.properties
+mobile_app/ios/Pods/
+mobile_app/ios/.symlinks/
 
 # IDE
 .vscode/
