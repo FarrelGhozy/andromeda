@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../config/theme_config.dart';
-import '../services/supabase_service.dart';
-import '../services/device_repository.dart';
-import '../services/sensor_repository.dart';
-import '../services/config_repository.dart';
-import '../providers/devices_provider.dart';
-import '../providers/dashboard_provider.dart';
-import '../routes.dart';
-import 'screens/splash_screen.dart';
-import 'screens/home_screen.dart';
-import 'screens/dashboard_screen.dart';
-import 'screens/settings_screen.dart';
+import 'config/theme_config.dart';
+import 'services/supabase_service.dart';
+import 'services/device_repository.dart';
+import 'services/sensor_repository.dart';
+import 'services/config_repository.dart';
+import 'providers/devices_provider.dart';
+import 'providers/dashboard_provider.dart';
+import 'routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,7 +27,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(
           create: (_) {
-            final p = DevicesProvider(deviceRepo, sensorRepo);
+            final p = DevicesProvider(deviceRepo);
             p.init();
             return p;
           },

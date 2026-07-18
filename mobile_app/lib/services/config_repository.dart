@@ -20,13 +20,16 @@ class ConfigRepository {
 
   /// Ambil config sekali
   Future<SystemConfig?> getConfig(String deviceId) async {
-    final response = await _client
-        .from('system_config')
-        .select()
-        .eq('device_id', deviceId)
-        .single();
-    if (response == null) return null;
-    return SystemConfig.fromJson(response);
+    try {
+      final response = await _client
+          .from('system_config')
+          .select()
+          .eq('device_id', deviceId)
+          .single();
+      return SystemConfig.fromJson(response);
+    } catch (_) {
+      return null;
+    }
   }
 
   /// Update config

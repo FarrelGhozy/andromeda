@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import '../models/device.dart';
 import '../models/sensor_reading.dart';
 import '../services/device_repository.dart';
-import '../services/sensor_repository.dart';
 
 class DevicesProvider extends ChangeNotifier {
   final DeviceRepository _deviceRepo;
-  final SensorRepository _sensorRepo;
 
   List<Device> _devices = [];
   Map<String, SensorReading?> _latestReadings = {};
@@ -18,7 +16,7 @@ class DevicesProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
-  DevicesProvider(this._deviceRepo, this._sensorRepo);
+  DevicesProvider(this._deviceRepo);
 
   void init() {
     _deviceRepo.getDevicesStream().listen((devices) {

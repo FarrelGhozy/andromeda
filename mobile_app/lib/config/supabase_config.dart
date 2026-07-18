@@ -1,7 +1,7 @@
 // ============================================================
 // KONFIGURASI SUPABASE — GANTI DENGAN PROJECT KAMU!
 // ============================================================
-// Cara dapat URL & Anon Key:
+// Cara dapat URL & Publishable Key:
 // 1. Buka https://supabase.com
 // 2. Buat project baru (Free Tier)
 // 3. Buka Project Settings → API
@@ -12,5 +12,5 @@ class SupabaseConfig {
   static const String url = 'https://your-project.supabase.co';
 
   // 🔴 GANTI INI dengan anon public key kamu!
-  static const String anonKey = 'your-anon-public-key';
+  static const String publishableKey = 'your-anon-public-key';
 }

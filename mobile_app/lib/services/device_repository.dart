@@ -18,16 +18,19 @@ class DeviceRepository {
 
   /// Ambil 1 device
   Future<Device?> getDevice(String deviceId) async {
-    final response = await _client
-        .from('devices')
-        .select()
-        .eq('device_id', deviceId)
-        .single();
-    if (response == null) return null;
-    return Device.fromJson(response);
+    try {
+      final response = await _client
+          .from('devices')
+          .select()
+          .eq('device_id', deviceId)
+          .single();
+      return Device.fromJson(response);
+    } catch (_) {
+      return null;
+    }
   }
 
-  /// Ambil data terbaru untuk semua petak
+  /// Ambil data terbaru untuk semua petak (via RPC)
   Future<Map<String, SensorReading?>> getLatestReadings() async {
     try {
       final response = await _client.rpc('get_latest_readings');
