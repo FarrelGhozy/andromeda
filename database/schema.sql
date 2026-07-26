@@ -1,16 +1,20 @@
 -- ANDROMEDA - Database Schema for Supabase
 -- Android Routine Monitoring Electronic Drip Automation
--- Multi-device MVP (no auth) - 6 petak
+-- Multi-device: 1 ESP32 → 6 petak
 
 -- 1. Devices / Petak
 CREATE TABLE devices (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   device_id TEXT NOT NULL UNIQUE,
+  esp32_id TEXT NOT NULL DEFAULT '',
   name TEXT NOT NULL,
   location TEXT,
+  sensor_index INTEGER NOT NULL DEFAULT 0,
   status TEXT NOT NULL DEFAULT 'active',
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+CREATE INDEX idx_devices_esp32 ON devices(esp32_id);
 
 -- 2. Log data sensor dari ESP32
 CREATE TABLE sensor_readings (
@@ -66,14 +70,24 @@ CREATE INDEX idx_sensor_readings_device_created_at ON sensor_readings(device_id,
 CREATE INDEX idx_pending_commands_status ON pending_commands(status);
 CREATE INDEX idx_pending_commands_device_status ON pending_commands(device_id, status);
 
--- 7. Seed devices (6 petak)
-INSERT INTO devices (device_id, name, location) VALUES
-  ('petak-01', 'Petak 1', 'Lahan A'),
-  ('petak-02', 'Petak 2', 'Lahan A'),
-  ('petak-03', 'Petak 3', 'Lahan A'),
-  ('petak-04', 'Petak 4', 'Lahan B'),
-  ('petak-05', 'Petak 5', 'Lahan B'),
-  ('petak-06', 'Petak 6', 'Lahan B');
+-- 7. Seed ESP32 units + devices (6 petak per ESP32)
+-- ESP32 #1 di Lahan A
+INSERT INTO devices (device_id, esp32_id, name, location, sensor_index) VALUES
+  ('petak-01', 'esp32-01', 'Petak 1', 'Lahan A', 0),
+  ('petak-02', 'esp32-01', 'Petak 2', 'Lahan A', 1),
+  ('petak-03', 'esp32-01', 'Petak 3', 'Lahan A', 2),
+  ('petak-04', 'esp32-01', 'Petak 4', 'Lahan A', 3),
+  ('petak-05', 'esp32-01', 'Petak 5', 'Lahan A', 4),
+  ('petak-06', 'esp32-01', 'Petak 6', 'Lahan A', 5);
+
+-- ESP32 #2 di Lahan B
+INSERT INTO devices (device_id, esp32_id, name, location, sensor_index) VALUES
+  ('petak-07', 'esp32-02', 'Petak 7', 'Lahan B', 0),
+  ('petak-08', 'esp32-02', 'Petak 8', 'Lahan B', 1),
+  ('petak-09', 'esp32-02', 'Petak 9', 'Lahan B', 2),
+  ('petak-10', 'esp32-02', 'Petak 10', 'Lahan B', 3),
+  ('petak-11', 'esp32-02', 'Petak 11', 'Lahan B', 4),
+  ('petak-12', 'esp32-02', 'Petak 12', 'Lahan B', 5);
 
 -- 8. Seed default config
 INSERT INTO system_config (device_id, mode, threshold_dry, threshold_wet, valve_duration, read_interval)
@@ -114,3 +128,22 @@ BEGIN
   WHERE id = cmd_id;
 END;
 $$ LANGUAGE plpgsql;
+
+-- 12. Function: get latest reading for each device
+CREATE OR REPLACE FUNCTION get_latest_readings()
+RETURNS TABLE (
+  device_id TEXT,
+  moisture INTEGER,
+  moisture_percent REAL,
+  valve_status TEXT,
+  created_at TIMESTAMPTZ
+) LANGUAGE sql AS $$
+  SELECT DISTINCT ON (sr.device_id)
+    sr.device_id,
+    sr.moisture,
+    sr.moisture_percent,
+    sr.valve_status,
+    sr.created_at
+  FROM sensor_readings sr
+  ORDER BY sr.device_id, sr.created_at DESC;
+$$;
