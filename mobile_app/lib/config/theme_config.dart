@@ -66,7 +66,7 @@ class AppTheme {
             color: Colors.white,
           ),
         ),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           elevation: 2,
           color: AppColors.cardLight,
           surfaceTintColor: Colors.transparent,
@@ -143,7 +143,7 @@ class AppTheme {
           error: AppColors.danger,
         ),
         scaffoldBackgroundColor: AppColors.bgDark,
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           elevation: 2,
           color: AppColors.cardDark,
           surfaceTintColor: Colors.transparent,
