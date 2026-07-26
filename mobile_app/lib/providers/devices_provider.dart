@@ -35,4 +35,30 @@ class DevicesProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  List<String> get esp32Ids {
+    final ids = _devices.map((d) => d.esp32Id).toSet().toList();
+    ids.sort();
+    return ids;
+  }
+
+  List<Device> devicesForEsp32(String esp32Id) {
+    return _devices
+        .where((d) => d.esp32Id == esp32Id)
+        .toList()
+      ..sort((a, b) => a.sensorIndex.compareTo(b.sensorIndex));
+  }
+
+  String esp32DisplayName(String esp32Id) {
+    final devices = devicesForEsp32(esp32Id);
+    if (devices.isEmpty) return esp32Id;
+    final location = devices.first.location;
+    return '$esp32Id — $location';
+  }
+
+  int onlineCountForEsp32(String esp32Id) {
+    return devicesForEsp32(esp32Id)
+        .where((d) => _latestReadings[d.deviceId] != null)
+        .length;
+  }
 }
