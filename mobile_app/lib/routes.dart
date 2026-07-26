@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'screens/splash_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/dashboard_screen.dart';
+import 'screens/esp32_screen.dart';
 import 'screens/settings_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';
   static const String home = '/home';
   static const String dashboard = '/dashboard';
+  static const String esp32Detail = '/esp32';
   static const String settings = '/settings';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -20,6 +22,11 @@ class AppRoutes {
         final deviceId = settings.arguments as String;
         return MaterialPageRoute(
           builder: (_) => DashboardScreen(deviceId: deviceId),
+        );
+      case AppRoutes.esp32Detail:
+        final esp32Id = settings.arguments as String;
+        return MaterialPageRoute(
+          builder: (_) => Esp32Screen(esp32Id: esp32Id),
         );
       case AppRoutes.settings:
         return MaterialPageRoute(builder: (_) => const SettingsScreen());
