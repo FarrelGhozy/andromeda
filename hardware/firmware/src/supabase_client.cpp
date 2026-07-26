@@ -13,22 +13,27 @@ static void addHeaders(HTTPClient& http) {
   http.addHeader("Prefer", "return=minimal");
 }
 
-bool postSensorReading(const char* deviceId, const SensorReading& reading, const char* valveStatus) {
+bool postAllSensorReadings(const AllReadings& allReadings, const bool* valveStates, const char* const* petakIds) {
   HTTPClient http;
   String url = baseUrl + "/sensor_readings";
   http.begin(url);
   addHeaders(http);
 
-  StaticJsonDocument<256> doc;
-  doc["device_id"] = deviceId;
-  doc["moisture"] = reading.raw;
-  doc["moisture_percent"] = reading.percent;
-  doc["valve_status"] = valveStatus;
+  StaticJsonDocument<1024> doc;
+  JsonArray array = doc.to<JsonArray>();
+
+  for (int i = 0; i < NUM_PETAK; i++) {
+    JsonObject item = array.createNestedObject();
+    item["device_id"] = petakIds[i];
+    item["moisture"] = allReadings.readings[i].raw;
+    item["moisture_percent"] = allReadings.readings[i].percent;
+    item["valve_status"] = valveStates[i] ? "ON" : "OFF";
+  }
 
   String payload;
   serializeJson(doc, payload);
 
-  Serial.print("POST sensor_readings: ");
+  Serial.print("POST sensor_readings (batch): ");
   Serial.println(payload);
 
   int code = http.POST(payload);
@@ -50,7 +55,9 @@ SystemConfig getSystemConfig(const char* deviceId) {
 
   if (code == 200) {
     String response = http.getString();
-    Serial.print("GET system_config: ");
+    Serial.print("GET system_config for ");
+    Serial.print(deviceId);
+    Serial.print(": ");
     Serial.println(response);
 
     StaticJsonDocument<512> doc;
@@ -82,7 +89,9 @@ PendingCommand getPendingCommand(const char* deviceId) {
 
   if (code == 200) {
     String response = http.getString();
-    Serial.print("GET pending_commands: ");
+    Serial.print("GET pending_commands for ");
+    Serial.print(deviceId);
+    Serial.print(": ");
     Serial.println(response);
 
     StaticJsonDocument<512> doc;

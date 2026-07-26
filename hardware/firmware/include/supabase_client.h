@@ -4,6 +4,8 @@
 #include <Arduino.h>
 #include "sensor.h"
 
+#define NUM_PETAK 6
+
 struct SystemConfig {
   String mode;
   int thresholdDry;
@@ -20,7 +22,7 @@ struct PendingCommand {
   bool valid;
 };
 
-bool postSensorReading(const char* deviceId, const SensorReading& reading, const char* valveStatus);
+bool postAllSensorReadings(const AllReadings& allReadings, const bool* valveStates, const char* const* petakIds);
 SystemConfig getSystemConfig(const char* deviceId);
 PendingCommand getPendingCommand(const char* deviceId);
 void markCommandExecuted(long commandId);
