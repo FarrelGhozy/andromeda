@@ -2,10 +2,10 @@
 #define ANDROMEDA_CONFIG_H
 
 // ============================================================
-// PILIH PETAK
-// Ganti include dibawah sesuai petak yang akan di-flash
+// PILIH ESP32
+// Ganti include dibawah sesuai ESP32 yang akan di-flash
 // ============================================================
-#include "devices/petak_01.h"
+#include "devices/esp32-01.h"
 
 // ============================================================
 // KONFIGURASI JARINGAN
@@ -21,20 +21,13 @@
 #define SUPABASE_ANON_KEY "your-anon-key"
 
 // ============================================================
-// PIN MAPPING
-// ============================================================
-#define SENSOR_PIN 34
-#define RELAY_PIN 26
-#define LED_PIN 2
-
-// ============================================================
 // DEFAULT SISTEM
 // Akan dioverride oleh system_config dari Supabase
 // ============================================================
 #define DEFAULT_THRESHOLD_DRY 30
 #define DEFAULT_THRESHOLD_WET 70
 #define DEFAULT_VALVE_DURATION_MS 30000
-#define DEFAULT_READ_INTERVAL_SEC 1800  // 30 menit
+#define DEFAULT_READ_INTERVAL_SEC 1800
 
 // ============================================================
 // TIMING & SAFETY
