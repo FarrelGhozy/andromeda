@@ -2,15 +2,18 @@
 #include "valve.h"
 #include "config.h"
 
-static bool valveOpen = false;
+static bool valveStates[NUM_PETAK] = {false};
 
-void initValve() {
-  pinMode(RELAY_PIN, OUTPUT);
-  digitalWrite(RELAY_PIN, LOW);
-  valveOpen = false;
+void initAllValves(const int* relayPins) {
+  for (int i = 0; i < NUM_PETAK; i++) {
+    pinMode(relayPins[i], OUTPUT);
+    digitalWrite(relayPins[i], LOW);
+    valveStates[i] = false;
+  }
+  Serial.println("All valves initialized");
 }
 
-void openValve(int durationMs) {
+void openValve(int relayPin, int durationMs) {
   if (durationMs > VALVE_MAX_DURATION_MS) {
     durationMs = VALVE_MAX_DURATION_MS;
   }
@@ -18,24 +21,54 @@ void openValve(int durationMs) {
     durationMs = 1000;
   }
 
-  Serial.print("Opening valve for ");
+  Serial.print("Opening valve on pin ");
+  Serial.print(relayPin);
+  Serial.print(" for ");
   Serial.print(durationMs);
   Serial.println(" ms");
 
-  digitalWrite(RELAY_PIN, HIGH);
-  valveOpen = true;
+  digitalWrite(relayPin, HIGH);
+  for (int i = 0; i < NUM_PETAK; i++) {
+    if (relayPin == RELAY_PINS[i]) {
+      valveStates[i] = true;
+      break;
+    }
+  }
 
   delay(durationMs);
 
-  closeValve();
+  digitalWrite(relayPin, LOW);
+  for (int i = 0; i < NUM_PETAK; i++) {
+    if (relayPin == RELAY_PINS[i]) {
+      valveStates[i] = false;
+      break;
+    }
+  }
+
+  Serial.println("Valve closed after duration");
 }
 
-void closeValve() {
-  digitalWrite(RELAY_PIN, LOW);
-  valveOpen = false;
-  Serial.println("Valve closed");
+void closeSingleValve(int relayPin) {
+  digitalWrite(relayPin, LOW);
+  for (int i = 0; i < NUM_PETAK; i++) {
+    if (relayPin == RELAY_PINS[i]) {
+      valveStates[i] = false;
+      break;
+    }
+  }
 }
 
-bool isValveOpen() {
-  return valveOpen;
+void closeAllValves(const int* relayPins) {
+  for (int i = 0; i < NUM_PETAK; i++) {
+    digitalWrite(relayPins[i], LOW);
+    valveStates[i] = false;
+  }
+  Serial.println("All valves closed");
+}
+
+bool getValveState(int index) {
+  if (index >= 0 && index < NUM_PETAK) {
+    return valveStates[index];
+  }
+  return false;
 }
