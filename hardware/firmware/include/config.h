@@ -35,5 +35,6 @@
 // ============================================================
 #define WIFI_TIMEOUT_MS 10000
 #define VALVE_MAX_DURATION_MS 120000
+#define COMMAND_POLL_INTERVAL_MS 1000
 
 #endif
