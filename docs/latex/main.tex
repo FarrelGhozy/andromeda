@@ -1022,29 +1022,32 @@ Berikut adalah arsitektur sistem secara detail:
 
 \begin{table}[H]
 \centering
-\caption{Daftar komponen hardware sistem ANDROMEDA}
+\caption{Daftar komponen hardware sistem ANDROMEDA untuk 6 petak}
 \label{tab:hardware}
 \begin{tabularx}{\textwidth}{c X c c}
 \toprule
 \textbf{No} & \textbf{Komponen} & \textbf{Qty} & \textbf{Harga} \\
 \midrule
-1 & ESP32 DevKit (WiFi + Bluetooth) & 1 & Rp 65.000 \\
-2 & Capacitive Soil Sensor v1.2 & 1 & Rp 35.000 \\
-3 & Relay Module 1 Channel 5V & 1 & Rp 12.000 \\
-4 & Solenoid Valve 12V NC & 1 & Rp 50.000 \\
-5 & Power Supply 12V (dari aki via step-down) & 1 & Rp 25.000 \\
-7 & Selang Drip Irrigation 10m & 1 & Rp 30.000 \\
-8 & Dripper / Emitter (10 pcs) & 1 pack & Rp 15.000 \\
-9 & Kabel Jumper (M-M, M-F, F-F) & 1 set & Rp 15.000 \\
-10 & Project Box (kotak panel) & 1 & Rp 20.000 \\
-11 & LED Indikator + Resistor & 3 & Rp 5.000 \\
-12 & PCB Prototype / Breadboard & 1 & Rp 10.000 \\
-13 & Konektor dan terminal & 1 set & Rp 10.000 \\
+\multicolumn{4}{l}{\textbf{Komponen per petak ($\times$ 6 petak)}} \\
+1 & ESP32 DevKit (WiFi + Bluetooth) & 6 & Rp 390.000 \\
+2 & Capacitive Soil Sensor v1.2 & 6 & Rp 210.000 \\
+3 & Relay Module 1 Channel 5V & 6 & Rp 72.000 \\
+4 & Solenoid Valve 12V NC & 6 & Rp 300.000 \\
+5 & Kabel Jumper (M-M, M-F, F-F) & 6 set & Rp 90.000 \\
+6 & LED Indikator + Resistor & 18 & Rp 30.000 \\
+7 & PCB Prototype / Breadboard & 6 & Rp 60.000 \\
 \midrule
-\multicolumn{3}{r}{\textbf{Total Hardware (1 titik)}} & \textbf{Rp 292.000} \\
+\multicolumn{4}{l}{\textbf{Komponen bersama (shared)}} \\
+8 & Power Supply 12V (dari aki via step-down) & 1 & Rp 25.000 \\
+9 & Selang Drip Irrigation 10m & 6 & Rp 180.000 \\
+10 & Dripper / Emitter (10 pcs) & 6 pack & Rp 90.000 \\
+11 & Project Box (kotak panel) & 6 & Rp 120.000 \\
+12 & Konektor dan terminal & 1 set & Rp 10.000 \\
+\midrule
+\multicolumn{3}{r}{\textbf{Total Hardware (6 petak)}} & \textbf{Rp 1.577.000} \\
 \multicolumn{3}{r}{} & \\
 \multicolumn{3}{r}{\textbf{+ LTE Router (sekali beli)}} & \textbf{Rp 450.000} \\
-\multicolumn{3}{r}{\textbf{Total Awal}} & \textbf{Rp 742.000} \\
+\multicolumn{3}{r}{\textbf{Total Awal}} & \textbf{Rp 2.027.000} \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -1069,6 +1072,38 @@ Berikut adalah arsitektur sistem secara detail:
 \bottomrule
 \end{tabularx}
 \end{table}
+
+\subsection{Konfigurasi Multi-Petak}
+
+Sistem ANDROMEDA dirancang untuk mencakup \textbf{6 petak} (bedengan) yang terbagi dalam dua lahan:
+
+\begin{table}[H]
+\centering
+\caption{Pembagian 6 petak ANDROMEDA}
+\label{tab:multi-petak}
+\begin{tabularx}{\textwidth}{c X c c}
+\toprule
+\textbf{Petak} & \textbf{Device ID} & \textbf{Lahan} & \textbf{Komponen per Petak} \\
+\midrule
+Petak 1 & \texttt{petak-01} & Lahan A & 1 ESP32 + 1 Sensor + 1 Relay + 1 Valve \\
+Petak 2 & \texttt{petak-02} & Lahan A & 1 ESP32 + 1 Sensor + 1 Relay + 1 Valve \\
+Petak 3 & \texttt{petak-03} & Lahan A & 1 ESP32 + 1 Sensor + 1 Relay + 1 Valve \\
+Petak 4 & \texttt{petak-04} & Lahan B & 1 ESP32 + 1 Sensor + 1 Relay + 1 Valve \\
+Petak 5 & \texttt{petak-05} & Lahan B & 1 ESP32 + 1 Sensor + 1 Relay + 1 Valve \\
+Petak 6 & \texttt{petak-06} & Lahan B & 1 ESP32 + 1 Sensor + 1 Relay + 1 Valve \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Setiap petak memiliki satu unit ESP32 yang berdiri sendiri (independen) dengan siklus deep sleep masing-masing. Total terdapat \textbf{6 unit ESP32}, \textbf{6 capacitive soil sensor}, \textbf{6 relay module}, dan \textbf{6 solenoid valve 12V NC}. Komponen seperti aki 100Ah, solar panel 300Wp, dan Huawei B535-932 4G LTE Router bersifat \textit{shared} (digunakan bersama oleh seluruh petak).
+
+Keuntungan arsitektur multi-petak independen:
+\begin{itemize}
+    \item \textbf{Fail-safe} — Jika satu ESP32 rusak, petak lain tetap beroperasi normal.
+    \item \textbf{Sederhana} — Tidak perlu multiplexer atau ADC eksternal.
+    \item \textbf{Fleksibel} — Setiap petak bisa punya threshold dan jadwal penyiraman berbeda.
+    \item \textbf{Mudah dirawat} — Komponen per petak identik, suku cadang seragam.
+\end{itemize}
 
 \section{Rancangan Rangkaian}
 
@@ -1331,12 +1366,12 @@ Berikut adalah daftar lengkap seluruh komponen yang dibutuhkan untuk implementas
 \toprule
 \textbf{No} & \textbf{Komponen} & \textbf{Qty} & \textbf{Estimasi Harga} & \textbf{Link Shopee} \\
 \midrule
-1 & ESP32 DevKit Board 30 Pin & 1 & Rp 45.000 -- 60.000 & \href{https://shopee.co.id/search?keyword=ESP32+DevKit+Board+30+pin}{Cari di Shopee} \\
-2 & Capacitive Soil Sensor v1.2 & 1 & Rp 15.000 -- 25.000 & \href{https://shopee.co.id/search?keyword=capacitive+soil+sensor+arduino}{Cari di Shopee} \\
-3 & Relay Module 1-Channel 5V Optocoupler & 1 & Rp 8.000 -- 15.000 & \href{https://shopee.co.id/search?keyword=relay+1+channel+5V+optocoupler}{Cari di Shopee} \\
-4 & Solenoid Valve 12V NC 1/2 inch & 1 & Rp 50.000 -- 80.000 & \href{https://shopee.co.id/search?keyword=solenoid+valve+12V+NC+1+2+inch+air}{Cari di Shopee} \\
-5 & LED Indikator 5mm (biru/merah) & 2 & Rp 1.000 -- 2.000 & \href{https://shopee.co.id/search?keyword=LED+5mm+indikator+merah+biru}{Cari di Shopee} \\
-6 & Resistor 220$\Omega$ (untuk LED) & 2 & Rp 500 -- 1.000 & \href{https://shopee.co.id/search?keyword=resistor+220+ohm}{Cari di Shopee} \\
+1 & ESP32 DevKit Board 30 Pin & 6 & Rp 270.000 -- 360.000 & \href{https://shopee.co.id/search?keyword=ESP32+DevKit+Board+30+pin}{Cari di Shopee} \\
+2 & Capacitive Soil Sensor v1.2 & 6 & Rp 90.000 -- 150.000 & \href{https://shopee.co.id/search?keyword=capacitive+soil+sensor+arduino}{Cari di Shopee} \\
+3 & Relay Module 1-Channel 5V Optocoupler & 6 & Rp 48.000 -- 90.000 & \href{https://shopee.co.id/search?keyword=relay+1+channel+5V+optocoupler}{Cari di Shopee} \\
+4 & Solenoid Valve 12V NC 1/2 inch & 6 & Rp 300.000 -- 480.000 & \href{https://shopee.co.id/search?keyword=solenoid+valve+12V+NC+1+2+inch+air}{Cari di Shopee} \\
+5 & LED Indikator 5mm (biru/merah) & 12 & Rp 6.000 -- 12.000 & \href{https://shopee.co.id/search?keyword=LED+5mm+indikator+merah+biru}{Cari di Shopee} \\
+6 & Resistor 220$\Omega$ (untuk LED) & 12 & Rp 3.000 -- 6.000 & \href{https://shopee.co.id/search?keyword=resistor+220+ohm}{Cari di Shopee} \\
 7 & Huawei B535-932 4G LTE Router & 1 & Rp 400.000 -- 500.000 & \href{https://shopee.co.id/search?keyword=Huawei+B535+router+4G+LTE}{Cari di Shopee} \\
 8 & Power Supply 12V 2A Adaptor & 1 & Rp 25.000 -- 40.000 & \href{https://shopee.co.id/search?keyword=power+supply+12V+2A+adaptor}{Cari di Shopee} \\
 9 & Aki Kering 100Ah (Yuasa NS70 or setara) & 1 & Rp 900.000 -- 1.200.000 & \href{https://shopee.co.id/search?keyword=aki+kering+100Ah+NS70}{Cari di Shopee} \\
@@ -1363,21 +1398,21 @@ Berikut adalah daftar lengkap seluruh komponen yang dibutuhkan untuk implementas
 
 \begin{table}[H]
 \centering
-\caption{Rekapitulasi biaya berdasarkan kategori}
+\caption{Rekapitulasi biaya berdasarkan kategori (6 petak)}
 \label{tab:cost-summary}
 \begin{tabularx}{\textwidth}{l X c}
 \toprule
 \textbf{Kategori} & \textbf{Komponen} & \textbf{Estimasi Total} \\
 \midrule
-Mikrokontroler \& Sensor & ESP32 + Soil Sensor + Kapasitor & Rp 60.500 -- 86.000 \\
-Aktuasi & Relay Module + Solenoid Valve 12V NC & Rp 58.000 -- 95.000 \\
+Mikrokontroler \& Sensor & 6× ESP32 + 6× Soil Sensor + 6× Kapasitor & Rp 363.000 -- 516.000 \\
+Aktuasi & 6× Relay Module + 6× Solenoid Valve 12V NC & Rp 348.000 -- 570.000 \\
 Konektivitas & Huawei B535-932 4G Router & Rp 400.000 -- 500.000 \\
 Kabel \& Instalasi & Belden/UTP 20m + NYMHY + Jumper + Terminal + MCB & Rp 130.000 -- 395.000 \\
 Listrik \& Daya & Aki 100Ah + Solar Panel 300Wp + SCC 20A + Adaptor 12V & Rp 2.025.000 -- 2.890.000 \\
-Irigasi & Selang PE 16mm + Dripper + Fitting & Rp 80.000 -- 130.000 \\
-Perkakas & Project Box + Timah Solder + Crimping + Skun & Rp 90.000 -- 150.000 \\
+Irigasi & 6× Selang PE 16mm + 6× Dripper + Fitting & Rp 300.000 -- 480.000 \\
+Perkakas & 6× Project Box + Timah Solder + Crimping + Skun & Rp 270.000 -- 450.000 \\
 \midrule
-\textbf{Total Keseluruhan} & & \textbf{Rp 2.843.500 -- 4.246.000} \\
+\textbf{Total Keseluruhan} & & \textbf{Rp 3.836.000 -- 5.801.000} \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -1471,13 +1506,13 @@ Berdasarkan seluruh analisis, skema terbaik untuk implementasi ANDROMEDA di PDB 
 \subsection{Alur Kerja Sistem Final}
 
 \begin{enumerate}
-    \item \textbf{Sensor membaca kelembaban} — Capacitive Soil Sensor mengukur kelembaban tanah, output tegangan analog 0--3,3V.
-    \item \textbf{Dikirim ke ESP32} — Sinyal sensor dikirim langsung melalui kabel twisted pair shielded (\textasciitilde10--20m) ke pin ADC ESP32 (GPIO34).
-    \item \textbf{Koneksi internet} — ESP32 terhubung ke WiFi dari Huawei B535-932 (4G LTE, daya dari aki 12V).
-    \item \textbf{Data ke Supabase} — ESP32 mengirim data sensor \texttt{(moisture, timestamp)} via HTTP POST ke Supabase REST API.
+    \item \textbf{Sensor membaca kelembaban} — Masing-masing dari 6 petak memiliki Capacitive Soil Sensor yang mengukur kelembaban tanah, output tegangan analog 0--3,3V.
+    \item \textbf{Dikirim ke ESP32} — Sinyal sensor dari setiap petak dikirim langsung melalui kabel twisted pair shielded (\textasciitilde10--20m) ke pin ADC ESP32 (GPIO34). Setiap petak memiliki ESP32 sendiri yang independen.
+    \item \textbf{Koneksi internet} — Keenam ESP32 terhubung ke WiFi yang sama dari Huawei B535-932 (4G LTE, daya dari aki 12V).
+    \item \textbf{Data ke Supabase} — Setiap ESP32 mengirim data sensor \texttt{(device\_id, moisture, timestamp)} via HTTP POST ke Supabase REST API.
     \item \textbf{Kontrol otomatis} — Jika kelembaban $<$ threshold $\to$ ESP32 mengaktifkan relay $\to$ Solenoid Valve terbuka $\to$ air menetes dari tandon.
-    \item \textbf{Monitoring Aplikasi} — Aplikasi Flutter membaca data dari Supabase Flutter SDK secara real-time. Pengguna dapat melihat dashboard, grafik historis, dan mengirim perintah siram manual.
-    \item \textbf{Daya mandiri} — Solar panel 300Wp mengisi aki 100Ah melalui SCC 20A. Aki memberi daya ke router LTE, ESP32, dan solenoid valve 24/7.
+    \item \textbf{Monitoring Aplikasi} — Aplikasi Flutter menampilkan data dari 6 petak secara real-time melalui Supabase Flutter SDK. Pengguna dapat melihat dashboard per petak, grafik historis, dan mengirim perintah siram manual ke petak tertentu.
+    \item \textbf{Daya mandiri} — Solar panel 300Wp mengisi aki 100Ah melalui SCC 20A. Aki memberi daya ke router LTE, keenam ESP32, dan solenoid valve 24/7.
 \end{enumerate}
 
 
@@ -1500,7 +1535,7 @@ Berdasarkan perancangan sistem ANDROMEDA (Android Routine Monitoring Electronic 
     \item Pemilihan solenoid valve 12V NC memungkinkan sistem memanfaatkan tandon air dengan gravitasi, menghemat daya secara signifikan (0W saat idle), dan menyediakan fail-safe (otomatis tertutup saat listrik padam).
     \item Penggunaan capacitive soil sensor dipilih karena ketahanan jangka panjang dan akurasi yang stabil, mengatasi kelemahan sensor resistif YL-69 yang mudah korosi.
     \item Huawei B535-932 4G LTE Router dipilih sebagai perangkat koneksi internet karena daya 12V DC yang langsung cocok dengan aki, tanpa perlu inverter, dan biaya bulanan yang rendah (Rp 15.000--30.000/bulan).
-    \item Sistem ini memiliki estimasi biaya awal sekitar \textbf{Rp 2.843.500 -- 4.246.000} (termasuk ESP32, sensor, solenoid valve, LTE router, aki 100Ah, solar panel 300Wp, dan kabel Belden/UTP 20m). Biaya operasional hanya Rp 15.000--30.000/bulan untuk paket data.
+    \item Sistem ini memiliki estimasi biaya awal sekitar \textbf{Rp 3.836.000 -- 5.801.000} (termasuk 6× ESP32, 6× sensor, 6× solenoid valve, LTE router, aki 100Ah, solar panel 300Wp, dan kabel Belden/UTP 20m). Biaya operasional hanya Rp 15.000--30.000/bulan untuk paket data.
 \end{enumerate}
 
 \section{Saran}
@@ -1510,7 +1545,7 @@ Untuk pengembangan lebih lanjut, beberapa saran yang dapat diberikan:
 \begin{enumerate}
     \item \textbf{Fertigasi} — Menambahkan sistem pemupukan otomatis (nutrisi) yang terintegrasi dengan irigasi.
     \item \textbf{Sensor Tambahan} — Menambahkan sensor suhu, kelembaban udara, pH tanah, dan intensitas cahaya untuk analisis yang lebih komprehensif.
-    \item \textbf{Ekspansi Multi-Petak} — Jika sistem diperluas ke beberapa petak, gunakan multiplexer CD4051 atau modul ADC eksternal (ADS1115 via I2C) untuk menambah channel sensor.
+    \item \textbf{Ekspansi Multi-Lahan} — Sistem multi-petak yang sudah dirancang (6 petak) dapat diperluas ke lahan lain dengan menambah unit ESP32 baru dan mendaftarkan device ID baru di Supabase.
     \item \textbf{Machine Learning} — Menggunakan data historis untuk memprediksi kebutuhan air tanaman berdasarkan fase pertumbuhan dan cuaca.
     \item \textbf{Multi-Device} — Mengembangkan sistem agar dapat menangani banyak titik lahan dari satu aplikasi.
     \item \textbf{Notifikasi Push} — Menambahkan notifikasi real-time ke aplikasi saat kelembaban kritis atau valve error.
