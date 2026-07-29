@@ -9,8 +9,8 @@
 // ============================================================
 class SupabaseConfig {
   // 🔴 GANTI INI dengan URL project Supabase kamu!
-  static const String url = 'https://your-project.supabase.co';
+  static const String url = 'https://hedsphbfzbhpmiwihrnk.supabase.co';
 
   // 🔴 GANTI INI dengan anon public key kamu!
-  static const String publishableKey = 'your-anon-public-key';
+  static const String publishableKey = 'sb_publishable_NUeHpWMeBE6R-lXNr6-jUQ_KWhaGTT5';
 }
