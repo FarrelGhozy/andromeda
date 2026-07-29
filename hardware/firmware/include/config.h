@@ -10,15 +10,16 @@
 // ============================================================
 // KONFIGURASI JARINGAN
 // ============================================================
-#define WIFI_SSID "HUAWEI-B535-932"
-#define WIFI_PASSWORD "ganti-password-wifi"
+// #define WIFI_SSID "HUAWEI-B535-932"
+#define WIFI_SSID "WIFI_Premium"
+#define WIFI_PASSWORD "senyumdulu"
 
 // ============================================================
 // KONFIGURASI SUPABASE
 // Ganti dengan URL dan publishable key project Supabase lo
 // ============================================================
-#define SUPABASE_URL "https://your-project.supabase.co"
-#define SUPABASE_ANON_KEY "your-anon-key"
+#define SUPABASE_URL "https://hedsphbfzbhpmiwihrnk.supabase.co"
+#define SUPABASE_ANON_KEY "sb_publishable_NUeHpWMeBE6R-lXNr6-jUQ_KWhaGTT5"
 
 // ============================================================
 // DEFAULT SISTEM
