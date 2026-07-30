@@ -302,6 +302,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         child: ChoiceChip(
                           label: Text(range.label),
                           selected: selected,
+                          showCheckmark: false,
                           onSelected: (_) => provider.setChartRange(range),
                           selectedColor: Theme.of(context).colorScheme.primary,
                           labelStyle: TextStyle(

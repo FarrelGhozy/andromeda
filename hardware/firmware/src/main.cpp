@@ -8,8 +8,10 @@
 unsigned long lastSensorPush = 0;
 unsigned long lastCommandCheck = 0;
 unsigned long lastWiFiCheck = 0;
+unsigned long lastValvePush = 0;
 int currentReadIntervalSec = DEFAULT_READ_INTERVAL_SEC;
 SystemConfig cachedConfigs[NUM_PETAK];
+bool prevValveStates[NUM_PETAK] = {false};
 
 static void refreshAllConfigs() {
   for (int i = 0; i < NUM_PETAK; i++) {
@@ -53,6 +55,26 @@ void loop() {
 
   // 1. Update valve timers (non-blocking)
   updateValves();
+
+  // 1b. Push valve state change to Supabase immediately
+  if (now - lastValvePush >= 2000) {
+    bool valveChanged = false;
+    for (int i = 0; i < NUM_PETAK; i++) {
+      bool current = getValveState(i);
+      if (current != prevValveStates[i]) {
+        valveChanged = true;
+        prevValveStates[i] = current;
+      }
+    }
+    if (valveChanged) {
+      lastValvePush = now;
+      AllReadings readings = readAllSensors(SENSOR_PINS);
+      bool states[NUM_PETAK];
+      for (int i = 0; i < NUM_PETAK; i++) states[i] = getValveState(i);
+      postAllSensorReadings(readings, states, PETAK_IDS);
+      Serial.println("Immediate push after valve state change");
+    }
+  }
 
   // 2. WiFi check & reconnect every 30s
   if (now - lastWiFiCheck >= 30000) {
@@ -119,7 +141,8 @@ void loop() {
           currentReadIntervalSec = cfg.readIntervalSec;
         }
 
-        if (cfg.mode == "auto"
+        if (isSensorValid(readings.readings[i])
+            && cfg.mode == "auto"
             && readings.readings[i].percent < cfg.thresholdDry
             && !getValveState(i)) {
           Serial.print("Petak ");

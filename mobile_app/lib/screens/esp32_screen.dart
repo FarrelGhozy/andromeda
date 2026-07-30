@@ -38,9 +38,11 @@ class Esp32Screen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final device = devices[index];
                 final reading = provider.latestFor(device.deviceId);
+                final isOnline = provider.isDeviceOnline(device.deviceId);
                 return _PetakCard(
                   device: device,
                   reading: reading,
+                  isOnline: isOnline,
                   onTap: () {
                     HapticFeedback.lightImpact();
                     Navigator.pushNamed(
@@ -62,11 +64,13 @@ class Esp32Screen extends StatelessWidget {
 class _PetakCard extends StatelessWidget {
   final dynamic device;
   final dynamic reading;
+  final bool isOnline;
   final VoidCallback onTap;
 
   const _PetakCard({
     required this.device,
     required this.reading,
+    required this.isOnline,
     required this.onTap,
   });
 
@@ -74,10 +78,10 @@ class _PetakCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final moisture = reading?.moisturePercent ?? 0.0;
-    final isOnline = reading != null;
     final isValveOn = reading?.isValveOpen ?? false;
 
     return Card(
+      color: isOnline ? null : theme.colorScheme.surfaceContainerLow,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(16),
@@ -86,12 +90,16 @@ class _PetakCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              MoistureGauge(percent: moisture, size: 100),
+              MoistureGauge(
+                percent: moisture,
+                size: 100,
+              ),
               const SizedBox(height: 8),
               Text(
                 device.name,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w600,
+                  color: isOnline ? null : Colors.grey,
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 1,

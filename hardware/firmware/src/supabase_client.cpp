@@ -22,18 +22,32 @@ bool postAllSensorReadings(const AllReadings& allReadings, const bool* valveStat
   StaticJsonDocument<1024> doc;
   JsonArray array = doc.to<JsonArray>();
 
+  int validCount = 0;
   for (int i = 0; i < NUM_PETAK; i++) {
+    if (!isSensorValid(allReadings.readings[i])) continue;
+
     JsonObject item = array.createNestedObject();
     item["device_id"] = petakIds[i];
     item["moisture"] = allReadings.readings[i].raw;
     item["moisture_percent"] = allReadings.readings[i].percent;
     item["valve_status"] = valveStates[i] ? "ON" : "OFF";
+    validCount++;
+  }
+
+  if (validCount == 0) {
+    Serial.println("No valid sensor readings to post");
+    http.end();
+    return true;
   }
 
   String payload;
   serializeJson(doc, payload);
 
-  Serial.print("POST sensor_readings (batch): ");
+  Serial.print("POST sensor_readings (");
+  Serial.print(validCount);
+  Serial.print("/");
+  Serial.print(NUM_PETAK);
+  Serial.print(" valid): ");
   Serial.println(payload);
 
   int code = http.POST(payload);

@@ -12,7 +12,10 @@ class DevicesProvider extends ChangeNotifier {
   bool _readingsLoaded = false;
   String? _error;
 
+  static const _onlineThresholdMinutes = 10;
+
   List<Device> get devices => _devices;
+  List<Device> get allDevices => _devices;
   SensorReading? latestFor(String deviceId) => _latestReadings[deviceId];
   bool get isLoading => _isLoading;
   String? get error => _error;
@@ -47,6 +50,12 @@ class DevicesProvider extends ChangeNotifier {
     }
   }
 
+  bool isDeviceOnline(String deviceId) {
+    final reading = _latestReadings[deviceId];
+    if (reading == null) return false;
+    return DateTime.now().difference(reading.createdAt).inMinutes < _onlineThresholdMinutes;
+  }
+
   List<String> get esp32Ids {
     final ids = _devices.map((d) => d.esp32Id).toSet().toList();
     ids.sort();
@@ -69,7 +78,7 @@ class DevicesProvider extends ChangeNotifier {
 
   int onlineCountForEsp32(String esp32Id) {
     return devicesForEsp32(esp32Id)
-        .where((d) => _latestReadings[d.deviceId] != null)
+        .where((d) => isDeviceOnline(d.deviceId))
         .length;
   }
 }

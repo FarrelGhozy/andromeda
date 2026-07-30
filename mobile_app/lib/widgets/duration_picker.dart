@@ -46,6 +46,7 @@ class DurationPicker extends StatelessWidget {
                 child: ChoiceChip(
                   label: Text(_labelFor(d)),
                   selected: isSelected,
+                  showCheckmark: false,
                   onSelected: (_) => onSelected(d),
                   selectedColor: theme.colorScheme.primary,
                   labelStyle: TextStyle(

@@ -13,5 +13,6 @@ struct AllReadings {
 };
 
 AllReadings readAllSensors(const int* sensorPins);
+bool isSensorValid(const SensorReading& reading);
 
 #endif
