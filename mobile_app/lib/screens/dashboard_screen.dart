@@ -119,6 +119,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   percent: percent,
                   size: gaugeSize,
                   showLabel: true,
+                  greyedOut: reading == null,
                 );
               },
             ),

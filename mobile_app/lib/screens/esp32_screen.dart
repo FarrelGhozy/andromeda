@@ -93,6 +93,7 @@ class _PetakCard extends StatelessWidget {
               MoistureGauge(
                 percent: moisture,
                 size: 100,
+                greyedOut: !isOnline,
               ),
               const SizedBox(height: 8),
               Text(

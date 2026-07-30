@@ -6,17 +6,19 @@ class MoistureGauge extends StatelessWidget {
   final double percent;
   final double size;
   final bool showLabel;
+  final bool greyedOut;
 
   const MoistureGauge({
     super.key,
     required this.percent,
     required this.size,
     this.showLabel = true,
+    this.greyedOut = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final color = _getColor();
+    final color = greyedOut ? AppColors.offline : _getColor();
     final label = _getLabel();
 
     return SizedBox(
@@ -24,7 +26,7 @@ class MoistureGauge extends StatelessWidget {
       height: size,
       child: CustomPaint(
         painter: _GaugePainter(
-          percent: (percent / 100).clamp(0.0, 1.0),
+          percent: greyedOut ? 0.0 : (percent / 100).clamp(0.0, 1.0),
           color: color,
           backgroundColor: Colors.grey[200]!,
           strokeWidth: size * 0.12,
@@ -35,7 +37,7 @@ class MoistureGauge extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      '${percent.toStringAsFixed(0)}%',
+                      greyedOut ? 'OFF' : '${percent.toStringAsFixed(0)}%',
                       style: TextStyle(
                         fontSize: size * 0.28,
                         fontWeight: FontWeight.bold,
@@ -43,10 +45,10 @@ class MoistureGauge extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      label,
+                      greyedOut ? 'Offline' : label,
                       style: TextStyle(
                         fontSize: size * 0.11,
-                        color: Colors.grey[600],
+                        color: greyedOut ? AppColors.offline : Colors.grey[600],
                       ),
                     ),
                   ],
@@ -89,7 +91,6 @@ class _GaugePainter extends CustomPainter {
     final radius = (size.width - strokeWidth) / 2;
     final rect = Rect.fromCircle(center: center, radius: radius);
 
-    // Background circle
     final bgPaint = Paint()
       ..color = backgroundColor
       ..style = PaintingStyle.stroke
@@ -99,7 +100,6 @@ class _GaugePainter extends CustomPainter {
 
     if (percent <= 0) return;
 
-    // Foreground arc
     final fgPaint = Paint()
       ..color = color
       ..style = PaintingStyle.stroke
