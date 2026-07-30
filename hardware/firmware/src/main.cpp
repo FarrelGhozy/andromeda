@@ -7,7 +7,21 @@
 
 unsigned long lastSensorPush = 0;
 unsigned long lastCommandCheck = 0;
+unsigned long lastWiFiCheck = 0;
 int currentReadIntervalSec = DEFAULT_READ_INTERVAL_SEC;
+SystemConfig cachedConfigs[NUM_PETAK];
+
+static void refreshAllConfigs() {
+  for (int i = 0; i < NUM_PETAK; i++) {
+    SystemConfig cfg = getSystemConfig(PETAK_IDS[i]);
+    if (cfg.valid) {
+      cachedConfigs[i] = cfg;
+      if (cfg.readIntervalSec > 0) {
+        currentReadIntervalSec = cfg.readIntervalSec;
+      }
+    }
+  }
+}
 
 void setup() {
   Serial.begin(115200);
@@ -18,7 +32,7 @@ void setup() {
 
   initAllValves(RELAY_PINS);
 
-  Serial.println("ANDROMEDA firmware starting (always-on mode)");
+  Serial.println("ANDROMEDA firmware v2 (non-blocking)");
   Serial.print("ESP32 ID: ");
   Serial.println(ESP32_ID);
   Serial.print("Number of petaks: ");
@@ -29,10 +43,7 @@ void setup() {
     ESP.restart();
   }
 
-  SystemConfig firstConfig = getSystemConfig(PETAK_IDS[0]);
-  if (firstConfig.valid) {
-    currentReadIntervalSec = firstConfig.readIntervalSec;
-  }
+  refreshAllConfigs();
 
   lastSensorPush = millis();
 }
@@ -40,7 +51,21 @@ void setup() {
 void loop() {
   unsigned long now = millis();
 
-  // ========== CEK PENDING COMMANDS (prioritas) ==========
+  // 1. Update valve timers (non-blocking)
+  updateValves();
+
+  // 2. WiFi check & reconnect every 30s
+  if (now - lastWiFiCheck >= 30000) {
+    lastWiFiCheck = now;
+    if (WiFi.status() != WL_CONNECTED) {
+      Serial.println("WiFi disconnected, reconnecting...");
+      if (connectWiFi()) {
+        refreshAllConfigs();
+      }
+    }
+  }
+
+  // 3. Check pending commands every 1s
   if (now - lastCommandCheck >= COMMAND_POLL_INTERVAL_MS) {
     lastCommandCheck = now;
 
@@ -54,58 +79,70 @@ void loop() {
         Serial.println(cmd.command);
 
         if (cmd.command.equals("VALVE_ON")) {
-          int duration = cmd.duration > 0 ? cmd.duration * 1000 : DEFAULT_VALVE_DURATION_MS;
-          openValve(RELAY_PINS[i], duration);
+          if (cmd.duration == 0 && cachedConfigs[i].mode == "manual") {
+            openValveIndefinitely(RELAY_PINS[i]);
+          } else if (cmd.duration > 0) {
+            openValve(RELAY_PINS[i], cmd.duration * 1000);
+          } else {
+            openValve(RELAY_PINS[i], cachedConfigs[i].valveDurationMs);
+          }
         } else if (cmd.command.equals("VALVE_OFF")) {
           closeSingleValve(RELAY_PINS[i]);
         }
 
         markCommandExecuted(cmd.id);
+
+        // Immediate push so app sees valve state in real-time
+        AllReadings cmdReadings = readAllSensors(SENSOR_PINS);
+        bool cmdValveStates[NUM_PETAK];
+        for (int j = 0; j < NUM_PETAK; j++) {
+          cmdValveStates[j] = getValveState(j);
+        }
+        postAllSensorReadings(cmdReadings, cmdValveStates, PETAK_IDS);
+        Serial.println("Immediate push after command");
       }
     }
   }
 
-  // ========== PUSH SENSOR DATA SESUAI INTERVAL ==========
+  // 4. Sensor push cycle
   if (now - lastSensorPush >= (unsigned long)currentReadIntervalSec * 1000) {
+    lastSensorPush = now;
     Serial.println("=== Sensor push cycle ===");
 
-    AllReadings beforeReadings = readAllSensors(SENSOR_PINS);
+    AllReadings readings = readAllSensors(SENSOR_PINS);
 
-    // Auto mode: buka valve jika tanah kering
     for (int i = 0; i < NUM_PETAK; i++) {
-      SystemConfig config = getSystemConfig(PETAK_IDS[i]);
-      if (!config.valid) {
-        config.mode = "auto";
-        config.thresholdDry = DEFAULT_THRESHOLD_DRY;
-        config.thresholdWet = DEFAULT_THRESHOLD_WET;
-        config.valveDurationMs = DEFAULT_VALVE_DURATION_MS;
-      }
-      if (config.readIntervalSec > 0) {
-        currentReadIntervalSec = config.readIntervalSec;
-      }
+      SystemConfig cfg = getSystemConfig(PETAK_IDS[i]);
+      if (cfg.valid) {
+        cachedConfigs[i] = cfg;
+        if (cfg.readIntervalSec > 0) {
+          currentReadIntervalSec = cfg.readIntervalSec;
+        }
 
-      if (config.mode == "auto" && beforeReadings.readings[i].percent < config.thresholdDry) {
-        Serial.print("Petak ");
-        Serial.print(i);
-        Serial.print(" dry (");
-        Serial.print(beforeReadings.readings[i].percent);
-        Serial.print("%), opening valve for ");
-        Serial.print(config.valveDurationMs);
-        Serial.println(" ms");
-        openValve(RELAY_PINS[i], config.valveDurationMs);
+        if (cfg.mode == "auto"
+            && readings.readings[i].percent < cfg.thresholdDry
+            && !getValveState(i)) {
+          Serial.print("Petak ");
+          Serial.print(i);
+          Serial.print(" dry (");
+          Serial.print(readings.readings[i].percent);
+          Serial.print("%), opening valve for ");
+          Serial.print(cfg.valveDurationMs);
+          Serial.println(" ms");
+          openValve(RELAY_PINS[i], cfg.valveDurationMs);
+        }
       }
     }
 
-    closeAllValves(RELAY_PINS);
+    bool actualValveStates[NUM_PETAK];
+    for (int i = 0; i < NUM_PETAK; i++) {
+      actualValveStates[i] = getValveState(i);
+    }
 
-    AllReadings afterReadings = readAllSensors(SENSOR_PINS);
-    bool valveStates[NUM_PETAK] = {false};
+    postAllSensorReadings(readings, actualValveStates, PETAK_IDS);
 
-    postAllSensorReadings(afterReadings, valveStates, PETAK_IDS);
-
-    lastSensorPush = millis();
     Serial.println("=== Sensor push complete ===");
   }
 
-  delay(100);
+  delay(10);
 }

@@ -21,6 +21,8 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  int _selectedValveDuration = 0;
+
   @override
   void initState() {
     super.initState();
@@ -169,6 +171,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildValveSection(DashboardProvider provider) {
     final isOpen = provider.isValveOpen;
+    final isAuto = provider.config?.isAutoMode == true;
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -183,10 +187,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
                 StatusBadge(
-                  text: provider.config?.isAutoMode == true ? 'Otomatis' : 'Manual',
-                  color: provider.config?.isAutoMode == true
-                      ? AppColors.primaryGreen
-                      : AppColors.accentOrange,
+                  text: isAuto ? 'Otomatis' : 'Manual',
+                  color: isAuto ? AppColors.primaryGreen : AppColors.accentOrange,
                   fontSize: 11,
                 ),
               ],
@@ -219,7 +221,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     icon: Icons.play_arrow,
                     color: AppColors.success,
                     onPressed: !isOpen
-                        ? () => provider.sendValveCommand('VALVE_ON')
+                        ? () => provider.sendValveCommand(
+                              'VALVE_ON',
+                              duration: _selectedValveDuration,
+                            )
                         : null,
                   ),
                 ),
@@ -228,7 +233,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: ValveButton(
                     label: 'TUTUP',
                     icon: Icons.stop,
-                    color: AppColors.offline,
+                    color: AppColors.danger,
                     onPressed: isOpen
                         ? () => provider.sendValveCommand('VALVE_OFF')
                         : null,
@@ -238,8 +243,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             const SizedBox(height: 12),
             DurationPicker(
-              onSelected: (duration) =>
-                  provider.sendValveCommand('VALVE_ON', duration: duration),
+              selectedDuration: _selectedValveDuration,
+              onSelected: (d) => setState(() => _selectedValveDuration = d),
             ),
           ],
         ),
