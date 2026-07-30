@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../config/theme_config.dart';
 
 class ConfigSlider extends StatelessWidget {
   final String label;
@@ -8,7 +7,8 @@ class ConfigSlider extends StatelessWidget {
   final double min;
   final double max;
   final int? divisions;
-  final ValueChanged<double> onChanged;
+  final ValueChanged<double>? onChanged;
+  final ValueChanged<double>? onChangeEnd;
 
   const ConfigSlider({
     super.key,
@@ -18,30 +18,25 @@ class ConfigSlider extends StatelessWidget {
     required this.min,
     required this.max,
     this.divisions,
-    required this.onChanged,
+    this.onChanged,
+    this.onChangeEnd,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
+            Text(label, style: theme.textTheme.bodyMedium),
             if (subtitle != null)
               Text(
                 subtitle!,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: AppColors.primaryGreen,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.primary,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -52,9 +47,8 @@ class ConfigSlider extends StatelessWidget {
           min: min,
           max: max,
           divisions: divisions,
-          activeColor: AppColors.primaryGreen,
-          inactiveColor: Colors.grey[300],
-          onChanged: onChanged,
+          onChanged: onChanged ?? (_) {},
+          onChangeEnd: onChangeEnd ?? (_) {},
         ),
       ],
     );

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../services/supabase_service.dart';
+import '../main.dart';
 import '../config/theme_config.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -13,12 +15,12 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(title: const Text('Pengaturan')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Status Koneksi
           _buildCard(
             title: 'Status Koneksi',
             children: [
@@ -29,21 +31,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   return Row(
                     children: [
                       Icon(
-                        connected
-                            ? Icons.check_circle
-                            : Icons.error,
-                        color: connected
-                            ? AppColors.success
-                            : AppColors.danger,
+                        connected ? Icons.check_circle : Icons.error,
+                        color: connected ? AppColors.success : AppColors.danger,
                         size: 20,
                       ),
                       const SizedBox(width: 8),
                       Text(
                         connected ? 'Terhubung' : 'Terputus',
                         style: TextStyle(
-                          color: connected
-                              ? AppColors.success
-                              : AppColors.danger,
+                          color: connected ? AppColors.success : AppColors.danger,
                         ),
                       ),
                     ],
@@ -53,55 +49,61 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
           const SizedBox(height: 8),
-
-          // Notifikasi
           _buildCard(
-            title: 'Notifikasi',
+            title: 'Tampilan',
             children: [
               SwitchListTile(
-                title: const Text('Alert Kelembaban Kritis'),
-                subtitle: const Text('Dapatkan notifikasi saat tanah terlalu kering/basah'),
-                value: false,
-                onChanged: (v) {},
+                title: const Text('Mode Gelap'),
+                subtitle: const Text('Gunakan tema gelap untuk kenyamanan mata'),
+                value: AndromedaApp.of(context)?.isDarkMode ?? false,
+                onChanged: (v) => AndromedaApp.of(context)?.toggleTheme(v),
                 contentPadding: EdgeInsets.zero,
+                secondary: Icon(
+                  (AndromedaApp.of(context)?.isDarkMode ?? false)
+                      ? Icons.dark_mode
+                      : Icons.light_mode,
+                  color: theme.colorScheme.primary,
+                ),
               ),
             ],
           ),
           const SizedBox(height: 8),
-
-          // Data
           _buildCard(
             title: 'Data',
             children: [
               ListTile(
-                leading: const Icon(Icons.download, color: AppColors.primaryGreen),
+                leading: Icon(Icons.download, color: theme.colorScheme.primary),
                 title: const Text('Ekspor Data CSV'),
                 subtitle: const Text('Download riwayat sensor ke penyimpanan'),
-                trailing: const Icon(Icons.chevron_right),
+                trailing: Chip(
+                  label: Text(
+                    'Segera Hadir',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  backgroundColor: Colors.grey[200],
+                  visualDensity: VisualDensity.compact,
+                  padding: EdgeInsets.zero,
+                ),
                 contentPadding: EdgeInsets.zero,
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Fitur ekspor akan segera hadir')),
-                  );
-                },
+                enabled: false,
               ),
             ],
           ),
           const SizedBox(height: 8),
-
-          // Info
           _buildCard(
             title: 'Tentang',
             children: [
               ListTile(
-                leading: const Icon(Icons.info_outline, color: AppColors.primaryGreen),
+                leading: Icon(Icons.info_outline, color: theme.colorScheme.primary),
                 title: const Text('ANDROMEDA'),
                 subtitle: const Text('v1.0.0 (build 1)\nIrigasi Tetes Otomatis Berbasis IoT'),
                 contentPadding: EdgeInsets.zero,
               ),
               const Divider(),
               ListTile(
-                leading: const Icon(Icons.code, color: AppColors.accentBlue),
+                leading: Icon(Icons.code, color: AppColors.accentBlue),
                 title: const Text('Open Source'),
                 subtitle: const Text('github.com/FarrelGhozy/andromeda'),
                 contentPadding: EdgeInsets.zero,
@@ -109,10 +111,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               const Divider(),
               ListTile(
-                leading: const Icon(Icons.groups, color: AppColors.accentOrange),
-                title: const Text('Program PDB'),
-                subtitle: const Text('Desa Meraya — Kec. Menthobi Raya'),
+                leading: Icon(Icons.share, color: AppColors.accentOrange),
+                title: const Text('Bagikan Aplikasi'),
+                subtitle: const Text('Sebarkan ke sesama petani'),
                 contentPadding: EdgeInsets.zero,
+                onTap: () => _shareApp(),
               ),
             ],
           ),
@@ -148,5 +151,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
+  }
+
+  void _shareApp() {
+    Share.share(
+      'ANDROMEDA - Irigasi Tetes Otomatis Berbasis IoT untuk Petani Indonesia\n\n'
+      'https://github.com/FarrelGhozy/andromeda',
+    );
   }
 }

@@ -78,23 +78,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // 1. Gauge Kelembaban
             _buildGaugeSection(provider),
             const SizedBox(height: 16),
-
-            // 2. Status Valve
             _buildValveSection(provider),
             const SizedBox(height: 16),
-
-            // 3. Kontrol Valve
-            _buildValveControl(provider),
-            const SizedBox(height: 16),
-
-            // 4. Grafik Historis
             _buildChartSection(provider),
             const SizedBox(height: 16),
-
-            // 5. Konfigurasi
             _buildConfigSection(provider),
             const SizedBox(height: 24),
           ],
@@ -116,10 +105,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 16),
-            MoistureGauge(
-              percent: percent,
-              size: 200,
-              showLabel: true,
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final gaugeSize = constraints.maxWidth < 300
+                    ? constraints.maxWidth * 0.6
+                    : 200.0;
+                return MoistureGauge(
+                  percent: percent,
+                  size: gaugeSize,
+                  showLabel: true,
+                );
+              },
             ),
             const SizedBox(height: 16),
             Row(
@@ -152,15 +148,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.grey[100],
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: Colors.grey[600]),
+          Icon(icon, size: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
           const SizedBox(width: 6),
-          Text(text, style: TextStyle(fontSize: 12, color: Colors.grey[700])),
+          Text(
+            text,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
         ],
       ),
     );
@@ -171,59 +172,43 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'Status Valve',
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Icon(
-                      isOpen ? Icons.water_drop : Icons.water_drop_outlined,
-                      color: isOpen ? AppColors.danger : AppColors.success,
-                      size: 28,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      isOpen ? 'TERBUKA' : 'TERTUTUP',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: isOpen ? AppColors.danger : AppColors.success,
-                      ),
-                    ),
-                  ],
+                StatusBadge(
+                  text: provider.config?.isAutoMode == true ? 'Otomatis' : 'Manual',
+                  color: provider.config?.isAutoMode == true
+                      ? AppColors.primaryGreen
+                      : AppColors.accentOrange,
+                  fontSize: 11,
                 ),
               ],
             ),
-            StatusBadge(
-              text: provider.config?.isAutoMode == true ? 'Otomatis' : 'Manual',
-              color: provider.config?.isAutoMode == true
-                  ? AppColors.primaryGreen
-                  : AppColors.accentOrange,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildValveControl(DashboardProvider provider) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Kontrol Valve',
-              style: Theme.of(context).textTheme.titleSmall,
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Icon(
+                  isOpen ? Icons.water_drop : Icons.water_drop_outlined,
+                  color: isOpen ? AppColors.success : AppColors.offline,
+                  size: 28,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  isOpen ? 'TERBUKA' : 'TERTUTUP',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: isOpen ? AppColors.success : AppColors.offline,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             Row(
@@ -232,8 +217,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: ValveButton(
                     label: 'BUKA',
                     icon: Icons.play_arrow,
-                    color: AppColors.danger,
-                    onPressed: !provider.isValveOpen
+                    color: AppColors.success,
+                    onPressed: !isOpen
                         ? () => provider.sendValveCommand('VALVE_ON')
                         : null,
                   ),
@@ -243,8 +228,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: ValveButton(
                     label: 'TUTUP',
                     icon: Icons.stop,
-                    color: AppColors.success,
-                    onPressed: provider.isValveOpen
+                    color: AppColors.offline,
+                    onPressed: isOpen
                         ? () => provider.sendValveCommand('VALVE_OFF')
                         : null,
                   ),
@@ -276,24 +261,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   'Riwayat Kelembaban',
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
-                Row(
-                  children: ChartRange.values.map((range) {
-                    final selected = provider.selectedChartRange == range;
-                    return Padding(
-                      padding: const EdgeInsets.only(left: 4),
-                      child: ChoiceChip(
-                        label: Text(range.label),
-                        selected: selected,
-                        onSelected: (_) => provider.setChartRange(range),
-                        selectedColor: AppColors.primaryGreen,
-                        labelStyle: TextStyle(
-                          color: selected ? Colors.white : null,
-                          fontSize: 12,
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: ChartRange.values.map((range) {
+                      final selected = provider.selectedChartRange == range;
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: ChoiceChip(
+                          label: Text(range.label),
+                          selected: selected,
+                          onSelected: (_) => provider.setChartRange(range),
+                          selectedColor: Theme.of(context).colorScheme.primary,
+                          labelStyle: TextStyle(
+                            color: selected ? Colors.white : null,
+                            fontSize: 12,
+                          ),
+                          visualDensity: VisualDensity.compact,
                         ),
-                        visualDensity: VisualDensity.compact,
-                      ),
-                    );
-                  }).toList(),
+                      );
+                    }).toList(),
+                  ),
                 ),
               ],
             ),
@@ -341,40 +329,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Konfigurasi',
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            const SizedBox(height: 16),
-
-            // Mode
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Mode Operasi'),
-                ToggleButtons(
-                  isSelected: [config.isAutoMode, config.isManualMode],
-                  onPressed: (index) {
-                    config.mode = index == 0 ? 'auto' : 'manual';
-                    provider.updateConfig(config);
-                  },
-                  borderRadius: BorderRadius.circular(8),
-                  selectedColor: Colors.white,
-                  fillColor: AppColors.primaryGreen,
-                  constraints: const BoxConstraints(
-                    minWidth: 100,
-                    minHeight: 36,
-                  ),
-                  children: const [
-                    Text('Otomatis'),
-                    Text('Manual'),
-                  ],
+                Text(
+                  'Konfigurasi',
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                TextButton.icon(
+                  onPressed: () => provider.updateConfig(config),
+                  icon: const Icon(Icons.save, size: 16),
+                  label: const Text('Simpan'),
                 ),
               ],
             ),
+            const SizedBox(height: 16),
+            _buildModeToggle(provider, config),
             const Divider(),
-
-            // Threshold kering
             ConfigSlider(
               label: 'Threshold Kering',
               subtitle: 'Tanah dianggap kering jika < ${config.thresholdDry}%',
@@ -382,14 +353,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
               min: 10,
               max: 60,
               divisions: 10,
-              onChanged: (v) {
+              onChanged: null,
+              onChangeEnd: (v) {
                 config.thresholdDry = v.round();
                 provider.updateConfig(config);
               },
             ),
             const Divider(),
-
-            // Threshold basah
             ConfigSlider(
               label: 'Threshold Basah',
               subtitle: 'Tanah dianggap basah jika > ${config.thresholdWet}%',
@@ -397,14 +367,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
               min: 40,
               max: 90,
               divisions: 10,
-              onChanged: (v) {
+              onChanged: null,
+              onChangeEnd: (v) {
                 config.thresholdWet = v.round();
                 provider.updateConfig(config);
               },
             ),
             const Divider(),
-
-            // Durasi valve
             ConfigSlider(
               label: 'Durasi Valve',
               subtitle: '${config.valveDuration} detik',
@@ -412,14 +381,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
               min: 5,
               max: 120,
               divisions: 23,
-              onChanged: (v) {
+              onChanged: null,
+              onChangeEnd: (v) {
                 config.valveDuration = v.round();
                 provider.updateConfig(config);
               },
             ),
             const Divider(),
-
-            // Interval baca
             ConfigSlider(
               label: 'Interval Baca',
               subtitle: 'Setiap ${config.readIntervalMinutes} menit',
@@ -427,7 +395,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               min: 5,
               max: 120,
               divisions: 23,
-              onChanged: (v) {
+              onChanged: null,
+              onChangeEnd: (v) {
                 config.readInterval = (v * 60).round();
                 provider.updateConfig(config);
               },
@@ -435,6 +404,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildModeToggle(DashboardProvider provider, dynamic config) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text('Mode Operasi', style: Theme.of(context).textTheme.bodyMedium),
+        SegmentedButton<String>(
+          segments: const [
+            ButtonSegment(value: 'auto', label: Text('Otomatis'), icon: Icon(Icons.auto_awesome, size: 16)),
+            ButtonSegment(value: 'manual', label: Text('Manual'), icon: Icon(Icons.touch_app, size: 16)),
+          ],
+          selected: {config.isAutoMode ? 'auto' : 'manual'},
+          onSelectionChanged: (selected) {
+            config.mode = selected.first;
+            provider.updateConfig(config);
+          },
+          style: ButtonStyle(
+            visualDensity: VisualDensity.compact,
+            textStyle: WidgetStatePropertyAll(
+              Theme.of(context).textTheme.labelMedium,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

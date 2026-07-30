@@ -21,7 +21,6 @@ class MoistureChart extends StatelessWidget {
       return const Center(child: Text('Belum ada data'));
     }
 
-    // Balik urutan (dari terlama ke terbaru) untuk chart
     final sorted = data.reversed.toList();
 
     return LineChart(
@@ -75,12 +74,11 @@ class MoistureChart extends StatelessWidget {
           ),
         ),
 
-        // Threshold lines
         extraLinesData: ExtraLinesData(
           horizontalLines: [
             HorizontalLine(
               y: thresholdDry.toDouble(),
-              color: Colors.red.withOpacity(0.4),
+              color: Colors.red.withValues(alpha: 0.4),
               strokeWidth: 1,
               dashArray: [6, 4],
               label: HorizontalLineLabel(
@@ -96,13 +94,13 @@ class MoistureChart extends StatelessWidget {
             ),
             HorizontalLine(
               y: thresholdWet.toDouble(),
-              color: Colors.blue.withOpacity(0.4),
+              color: Colors.blue.withValues(alpha: 0.4),
               strokeWidth: 1,
               dashArray: [6, 4],
               label: HorizontalLineLabel(
                 show: true,
-                alignment: Alignment.topLeft,
-                padding: const EdgeInsets.only(left: 4),
+                alignment: Alignment.topRight,
+                padding: const EdgeInsets.only(right: 4),
                 labelResolver: (_) => 'Basah $thresholdWet%',
                 style: TextStyle(
                   fontSize: 10,
@@ -113,7 +111,6 @@ class MoistureChart extends StatelessWidget {
           ],
         ),
 
-        // Main line
         lineBarsData: [
           LineChartBarData(
             spots: sorted.asMap().entries.map((e) =>
@@ -125,12 +122,11 @@ class MoistureChart extends StatelessWidget {
             dotData: const FlDotData(show: false),
             belowBarData: BarAreaData(
               show: true,
-              color: AppColors.primaryGreen.withOpacity(0.08),
+              color: AppColors.primaryGreen.withValues(alpha: 0.08),
             ),
           ),
         ],
 
-        // Touch tooltips
         lineTouchData: LineTouchData(
           enabled: true,
           touchTooltipData: LineTouchTooltipData(

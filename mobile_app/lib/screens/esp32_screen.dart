@@ -68,6 +68,7 @@ class _PetakCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final moisture = reading?.moisturePercent ?? 0.0;
     final isOnline = reading != null;
     final isValveOn = reading?.isValveOpen ?? false;
@@ -85,8 +86,7 @@ class _PetakCard extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 device.name,
-                style: const TextStyle(
-                  fontSize: 14,
+                style: theme.textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
                 textAlign: TextAlign.center,
@@ -97,39 +97,21 @@ class _PetakCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _miniBadge(
-                    isOnline ? 'Online' : 'Offline',
-                    isOnline ? AppColors.success : AppColors.offline,
+                  StatusBadge(
+                    text: isOnline ? 'Online' : 'Offline',
+                    color: isOnline ? AppColors.success : AppColors.offline,
+                    fontSize: 10,
                   ),
                   const SizedBox(width: 4),
                   StatusBadge(
                     text: isValveOn ? 'ON' : 'OFF',
-                    color: isValveOn ? AppColors.danger : AppColors.success,
+                    color: isValveOn ? AppColors.success : AppColors.offline,
                     fontSize: 10,
                   ),
                 ],
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _miniBadge(String text, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(0.3)),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 10,
-          color: color,
-          fontWeight: FontWeight.w500,
         ),
       ),
     );

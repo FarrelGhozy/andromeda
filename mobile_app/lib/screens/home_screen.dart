@@ -16,7 +16,7 @@ class HomeScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.water_drop_rounded, size: 24),
-            const SizedBox(width: 8),
+            SizedBox(width: 8),
             const Text('ANDROMEDA'),
           ],
         ),
@@ -50,18 +50,7 @@ class HomeScreen extends StatelessWidget {
 
           final esp32Ids = provider.esp32Ids;
           if (esp32Ids.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.sensors_off,
-                      size: 64, color: Colors.grey[400]),
-                  const SizedBox(height: 16),
-                  Text('Belum ada ESP32 terdaftar',
-                      style: Theme.of(context).textTheme.titleMedium),
-                ],
-              ),
-            );
+            return _buildEmptyState(context, provider);
           }
 
           return RefreshIndicator(
@@ -76,21 +65,55 @@ class HomeScreen extends StatelessWidget {
                 final totalCount = devices.length;
                 final location = devices.isNotEmpty ? devices.first.location : '';
 
-                return _Esp32Card(
-                  esp32Id: esp32Id,
-                  location: location,
-                  onlineCount: onlineCount,
-                  totalCount: totalCount,
-                  onTap: () => Navigator.pushNamed(
-                    context,
-                    AppRoutes.esp32Detail,
-                    arguments: esp32Id,
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  child: _Esp32Card(
+                    esp32Id: esp32Id,
+                    location: location,
+                    onlineCount: onlineCount,
+                    totalCount: totalCount,
+                    onTap: () => Navigator.pushNamed(
+                      context,
+                      AppRoutes.esp32Detail,
+                      arguments: esp32Id,
+                    ),
                   ),
                 );
               },
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context, DevicesProvider provider) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.sensors_off, size: 80, color: Colors.grey[300]),
+            const SizedBox(height: 16),
+            Text('Belum ada ESP32 terdaftar',
+                style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 8),
+            Text(
+              'Pastikan ESP32 sudah terhubung\ndan terdaftar di database',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Colors.grey[500],
+              ),
+            ),
+            const SizedBox(height: 24),
+            OutlinedButton.icon(
+              onPressed: provider.refreshReadings,
+              icon: const Icon(Icons.refresh),
+              label: const Text('Refresh'),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -113,8 +136,8 @@ class _Esp32Card extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(16),
@@ -126,12 +149,12 @@ class _Esp32Card extends StatelessWidget {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: AppColors.primaryGreen.withOpacity(0.1),
+                  color: theme.colorScheme.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.memory,
-                  color: AppColors.primaryGreen,
+                  color: theme.colorScheme.primary,
                   size: 32,
                 ),
               ),
@@ -140,19 +163,12 @@ class _Esp32Card extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      esp32Id,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
+                    Text(esp32Id, style: theme.textTheme.titleSmall),
+                    const SizedBox(height: 2),
                     Text(
                       location,
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.grey[600],
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
                       ),
                     ),
                     const SizedBox(height: 6),
@@ -174,7 +190,8 @@ class _Esp32Card extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right, color: Colors.grey[400]),
+              Icon(Icons.chevron_right,
+                  color: theme.colorScheme.onSurfaceVariant),
             ],
           ),
         ),
@@ -186,9 +203,9 @@ class _Esp32Card extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Text(
         text,
