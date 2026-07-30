@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../config/theme_config.dart';
 import '../providers/devices_provider.dart';
@@ -40,11 +41,14 @@ class Esp32Screen extends StatelessWidget {
                 return _PetakCard(
                   device: device,
                   reading: reading,
-                  onTap: () => Navigator.pushNamed(
-                    context,
-                    AppRoutes.dashboard,
-                    arguments: device.deviceId,
-                  ),
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.dashboard,
+                      arguments: device.deviceId,
+                    );
+                  },
                 );
               },
             ),

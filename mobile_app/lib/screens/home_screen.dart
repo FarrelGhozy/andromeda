@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../config/theme_config.dart';
 import '../providers/devices_provider.dart';
@@ -23,14 +24,18 @@ class HomeScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: () =>
-                Navigator.pushNamed(context, AppRoutes.settings),
+            onPressed: () {
+              HapticFeedback.lightImpact();
+              Navigator.pushNamed(context, AppRoutes.settings);
+            },
             tooltip: 'Pengaturan',
           ),
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: () =>
-                context.read<DevicesProvider>().refreshReadings(),
+            onPressed: () {
+              HapticFeedback.lightImpact();
+              context.read<DevicesProvider>().refreshReadings();
+            },
             tooltip: 'Refresh',
           ),
         ],
@@ -72,11 +77,14 @@ class HomeScreen extends StatelessWidget {
                     location: location,
                     onlineCount: onlineCount,
                     totalCount: totalCount,
-                    onTap: () => Navigator.pushNamed(
-                      context,
-                      AppRoutes.esp32Detail,
-                      arguments: esp32Id,
-                    ),
+                    onTap: () {
+                      HapticFeedback.lightImpact();
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.esp32Detail,
+                        arguments: esp32Id,
+                      );
+                    },
                   ),
                 );
               },
@@ -108,7 +116,10 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             OutlinedButton.icon(
-              onPressed: provider.refreshReadings,
+              onPressed: () {
+                HapticFeedback.lightImpact();
+                provider.refreshReadings();
+              },
               icon: const Icon(Icons.refresh),
               label: const Text('Refresh'),
             ),

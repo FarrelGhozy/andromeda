@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../providers/dashboard_provider.dart';
@@ -39,8 +40,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: () =>
-                context.read<DashboardProvider>().loadDevice(widget.deviceId),
+            onPressed: () {
+              HapticFeedback.lightImpact();
+              context.read<DashboardProvider>().loadDevice(widget.deviceId);
+            },
             tooltip: 'Refresh',
           ),
         ],
@@ -221,10 +224,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     icon: Icons.play_arrow,
                     color: AppColors.success,
                     onPressed: !isOpen
-                        ? () => provider.sendValveCommand(
+                        ? () {
+                            HapticFeedback.lightImpact();
+                            final msg = _selectedValveDuration == 0
+                                ? '⏳ Membuka kran... Harap sabar.'
+                                : '⏳ Membuka kran ${_selectedValveDuration}s... Harap sabar.';
+                            ScaffoldMessenger.of(context)
+                              ..hideCurrentSnackBar()
+                              ..showSnackBar(SnackBar(
+                                content: Text(msg),
+                                duration: const Duration(seconds: 5),
+                                behavior: SnackBarBehavior.floating,
+                              ));
+                            provider.sendValveCommand(
                               'VALVE_ON',
                               duration: _selectedValveDuration,
-                            )
+                            );
+                          }
                         : null,
                   ),
                 ),
@@ -235,7 +251,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     icon: Icons.stop,
                     color: AppColors.danger,
                     onPressed: isOpen
-                        ? () => provider.sendValveCommand('VALVE_OFF')
+                        ? () {
+                            HapticFeedback.lightImpact();
+                            ScaffoldMessenger.of(context)
+                              ..hideCurrentSnackBar()
+                              ..showSnackBar(SnackBar(
+                                content: const Text('⏳ Menutup kran... Harap sabar.'),
+                                duration: const Duration(seconds: 5),
+                                behavior: SnackBarBehavior.floating,
+                              ));
+                            provider.sendValveCommand('VALVE_OFF');
+                          }
                         : null,
                   ),
                 ),

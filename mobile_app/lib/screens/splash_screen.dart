@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../services/supabase_service.dart';
+import '../providers/devices_provider.dart';
 import '../routes.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -10,6 +12,8 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  String _statusText = 'Menghubungkan...';
+
   @override
   void initState() {
     super.initState();
@@ -17,38 +21,41 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _initApp() async {
-    // Tunggu 1.5 detik (splash branding)
     await Future.delayed(const Duration(milliseconds: 1500));
-
     if (!mounted) return;
 
-    // Cek koneksi
     final connected = await SupabaseService().checkConnection();
-
     if (!mounted) return;
 
     if (connected) {
-      Navigator.pushReplacementNamed(context, AppRoutes.home);
+      setState(() => _statusText = 'Memuat data...');
+      _waitForData();
     } else {
-      _showError(
-          'Tidak terhubung ke server.\nPeriksa koneksi internet Anda.');
+      setState(() => _statusText = 'Tidak terhubung ke server');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Tidak terhubung ke server.\nPeriksa koneksi internet Anda.'),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 4),
+        ),
+      );
+      Future.delayed(const Duration(seconds: 2), () {
+        if (mounted) {
+          Navigator.pushReplacementNamed(context, AppRoutes.home);
+        }
+      });
     }
   }
 
-  void _showError(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(msg),
-        backgroundColor: Colors.red,
-        duration: const Duration(seconds: 4),
-      ),
-    );
-    // Tetap lanjut ke home (data mungkin kosong)
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        Navigator.pushReplacementNamed(context, AppRoutes.home);
-      }
-    });
+  Future<void> _waitForData() async {
+    final provider = context.read<DevicesProvider>();
+    while (!provider.isReady) {
+      await Future.delayed(const Duration(milliseconds: 200));
+      if (!mounted) return;
+    }
+    if (mounted) {
+      Navigator.pushReplacementNamed(context, AppRoutes.home);
+    }
   }
 
   @override
@@ -69,12 +76,11 @@ class _SplashScreenState extends State<SplashScreen> {
             children: [
               const Spacer(flex: 2),
 
-              // Icon / Logo
               Container(
                 width: 120,
                 height: 120,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
+                  color: Colors.white.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -85,7 +91,6 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               const SizedBox(height: 24),
 
-              // Nama aplikasi
               Text(
                 'ANDROMEDA',
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
@@ -98,20 +103,19 @@ class _SplashScreenState extends State<SplashScreen> {
               Text(
                 'Irigasi Tetes Otomatis',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.white.withValues(alpha: 0.9),
                     ),
               ),
               const SizedBox(height: 4),
               Text(
                 'Berbasis IoT',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.white.withOpacity(0.7),
+                      color: Colors.white.withValues(alpha: 0.7),
                     ),
               ),
 
               const Spacer(flex: 1),
 
-              // Loading
               const SizedBox(
                 width: 36,
                 height: 36,
@@ -122,27 +126,26 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               const SizedBox(height: 16),
               Text(
-                'Menghubungkan...',
+                _statusText,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withValues(alpha: 0.8),
                     ),
               ),
 
               const Spacer(flex: 2),
 
-              // Footer
               Text(
                 'Teknologi Tepat Guna\nuntuk Petani Indonesia',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.white.withOpacity(0.5),
+                      color: Colors.white.withValues(alpha: 0.5),
                     ),
               ),
               const SizedBox(height: 8),
               Text(
                 'v1.0.0',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.white.withOpacity(0.3),
+                      color: Colors.white.withValues(alpha: 0.3),
                     ),
               ),
               const SizedBox(height: 32),

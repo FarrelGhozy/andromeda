@@ -9,30 +9,41 @@ class DevicesProvider extends ChangeNotifier {
   List<Device> _devices = [];
   Map<String, SensorReading?> _latestReadings = {};
   bool _isLoading = true;
+  bool _readingsLoaded = false;
   String? _error;
 
   List<Device> get devices => _devices;
   SensorReading? latestFor(String deviceId) => _latestReadings[deviceId];
   bool get isLoading => _isLoading;
   String? get error => _error;
+  bool get isReady => !_isLoading;
 
   DevicesProvider(this._deviceRepo);
 
   void init() {
     _deviceRepo.getDevicesStream().listen((devices) {
       _devices = devices;
+      _checkReady();
+    });
+    refreshReadings();
+  }
+
+  void _checkReady() {
+    if (_readingsLoaded) {
       _isLoading = false;
       notifyListeners();
-    });
+    }
   }
 
   Future<void> refreshReadings() async {
     try {
       _latestReadings = await _deviceRepo.getLatestReadings();
-      notifyListeners();
+      _readingsLoaded = true;
+      _checkReady();
     } catch (e) {
       _error = 'Gagal memuat data: $e';
-      notifyListeners();
+      _readingsLoaded = true;
+      _checkReady();
     }
   }
 
