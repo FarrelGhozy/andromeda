@@ -81,15 +81,6 @@ INSERT INTO devices (device_id, esp32_id, name, location, sensor_index) VALUES
   ('petak-05', 'esp32-01', 'Petak 5', 'Lahan A', 4),
   ('petak-06', 'esp32-01', 'Petak 6', 'Lahan A', 5);
 
--- ESP32 #2 di Lahan B
-INSERT INTO devices (device_id, esp32_id, name, location, sensor_index) VALUES
-  ('petak-07', 'esp32-02', 'Petak 7', 'Lahan B', 0),
-  ('petak-08', 'esp32-02', 'Petak 8', 'Lahan B', 1),
-  ('petak-09', 'esp32-02', 'Petak 9', 'Lahan B', 2),
-  ('petak-10', 'esp32-02', 'Petak 10', 'Lahan B', 3),
-  ('petak-11', 'esp32-02', 'Petak 11', 'Lahan B', 4),
-  ('petak-12', 'esp32-02', 'Petak 12', 'Lahan B', 5);
-
 -- 8. Seed default config
 INSERT INTO system_config (device_id, mode, threshold_dry, threshold_wet, valve_duration, read_interval)
 SELECT device_id, 'auto', 30, 70, 30, 1800
