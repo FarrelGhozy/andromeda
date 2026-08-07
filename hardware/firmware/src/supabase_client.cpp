@@ -142,3 +142,25 @@ void markCommandExecuted(long commandId) {
 
   http.end();
 }
+
+bool sendHeartbeat(const char* esp32Id) {
+  HTTPClient http;
+  String url = baseUrl + "/rpc/heartbeat";
+  http.begin(url);
+  addHeaders(http);
+
+  StaticJsonDocument<128> doc;
+  doc["_esp32_id"] = esp32Id;
+
+  String payload;
+  serializeJson(doc, payload);
+
+  int code = http.POST(payload);
+  Serial.print("Heartbeat (");
+  Serial.print(esp32Id);
+  Serial.print("): ");
+  Serial.println(code);
+
+  http.end();
+  return code >= 200 && code < 300;
+}

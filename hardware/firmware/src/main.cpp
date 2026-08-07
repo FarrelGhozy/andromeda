@@ -9,6 +9,7 @@ unsigned long lastSensorPush = 0;
 unsigned long lastCommandCheck = 0;
 unsigned long lastWiFiCheck = 0;
 unsigned long lastValvePush = 0;
+unsigned long lastHeartbeat = 0;
 int currentReadIntervalSec = DEFAULT_READ_INTERVAL_SEC;
 SystemConfig cachedConfigs[NUM_PETAK];
 bool prevValveStates[NUM_PETAK] = {false};
@@ -126,7 +127,15 @@ void loop() {
     }
   }
 
-  // 4. Sensor push cycle
+  // 4. Heartbeat: update last_seen setiap 60s supaya status online akurat
+  if (now - lastHeartbeat >= 60000) {
+    lastHeartbeat = now;
+    if (WiFi.status() == WL_CONNECTED) {
+      sendHeartbeat(ESP32_ID);
+    }
+  }
+
+  // 5. Sensor push cycle
   if (now - lastSensorPush >= (unsigned long)currentReadIntervalSec * 1000) {
     lastSensorPush = now;
     Serial.println("=== Sensor push cycle ===");

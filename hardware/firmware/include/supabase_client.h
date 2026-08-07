@@ -26,5 +26,6 @@ bool postAllSensorReadings(const AllReadings& allReadings, const bool* valveStat
 SystemConfig getSystemConfig(const char* deviceId);
 PendingCommand getPendingCommand(const char* deviceId);
 void markCommandExecuted(long commandId);
+bool sendHeartbeat(const char* esp32Id);
 
 #endif

@@ -14,6 +14,10 @@ class DevicesProvider extends ChangeNotifier {
 
   static const _onlineThresholdMinutes = 10;
 
+  // Window "kadaluarsa" untuk last_seen heartbeat.
+  // Heartbeat firmware kirim tiap 60s, jadi 3 menit cukup longgar.
+  static const _heartbeatThresholdMinutes = 3;
+
   List<Device> get devices => _devices;
   List<Device> get allDevices => _devices;
   SensorReading? latestFor(String deviceId) => _latestReadings[deviceId];
@@ -51,9 +55,19 @@ class DevicesProvider extends ChangeNotifier {
   }
 
   bool isDeviceOnline(String deviceId) {
+    // 1. Prioritas: heartbeat last_seen dari perangkat (akurat).
+    final device =
+        _devices.where((d) => d.deviceId == deviceId).firstOrNull;
+    final lastSeen = device?.lastSeen;
+    if (lastSeen != null) {
+      return DateTime.now().difference(lastSeen).inMinutes <
+          _heartbeatThresholdMinutes;
+    }
+    // 2. Fallback: kalau belum ada heartbeat, tebak dari data terakhir.
     final reading = _latestReadings[deviceId];
     if (reading == null) return false;
-    return DateTime.now().difference(reading.createdAt).inMinutes < _onlineThresholdMinutes;
+    return DateTime.now().difference(reading.createdAt).inMinutes <
+        _onlineThresholdMinutes;
   }
 
   List<String> get esp32Ids {

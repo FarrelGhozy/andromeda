@@ -11,6 +11,7 @@ CREATE TABLE devices (
   location TEXT,
   sensor_index INTEGER NOT NULL DEFAULT 0,
   status TEXT NOT NULL DEFAULT 'active',
+  last_seen TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -115,6 +116,7 @@ BEGIN
 END
 $$;
 
+ALTER PUBLICATION supabase_realtime ADD TABLE devices;
 ALTER PUBLICATION supabase_realtime ADD TABLE sensor_readings;
 ALTER PUBLICATION supabase_realtime ADD TABLE system_config;
 ALTER PUBLICATION supabase_realtime ADD TABLE pending_commands;
@@ -146,4 +148,13 @@ RETURNS TABLE (
     sr.created_at
   FROM sensor_readings sr
   ORDER BY sr.device_id, sr.created_at DESC;
+$$;
+
+-- 13. Heartbeat: ESP32 mengupdate last_seen semua petak-nya saat ini juga
+-- Dipanggil firmware periode tertentu supaya status online akurat.
+CREATE OR REPLACE FUNCTION heartbeat(_esp32_id TEXT)
+RETURNS VOID LANGUAGE sql AS $$
+  UPDATE devices
+  SET last_seen = NOW()
+  WHERE esp32_id = _esp32_id;
 $$;
