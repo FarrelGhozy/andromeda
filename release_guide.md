@@ -134,7 +134,60 @@ Contoh: `v0.1.0-BIMA`, `v0.2.0-GATOTKACA`.
 
 ---
 
-## 5. Checklist Akhir (tanda ✓ semua)
+## 5. Rilis Firmware (ESP32)
+
+Firmware (`hardware/firmware`) **ikut skema versi & ritme rilis yang sama**
+dengan mobile app (§1–§2): SemVer yang sama, codename wayang yang sama, dan tag
+release yang **satu**. Satu ritme rilis untuk seluruh proyek ANDROMEDA.
+
+### Artefak yang direproduksi
+
+Release firmware = binary yang bisa di-flash ulang: `hardware/firmware/.pio/
+build/esp32dev/firmware.bin`. Untuk reproducible, **dependency sudah di-pin**
+di `hardware/firmware/platformio.ini` (platform `espressif32@7.0.1`,
+`ArduinoJson@6.21.3`), jadi build di mesin mana pun menghasilkan artefak yang
+sama versinya.
+
+### Membangun & menguji
+
+Dari `hardware/firmware/`:
+
+```bash
+make build      # kompilasi deterministic
+make test       # host unit tests
+make monitor    # serial monitor 115200
+```
+
+Tanpa Makefile (sama saja): `pio run`, `pio test`, `pio device monitor`.
+
+> **Catatan:** `make` butuh lingkungan Unix (macOS/Linux, atau Git Bash di
+> Windows), dan `pio` harus ada di `PATH`. Kalau tidak ada, gunakan perintah
+> `pio` langsung.
+
+### Flashing ke perangkat
+
+```bash
+make upload   # = pio run -e esp32dev -t upload
+```
+
+Device di-flash ke **esp32-01** dan **esp32-02** (pinout identik; yang beda
+hanya device ID di `include/devices/`). Pastikan dua-duanya diberi binary yang
+sama.
+
+### Alur rilis firmware
+
+1. Tentukan versi **sama dengan release mobile app** (§1–§2). Contoh: rilis
+   `V0.1.0 - BIMA` mencakup APK **dan** firmware.
+2. Bump `platformio.ini` kalau ada perubahan toolchain (dan naikkan versi
+   sesuai SemVer).
+3. `make test` lulus, lalu `make build`.
+4. Flash hasilnya ke esp32-01 & esp32-02, uji di lapangan (valve ON/OFF,
+   sensor ter-baca, valve NC menutup saat power mati).
+5. Satu tag untuk kedua artefak (lihat §3.E): `git tag -a <versi>-<NAMA>`.
+
+---
+
+## 6. Checklist Akhir (tanda ✓ semua)
 
 - [ ] Version naik sesuai rule SemVer (§1)
 - [ ] buildNumber (`+N`) naik dari versi sebelumnya
@@ -143,6 +196,11 @@ Contoh: `v0.1.0-BIMA`, `v0.2.0-GATOTKACA`.
 - [ ] `flutter build apk --release` sukses
 - [ ] Artefak dites di HP fisik
 - [ ] Commit + tag `v<versi>-<NAMA>` + push `--tags`
+
+### Firmware (bila ikut dalam rilis ini)
+- [ ] `platformio.ini` dependency ter-pin (platform & lib) (§5)
+- [ ] `make test` + `make build` sukses
+- [ ] Binary di-flash ke esp32-01 & esp32-02 dan teruji
 
 ---
 
