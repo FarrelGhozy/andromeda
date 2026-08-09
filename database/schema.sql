@@ -149,3 +149,19 @@ RETURNS VOID LANGUAGE sql AS $$
   SET last_seen = NOW()
   WHERE esp32_id = _esp32_id;
 $$;
+
+-- 13b. Trigger pengaman (issue #22): setiap reading baru menyentuh
+-- last_seen device-nya — untuk firmware lama yang belum kirim heartbeat.
+CREATE OR REPLACE FUNCTION touch_device_last_seen()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE devices SET last_seen = NOW()
+  WHERE device_id = NEW.device_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_touch_device_last_seen ON sensor_readings;
+CREATE TRIGGER trg_touch_device_last_seen
+AFTER INSERT ON sensor_readings
+FOR EACH ROW EXECUTE FUNCTION touch_device_last_seen();

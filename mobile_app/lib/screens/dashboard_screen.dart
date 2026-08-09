@@ -345,6 +345,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
               const SizedBox(height: 8),
               const LinearProgressIndicator(minHeight: 2),
             ],
+            // Fix #18/#20: status perintah valve terbaru + countdown auto-OFF.
+            if (provider.commandState != CommandState.idle) ...[
+              const SizedBox(height: 12),
+              _buildCommandStatus(provider),
+            ],
             const SizedBox(height: 12),
             DurationPicker(
               selectedDuration: _selectedValveDuration,
@@ -352,6 +357,100 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildCommandStatus(DashboardProvider provider) {
+    final state = provider.commandState;
+    final cmd = provider.latestCommand;
+    final theme = Theme.of(context);
+
+    final (label, color, icon) = switch (state) {
+      CommandState.sending => (
+          'Mengirim perintah…',
+          AppColors.accentOrange,
+          Icons.sync,
+        ),
+      CommandState.pending => (
+          'Menunggu ESP32 mengeksekusi…',
+          AppColors.accentOrange,
+          Icons.hourglass_top,
+        ),
+      CommandState.executed => (
+          cmd?.executedAt != null
+              ? 'Dieksekusi ${DateFormat('HH:mm').format(cmd!.executedAt!)}'
+              : 'Dieksekusi ESP32 ✓',
+          AppColors.success,
+          Icons.check_circle,
+        ),
+      CommandState.expired => (
+          'Kedaluwarsa — ESP32 tidak merespons',
+          AppColors.offline,
+          Icons.timer_off,
+        ),
+      CommandState.cancelled => (
+          'Dibatalkan',
+          AppColors.offline,
+          Icons.cancel,
+        ),
+      CommandState.idle => ('', AppColors.offline, Icons.circle),
+    };
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 16, color: color),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              label,
+              style: TextStyle(fontSize: 12.5, color: color),
+            ),
+          ),
+          // Fix #19: countdown auto-OFF fallback.
+          if (state == CommandState.pending &&
+              provider.autoOffRemaining > Duration.zero) ...[
+            Text(
+              'Auto-OFF ${provider.autoOffRemaining.inSeconds}s',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: theme.colorScheme.primary,
+              ),
+            ),
+            const SizedBox(width: 8),
+          ],
+          // Fix #20: tombol batal untuk command pending.
+          if (state == CommandState.pending)
+            TextButton(
+              onPressed: () async {
+                final ok = await provider.cancelPendingCommand();
+                if (!mounted) return;
+                ScaffoldMessenger.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(SnackBar(
+                    content: Text(ok
+                        ? 'Perintah dibatalkan ✓'
+                        : (provider.errorMessage ?? 'Gagal membatalkan')),
+                    backgroundColor:
+                        ok ? AppColors.success : AppColors.danger,
+                    duration: const Duration(seconds: 3),
+                  ));
+              },
+              style: TextButton.styleFrom(
+                visualDensity: VisualDensity.compact,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+              ),
+              child: const Text('Batal', style: TextStyle(fontSize: 12.5)),
+            ),
+        ],
       ),
     );
   }

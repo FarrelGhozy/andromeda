@@ -21,6 +21,8 @@ class PendingCommand {
 
   bool get isPending => status == 'pending';
   bool get isExecuted => status == 'executed';
+  bool get isCancelled => status == 'cancelled';
+  bool get isExpired => status == 'expired';
   bool get isOpenCommand => command == 'VALVE_ON';
   bool get isCloseCommand => command == 'VALVE_OFF';
 

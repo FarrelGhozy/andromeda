@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../models/sensor_reading.dart';
 import '../models/system_config.dart';
+import '../models/pending_command.dart';
 import '../models/enums.dart';
 import '../services/sensor_repository.dart';
 import '../services/config_repository.dart';
@@ -12,6 +13,10 @@ enum DashboardState { loading, ready, error }
 /// Status valve yang JUJUR berdasarkan umur data (fix #16):
 /// data basi/tidak ada ≠ "tertutup" — itu "tidak diketahui".
 enum ValveDisplayStatus { open, closed, unknown }
+
+/// State machine perintah valve (fix #18):
+/// idle → sending → pending → executed | expired | cancelled
+enum CommandState { idle, sending, pending, executed, expired, cancelled }
 
 class DashboardProvider extends ChangeNotifier {
   final SensorRepository _sensorRepo;
@@ -28,8 +33,16 @@ class DashboardProvider extends ChangeNotifier {
 
   StreamSubscription? _sensorSub;
   StreamSubscription? _configSub;
+  StreamSubscription? _commandSub;
 
   bool _sendingCommand = false;
+
+  // --- State machine command (fix #18/#19/#20) ---
+  PendingCommand? _latestCommand;
+  Timer? _expiryTimer; // command pending > 2×read_interval → expired
+  Timer? _autoOffTimer; // fallback VALVE_OFF bila ESP32 tak eksekusi
+  Timer? _countdownTimer; // ticker UI countdown auto-OFF
+  Duration _autoOffRemaining = Duration.zero;
 
   // Getters
   String get deviceId => _deviceId;
@@ -44,6 +57,9 @@ class DashboardProvider extends ChangeNotifier {
   /// Valve dianggap terbuka hanya jika reading SEGAR mengatakannya.
   bool get isValveOpen => _latestReading?.isValveOpen ?? false;
 
+  PendingCommand? get latestCommand => _latestCommand;
+  Duration get autoOffRemaining => _autoOffRemaining;
+
   /// Status valve dengan kesadaran umur data (fix #16):
   /// - reading segar → open/closed sesuai `valve_status`
   /// - reading basi / tidak ada → `unknown` (bukan TERTUTUP!)
@@ -56,6 +72,20 @@ class DashboardProvider extends ChangeNotifier {
     return r.isValveOpen ? ValveDisplayStatus.open : ValveDisplayStatus.closed;
   }
 
+  /// Status perintah valve terbaru (fix #18).
+  CommandState get commandState {
+    if (_sendingCommand) return CommandState.sending;
+    final c = _latestCommand;
+    if (c == null) return CommandState.idle;
+    return switch (c.status) {
+      'pending' => CommandState.pending,
+      'executed' => CommandState.executed,
+      'cancelled' => CommandState.cancelled,
+      'expired' => CommandState.expired,
+      _ => CommandState.idle,
+    };
+  }
+
   DashboardProvider(this._sensorRepo, this._configRepo);
 
   Future<void> loadDevice(String deviceId) async {
@@ -66,6 +96,10 @@ class DashboardProvider extends ChangeNotifier {
     // Cancel subscription lama
     _sensorSub?.cancel();
     _configSub?.cancel();
+    _commandSub?.cancel();
+    _expiryTimer?.cancel();
+    _autoOffTimer?.cancel();
+    _countdownTimer?.cancel();
 
     try {
       // Subscribe realtime sensor readings
@@ -81,6 +115,27 @@ class DashboardProvider extends ChangeNotifier {
         _config = config;
         notifyListeners();
       });
+
+      // Subscribe realtime command terbaru (fix #18)
+      _commandSub =
+          _sensorRepo.getLatestCommandStream(deviceId).listen((command) {
+        _latestCommand = command;
+        if (command != null && command.isExecuted) {
+          // ESP32 sudah eksekusi → firmware auto-close menangani sisanya;
+          // batal timer fallback.
+          _autoOffTimer?.cancel();
+          _countdownTimer?.cancel();
+          _autoOffRemaining = Duration.zero;
+        }
+        notifyListeners();
+      });
+
+      // Expiry command pending yang basi (> 2×read_interval) (fix #20)
+      final interval = _config?.readIntervalMinutes ?? 30;
+      await _sensorRepo.expireStaleCommands(
+        deviceId,
+        DateTime.now().subtract(Duration(minutes: 2 * interval)),
+      );
 
       // Load history
       await _loadHistory();
@@ -122,6 +177,16 @@ class DashboardProvider extends ChangeNotifier {
         duration: duration,
       );
       _errorMessage = null;
+
+      if (command == 'VALVE_ON') {
+        // Fix #19: jadwalkan auto-OFF fallback — bila ESP32 tidak
+        // mengeksekusi VALVE_ON dalam `duration`, app memaksa TUTUP
+        // agar valve tidak terbuka tanpa batas.
+        _armAutoOff(duration);
+      }
+      // Fix #20: command pending yang tak dieksekusi dalam
+      // 2×read_interval → ditandai expired (lihat juga expiry saat load).
+      _armExpiry();
       return true;
     } catch (e) {
       _errorMessage = 'Gagal kirim perintah: $e';
@@ -129,6 +194,75 @@ class DashboardProvider extends ChangeNotifier {
     } finally {
       _sendingCommand = false;
       notifyListeners();
+    }
+  }
+
+  /// Fix #19: fallback keamanan — VALVE_OFF otomatis dengan countdown UI.
+  void _armAutoOff(int durationSeconds) {
+    _autoOffTimer?.cancel();
+    _countdownTimer?.cancel();
+    _autoOffRemaining = Duration(seconds: durationSeconds);
+
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (_autoOffRemaining > Duration.zero) {
+        _autoOffRemaining -= const Duration(seconds: 1);
+        notifyListeners();
+      } else {
+        _countdownTimer?.cancel();
+      }
+    });
+
+    _autoOffTimer = Timer(Duration(seconds: durationSeconds), () async {
+      // Bila VALVE_ON masih pending (belum dieksekusi ESP32) → paksa
+      // kirim VALVE_OFF (source android_auto) sebagai pengaman.
+      final c = _latestCommand;
+      if (c != null && c.isOpenCommand && c.isPending) {
+        try {
+          await _sensorRepo.sendCommand(
+            deviceId: _deviceId,
+            command: 'VALVE_OFF',
+            duration: 5,
+            source: 'android_auto',
+          );
+        } catch (_) {
+          // gagal kirim fallback — valve sudah terbuka sejak command
+          // pending dikirim; user tetap bisa TUTUP manual.
+        }
+      }
+      _autoOffRemaining = Duration.zero;
+      notifyListeners();
+    });
+  }
+
+  /// Fix #20: command pending yang tak dieksekusi dalam 2×read_interval
+  /// ditandai expired supaya tidak "menyalakan" valve di kemudian hari.
+  void _armExpiry() {
+    _expiryTimer?.cancel();
+    final interval = _config?.readIntervalMinutes ?? 30;
+    _expiryTimer = Timer(Duration(minutes: 2 * interval), () async {
+      final c = _latestCommand;
+      if (c != null && c.isPending) {
+        try {
+          await _sensorRepo.updateCommandStatus(c.id, 'expired');
+        } catch (_) {}
+      }
+    });
+  }
+
+  /// Fix #20: batalkan command yang masih pending.
+  Future<bool> cancelPendingCommand() async {
+    final c = _latestCommand;
+    if (c == null || !c.isPending) return false;
+    try {
+      await _sensorRepo.updateCommandStatus(c.id, 'cancelled');
+      _autoOffTimer?.cancel();
+      _countdownTimer?.cancel();
+      _autoOffRemaining = Duration.zero;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _errorMessage = 'Gagal membatalkan perintah: $e';
+      return false;
     }
   }
 
@@ -149,6 +283,10 @@ class DashboardProvider extends ChangeNotifier {
   void dispose() {
     _sensorSub?.cancel();
     _configSub?.cancel();
+    _commandSub?.cancel();
+    _expiryTimer?.cancel();
+    _autoOffTimer?.cancel();
+    _countdownTimer?.cancel();
     super.dispose();
   }
 }

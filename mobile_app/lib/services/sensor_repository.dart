@@ -55,13 +55,48 @@ class SensorRepository {
     required String deviceId,
     required String command,
     int duration = 30,
+    String source = 'android',
   }) async {
     await _client.from('pending_commands').insert({
       'device_id': deviceId,
       'command': command,
       'duration': duration,
       'status': 'pending',
-      'source': 'android',
+      'source': source,
     });
+  }
+
+  /// Stream command TERBARU untuk 1 petak (fix #18: pantau eksekusi
+  /// ESP32 → status pending → executed/expired/cancelled).
+  Stream<PendingCommand?> getLatestCommandStream(String deviceId) {
+    return _client
+        .from('pending_commands')
+        .stream(primaryKey: ['id'])
+        .eq('device_id', deviceId)
+        .order('id', ascending: false)
+        .limit(1)
+        .map((list) => list.isNotEmpty
+            ? PendingCommand.fromJson(list.first)
+            : null);
+  }
+
+  /// Ubah status command (expired / cancelled) dari app (fix #20).
+  Future<void> updateCommandStatus(int commandId, String status) async {
+    await _client
+        .from('pending_commands')
+        .update({'status': status})
+        .eq('id', commandId);
+  }
+
+  /// Tandai semua command pending yang basi (> olderThan) sebagai expired
+  /// (fix #20 — command basi tidak boleh "menyalakan" valve di kemudian
+  /// hari saat ESP32 tiba-tiba online).
+  Future<void> expireStaleCommands(String deviceId, DateTime olderThan) async {
+    await _client
+        .from('pending_commands')
+        .update({'status': 'expired'})
+        .eq('device_id', deviceId)
+        .eq('status', 'pending')
+        .lt('created_at', olderThan.toIso8601String());
   }
 }

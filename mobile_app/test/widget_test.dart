@@ -167,6 +167,26 @@ void main() {
       expect(cmd.isOpenCommand, isTrue);
       expect(cmd.isCloseCommand, isFalse);
     });
+
+    test('status baru expired & cancelled dikenali (fix #20)', () {
+      final expired = PendingCommand.fromJson({
+        'id': 6,
+        'device_id': 'petak-01',
+        'command': 'VALVE_ON',
+        'status': 'expired',
+      });
+      expect(expired.isExpired, isTrue);
+      expect(expired.isPending, isFalse);
+
+      final cancelled = PendingCommand.fromJson({
+        'id': 7,
+        'device_id': 'petak-01',
+        'command': 'VALVE_OFF',
+        'status': 'cancelled',
+      });
+      expect(cancelled.isCancelled, isTrue);
+      expect(cancelled.isPending, isFalse);
+    });
   });
 
   group('ChartRange', () {
