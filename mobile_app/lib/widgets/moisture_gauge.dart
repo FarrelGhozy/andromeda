@@ -7,6 +7,7 @@ class MoistureGauge extends StatelessWidget {
   final double size;
   final bool showLabel;
   final bool offline;
+  final bool fault;
   final int thresholdDry;
   final int thresholdWet;
 
@@ -16,6 +17,7 @@ class MoistureGauge extends StatelessWidget {
     required this.size,
     this.showLabel = true,
     this.offline = false,
+    this.fault = false,
     this.thresholdDry = 30,
     this.thresholdWet = 70,
   });
@@ -30,7 +32,7 @@ class MoistureGauge extends StatelessWidget {
       height: size,
       child: CustomPaint(
         painter: _GaugePainter(
-          percent: offline ? 0 : (percent / 100).clamp(0.0, 1.0),
+          percent: (offline || fault) ? 0 : (percent / 100).clamp(0.0, 1.0),
           color: color,
           backgroundColor: Colors.grey[200]!,
           strokeWidth: size * 0.12,
@@ -41,9 +43,11 @@ class MoistureGauge extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      offline ? '—' : '${percent.toStringAsFixed(0)}%',
+                      fault
+                          ? '⚠'
+                          : (offline ? '—' : '${percent.toStringAsFixed(0)}%'),
                       style: TextStyle(
-                        fontSize: size * 0.28,
+                        fontSize: fault ? size * 0.30 : size * 0.28,
                         fontWeight: FontWeight.bold,
                         color: color,
                       ),
@@ -65,6 +69,7 @@ class MoistureGauge extends StatelessWidget {
 
   Color _getColor() {
     if (offline) return AppColors.offline;
+    if (fault) return AppColors.warning;
     if (percent < thresholdDry) return AppColors.danger;
     if (percent < thresholdWet) return AppColors.warning;
     return AppColors.primaryGreen;
@@ -72,6 +77,7 @@ class MoistureGauge extends StatelessWidget {
 
   String _getLabel() {
     if (offline) return 'OFFLINE';
+    if (fault) return 'SENSOR ERROR';
     if (percent < thresholdDry) return 'KERING';
     if (percent < thresholdWet) return 'LEMBAB';
     return 'BASAH';

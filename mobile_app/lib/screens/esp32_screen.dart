@@ -89,6 +89,7 @@ class _PetakCard extends StatelessWidget {
                 percent: moisture,
                 size: 100,
                 offline: !isOnline,
+                fault: isOnline && reading?.isSensorFault == true,
               ),
               const SizedBox(height: 8),
               Text(

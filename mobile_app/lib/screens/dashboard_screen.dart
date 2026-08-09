@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../providers/dashboard_provider.dart';
 import '../providers/devices_provider.dart';
 import '../models/enums.dart';
+import '../models/sensor_reading.dart';
 import '../models/system_config.dart';
 import '../widgets/moisture_gauge.dart';
 import '../widgets/valve_button.dart';
@@ -137,10 +138,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
               size: 200,
               showLabel: true,
               offline: !fresh,
+              fault: fresh && reading.isSensorFault == true,
               thresholdDry: provider.config?.thresholdDry ?? 30,
               thresholdWet: provider.config?.thresholdWet ?? 70,
             ),
             const SizedBox(height: 16),
+            if (fresh && reading.isSensorFault == true) ...[
+              Text(
+                '⚠ Sensor bermasalah — periksa kabel sensor '
+                '(ADC ${reading.moisture} di luar rentang valid '
+                '${SensorReading.minValidRaw}–${SensorReading.maxValidRaw})',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: AppColors.warning,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(height: 8),
+            ],
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

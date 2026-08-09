@@ -19,6 +19,17 @@ class SensorReading {
 
   bool get isValveOpen => valveStatus == 'ON';
 
+  /// Rentang ADC valid sesuai firmware (1500=basah, 2700=kering).
+  /// Di luar 100..4000 → sensor putus / kabel lepas / ngambang.
+  static const int minValidRaw = 100;
+  static const int maxValidRaw = 4000;
+
+  /// True jika pembacaan sensor TIDAK valid (fix #17):
+  /// ADC ~0 (open circuit) atau ~4095 (kabel putus) dipetakan firmware
+  /// menjadi 100% "BASAH" — menyesatkan. Deteksi & tampilkan SENSOR ERROR.
+  bool get isSensorFault =>
+      moisture < minValidRaw || moisture > maxValidRaw;
+
   bool isDry(int thresholdDry) => moisturePercent < thresholdDry;
 
   bool isWet(int thresholdWet) => moisturePercent > thresholdWet;

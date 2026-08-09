@@ -90,6 +90,35 @@ void main() {
       expect(json['device_id'], 'petak-01');
       expect(json['moisture_percent'], 25.0);
     });
+
+    test('isSensorFault true saat ADC di luar rentang valid (fix #17)', () {
+      // Sensor putus / ngambang → ADC ~0 (data live petak-03..05)
+      final open = SensorReading.fromJson({
+        'id': 14,
+        'device_id': 'petak-03',
+        'moisture': 0,
+        'moisture_percent': 100,
+      });
+      expect(open.isSensorFault, isTrue);
+
+      // Kabel putus / pin ngambang tinggi → ADC ~4095
+      final cut = SensorReading.fromJson({
+        'id': 15,
+        'device_id': 'petak-04',
+        'moisture': 4095,
+        'moisture_percent': 100,
+      });
+      expect(cut.isSensorFault, isTrue);
+
+      // Rentang normal firmware (1500 basah .. 2700 kering)
+      final normal = SensorReading.fromJson({
+        'id': 16,
+        'device_id': 'petak-01',
+        'moisture': 1800,
+        'moisture_percent': 75,
+      });
+      expect(normal.isSensorFault, isFalse);
+    });
   });
 
   group('SystemConfig', () {
