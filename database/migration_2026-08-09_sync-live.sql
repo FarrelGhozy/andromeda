@@ -10,7 +10,18 @@
 -- 1) Aktifkan realtime untuk tabel devices (issue #3)
 --    App membaca stream devices; tanpa publikasi, Home tidak pernah
 --    menerima data realtime.
-ALTER PUBLICATION supabase_realtime ADD TABLE devices;
+--    Idempoten: hanya ADD bila belum member publikasi (hindari
+--    error 42710 "already member of publication" bila dijalankan ulang).
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_publication_tables
+    WHERE pubname = 'supabase_realtime' AND tablename = 'devices'
+  ) THEN
+    ALTER PUBLICATION supabase_realtime ADD TABLE devices;
+  END IF;
+END
+$$;
 
 -- 2) Seed 6 petak (semua esp32_id = 'esp32-01' → 1 ESP32 mengelola
 --    6 petak). Idempoten: hanya mengisi yang belum ada.
