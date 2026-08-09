@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../config/theme_config.dart';
 import '../providers/devices_provider.dart';
@@ -39,15 +40,19 @@ class Esp32Screen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final device = devices[index];
                 final reading = provider.latestFor(device.deviceId);
+                final isOnline = provider.isDeviceOnline(device.deviceId);
                 return _PetakCard(
                   device: device,
                   reading: reading,
-                  isOnline: provider.isFresh(reading),
-                  onTap: () => Navigator.pushNamed(
-                    context,
-                    AppRoutes.dashboard,
-                    arguments: device.deviceId,
-                  ),
+                  isOnline: isOnline,
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.dashboard,
+                      arguments: device.deviceId,
+                    );
+                  },
                 );
               },
             ),
@@ -73,10 +78,12 @@ class _PetakCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final moisture = reading?.moisturePercent ?? 0.0;
     final isValveOn = reading?.isValveOpen ?? false;
 
     return Card(
+      color: isOnline ? null : theme.colorScheme.surfaceContainerLow,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(16),
@@ -88,15 +95,15 @@ class _PetakCard extends StatelessWidget {
               MoistureGauge(
                 percent: moisture,
                 size: 100,
-                offline: !isOnline,
+                greyedOut: !isOnline,
                 fault: isOnline && reading?.isSensorFault == true,
               ),
               const SizedBox(height: 8),
               Text(
                 device.name,
-                style: const TextStyle(
-                  fontSize: 14,
+                style: theme.textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w600,
+                  color: isOnline ? null : Colors.grey,
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 1,
@@ -106,9 +113,10 @@ class _PetakCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _miniBadge(
-                    isOnline ? 'Online' : 'Offline',
-                    isOnline ? AppColors.success : AppColors.offline,
+                  StatusBadge(
+                    text: isOnline ? 'Online' : 'Offline',
+                    color: isOnline ? AppColors.success : AppColors.offline,
+                    fontSize: 10,
                   ),
                   const SizedBox(width: 4),
                   StatusBadge(
@@ -124,25 +132,6 @@ class _PetakCard extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _miniBadge(String text, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(0.3)),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 10,
-          color: color,
-          fontWeight: FontWeight.w500,
         ),
       ),
     );

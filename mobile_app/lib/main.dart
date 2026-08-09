@@ -13,11 +13,9 @@ import 'routes.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Init Supabase
   final supabase = SupabaseService();
   await supabase.init();
 
-  // Repos
   final client = supabase.client;
   final deviceRepo = DeviceRepository(client);
   final sensorRepo = SensorRepository(client);
@@ -43,8 +41,25 @@ void main() async {
   );
 }
 
-class AndromedaApp extends StatelessWidget {
+class AndromedaApp extends StatefulWidget {
   const AndromedaApp({super.key});
+
+  static _AndromedaAppState? of(BuildContext context) {
+    return context.findAncestorStateOfType<_AndromedaAppState>();
+  }
+
+  @override
+  State<AndromedaApp> createState() => _AndromedaAppState();
+}
+
+class _AndromedaAppState extends State<AndromedaApp> {
+  bool _isDarkMode = false;
+
+  void toggleTheme(bool isDark) {
+    setState(() => _isDarkMode = isDark);
+  }
+
+  bool get isDarkMode => _isDarkMode;
 
   @override
   Widget build(BuildContext context) {

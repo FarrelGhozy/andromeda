@@ -6,6 +6,7 @@ class Device {
   final String location;
   final int sensorIndex;
   final String status;
+  final DateTime? lastSeen;
   final DateTime createdAt;
 
   Device({
@@ -16,6 +17,7 @@ class Device {
     required this.location,
     this.sensorIndex = 0,
     this.status = 'active',
+    this.lastSeen,
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
@@ -29,6 +31,9 @@ class Device {
         location: json['location'] ?? '',
         sensorIndex: json['sensor_index'] ?? 0,
         status: json['status'] ?? 'active',
+        lastSeen: json['last_seen'] != null
+            ? DateTime.parse(json['last_seen'])
+            : null,
         createdAt: json['created_at'] != null
             ? DateTime.parse(json['created_at'])
             : DateTime.now(),

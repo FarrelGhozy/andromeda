@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../services/supabase_service.dart';
 import '../providers/theme_provider.dart';
@@ -134,12 +134,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(title: const Text('Pengaturan')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Status Koneksi
           _buildCard(
             title: 'Status Koneksi',
             children: [
@@ -160,9 +160,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       Text(
                         connected ? 'Terhubung' : 'Terputus',
                         style: TextStyle(
-                          color: connected
-                              ? AppColors.success
-                              : AppColors.danger,
+                          color: connected ? AppColors.success : AppColors.danger,
                         ),
                       ),
                     ],
@@ -191,7 +189,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
           // Notifikasi
           _buildCard(
-            title: 'Notifikasi',
+            title: 'Tampilan',
             children: [
               SwitchListTile(
                 title: const Text('Alert Kelembaban Kritis'),
@@ -205,13 +203,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
           const SizedBox(height: 8),
-
-          // Data
           _buildCard(
             title: 'Data',
             children: [
               ListTile(
-                leading: const Icon(Icons.download, color: AppColors.primaryGreen),
+                leading: Icon(Icons.download, color: theme.colorScheme.primary),
                 title: const Text('Ekspor Data CSV'),
                 subtitle: Text(
                   _exporting
@@ -231,20 +227,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
           const SizedBox(height: 8),
-
-          // Info
           _buildCard(
             title: 'Tentang',
             children: [
               ListTile(
-                leading: const Icon(Icons.info_outline, color: AppColors.primaryGreen),
+                leading: Icon(Icons.info_outline, color: theme.colorScheme.primary),
                 title: const Text('ANDROMEDA'),
                 subtitle: Text('$_version\nIrigasi Tetes Otomatis Berbasis IoT'),
                 contentPadding: EdgeInsets.zero,
               ),
               const Divider(),
               ListTile(
-                leading: const Icon(Icons.code, color: AppColors.accentBlue),
+                leading: Icon(Icons.code, color: AppColors.accentBlue),
                 title: const Text('Open Source'),
                 subtitle: const Text('github.com/FarrelGhozy/andromeda'),
                 contentPadding: EdgeInsets.zero,
@@ -252,10 +246,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               const Divider(),
               ListTile(
-                leading: const Icon(Icons.groups, color: AppColors.accentOrange),
-                title: const Text('Program PDB'),
-                subtitle: const Text('Desa Meraya — Kec. Menthobi Raya'),
+                leading: Icon(Icons.share, color: AppColors.accentOrange),
+                title: const Text('Bagikan Aplikasi'),
+                subtitle: const Text('Sebarkan ke sesama petani'),
                 contentPadding: EdgeInsets.zero,
+                onTap: () => _shareApp(),
               ),
             ],
           ),
@@ -291,5 +286,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
+  }
+
+  void _shareApp() {
+    Share.share(
+      'ANDROMEDA - Irigasi Tetes Otomatis Berbasis IoT untuk Petani Indonesia\n\n'
+      'https://github.com/FarrelGhozy/andromeda',
+    );
   }
 }

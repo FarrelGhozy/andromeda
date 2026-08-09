@@ -9,12 +9,24 @@ class DevicesProvider extends ChangeNotifier {
   List<Device> _devices = [];
   Map<String, SensorReading?> _latestReadings = {};
   bool _isLoading = true;
+  bool _readingsLoaded = false;
   String? _error;
 
+  // Fallback "online" dari freshness reading (tanpa heartbeat):
+  // ESP32 deep-sleep, data tiap readInterval (default 30 mnt) →
+  // 2x interval sebagai toleransi.
+  static const _onlineThresholdMinutes = 10;
+
+  // Window "kadaluarsa" untuk last_seen heartbeat.
+  // Heartbeat firmware kirim tiap 60s, jadi 3 menit cukup longgar.
+  static const _heartbeatThresholdMinutes = 3;
+
   List<Device> get devices => _devices;
+  List<Device> get allDevices => _devices;
   SensorReading? latestFor(String deviceId) => _latestReadings[deviceId];
   bool get isLoading => _isLoading;
   String? get error => _error;
+  bool get isReady => !_isLoading;
 
   DevicesProvider(this._deviceRepo);
 
@@ -22,17 +34,17 @@ class DevicesProvider extends ChangeNotifier {
     _deviceRepo.getDevicesStream().listen(
       (devices) {
         _devices = devices;
-        _isLoading = false;
         _error = null;
-        notifyListeners();
+        _checkReady();
       },
       onError: (Object e) {
-        // Real-time gagal (mis. tabel belum di publikasi Realtime) →
+        // Real-time gagal (mis. tabel belum dipublikasi Realtime) →
         // fallback fetch sekali agar list tetap muncul.
         _error = 'Realtime tidak tersedia, memuat data statis: $e';
         _loadInitialDevices();
       },
     );
+    refreshReadings();
   }
 
   /// Fallback: ambil daftar device sekali (tanpa realtime).
@@ -40,10 +52,16 @@ class DevicesProvider extends ChangeNotifier {
     try {
       final devices = await _deviceRepo.getDevices();
       _devices = devices;
-      _isLoading = false;
-      notifyListeners();
+      _checkReady();
     } catch (e) {
       _error = 'Gagal memuat data: $e';
+      _readingsLoaded = true;
+      _checkReady();
+    }
+  }
+
+  void _checkReady() {
+    if (_readingsLoaded) {
       _isLoading = false;
       notifyListeners();
     }
@@ -53,11 +71,29 @@ class DevicesProvider extends ChangeNotifier {
     _error = null;
     try {
       _latestReadings = await _deviceRepo.getLatestReadings();
-      notifyListeners();
+      _readingsLoaded = true;
+      _checkReady();
     } catch (e) {
       _error = 'Gagal memuat data: $e';
-      notifyListeners();
+      _readingsLoaded = true;
+      _checkReady();
     }
+  }
+
+  bool isDeviceOnline(String deviceId) {
+    // 1. Prioritas: heartbeat last_seen dari perangkat (akurat).
+    final device =
+        _devices.where((d) => d.deviceId == deviceId).firstOrNull;
+    final lastSeen = device?.lastSeen;
+    if (lastSeen != null) {
+      return DateTime.now().difference(lastSeen).inMinutes <
+          _heartbeatThresholdMinutes;
+    }
+    // 2. Fallback: kalau belum ada heartbeat, tebak dari data terakhir.
+    final reading = _latestReadings[deviceId];
+    if (reading == null) return false;
+    return DateTime.now().difference(reading.createdAt).inMinutes <
+        _onlineThresholdMinutes;
   }
 
   List<String> get esp32Ids {
@@ -80,8 +116,8 @@ class DevicesProvider extends ChangeNotifier {
     return '$esp32Id — $location';
   }
 
-  /// Jendela waktu "online": ESP32 deep-sleep, data terbaru datang tiap
-  /// readInterval (default 30 mnt) — 2x interval sebagai toleransi.
+  /// Jendela "data segar" untuk GAUGE (bukan online count):
+  /// reading dianggap masih layak tampil ≤ 2x readInterval.
   static const Duration onlineWindow = Duration(minutes: 60);
 
   /// `true` jika reading ada dan masih segar (≤ 60 menit).
@@ -89,9 +125,6 @@ class DevicesProvider extends ChangeNotifier {
     if (reading == null) return false;
     return DateTime.now().difference(reading.createdAt) <= onlineWindow;
   }
-
-  /// Device dianggap online jika punya reading segar.
-  bool isDeviceOnline(String deviceId) => isFresh(_latestReadings[deviceId]);
 
   int onlineCountForEsp32(String esp32Id) {
     return devicesForEsp32(esp32Id)

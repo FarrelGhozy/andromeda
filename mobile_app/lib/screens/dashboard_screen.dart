@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../providers/dashboard_provider.dart';
@@ -33,6 +34,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   double _intervalMin = 30;
   DateTime? _configVersion;
 
+  // Durasi valve untuk tombol BUKA (dipilih via DurationPicker).
+  int _selectedValveDuration = 0;
+
   void _syncConfigLocals(SystemConfig? config) {
     if (config == null) return;
     if (_configVersion != config.updatedAt) {
@@ -60,8 +64,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: () =>
-                context.read<DashboardProvider>().loadDevice(widget.deviceId),
+            onPressed: () {
+              HapticFeedback.lightImpact();
+              context.read<DashboardProvider>().loadDevice(widget.deviceId);
+            },
             tooltip: 'Refresh',
           ),
         ],
@@ -92,23 +98,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // 1. Gauge Kelembaban
             _buildGaugeSection(provider),
             const SizedBox(height: 16),
-
-            // 2. Status Valve
             _buildValveSection(provider),
             const SizedBox(height: 16),
-
-            // 3. Kontrol Valve
-            _buildValveControl(provider),
-            const SizedBox(height: 16),
-
-            // 4. Grafik Historis
             _buildChartSection(provider),
             const SizedBox(height: 16),
-
-            // 5. Konfigurasi
             _buildConfigSection(provider),
             const SizedBox(height: 24),
           ],
@@ -133,14 +128,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 16),
-            MoistureGauge(
-              percent: percent,
-              size: 200,
-              showLabel: true,
-              offline: !fresh,
-              fault: fresh && reading.isSensorFault == true,
-              thresholdDry: provider.config?.thresholdDry ?? 30,
-              thresholdWet: provider.config?.thresholdWet ?? 70,
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final gaugeSize = constraints.maxWidth < 300
+                    ? constraints.maxWidth * 0.6
+                    : 200.0;
+                return MoistureGauge(
+                  percent: percent,
+                  size: gaugeSize,
+                  showLabel: true,
+                  greyedOut: !fresh,
+                  fault: fresh && reading.isSensorFault == true,
+                  thresholdDry: provider.config?.thresholdDry ?? 30,
+                  thresholdWet: provider.config?.thresholdWet ?? 70,
+                );
+              },
             ),
             const SizedBox(height: 16),
             if (fresh && reading.isSensorFault == true) ...[
@@ -198,15 +200,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.grey[100],
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: Colors.grey[600]),
+          Icon(icon, size: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
           const SizedBox(width: 6),
-          Text(text, style: TextStyle(fontSize: 12, color: Colors.grey[700])),
+          Text(
+            text,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
         ],
       ),
     );
@@ -237,84 +244,68 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildValveSection(DashboardProvider provider) {
     final status = provider.valveDisplayStatus;
-    final (icon, label, color, subtitle) = switch (status) {
+    final (icon, label, color) = switch (status) {
       ValveDisplayStatus.open => (
           Icons.water_drop,
           'TERBUKA',
           AppColors.danger,
-          'Valve terbuka (data segar)',
         ),
       ValveDisplayStatus.closed => (
           Icons.water_drop_outlined,
           'TERTUTUP',
           AppColors.success,
-          'Valve tertutup (data segar)',
         ),
       ValveDisplayStatus.unknown => (
           Icons.help_outline,
           'TIDAK DIKETAHUI',
           AppColors.offline,
-          'Tidak ada data segar dari perangkat',
         ),
     };
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Status Valve',
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Icon(icon, color: color, size: 28),
-                    const SizedBox(width: 8),
-                    Text(
-                      label,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: color,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  subtitle,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ],
-            ),
-            StatusBadge(
-              text: provider.config?.isAutoMode == true ? 'Otomatis' : 'Manual',
-              color: provider.config?.isAutoMode == true
-                  ? AppColors.primaryGreen
-                  : AppColors.accentOrange,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+    final isAuto = provider.config?.isAutoMode == true;
+    final valveDuration = _selectedValveDuration > 0 ? _selectedValveDuration : 30;
 
-  Widget _buildValveControl(DashboardProvider provider) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Kontrol Valve',
-              style: Theme.of(context).textTheme.titleSmall,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Status Valve',
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                StatusBadge(
+                  text: isAuto ? 'Otomatis' : 'Manual',
+                  color: isAuto ? AppColors.primaryGreen : AppColors.accentOrange,
+                  fontSize: 11,
+                ),
+              ],
             ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Icon(icon, color: color, size: 28),
+                const SizedBox(width: 8),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                  ),
+                ),
+              ],
+            ),
+            if (status == ValveDisplayStatus.unknown) ...[
+              const SizedBox(height: 2),
+              Text(
+                'Tidak ada data segar dari perangkat — status valve tidak diketahui',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
             const SizedBox(height: 16),
             Row(
               children: [
@@ -322,9 +313,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: ValveButton(
                     label: 'BUKA',
                     icon: Icons.play_arrow,
-                    color: AppColors.danger,
+                    color: AppColors.success,
                     onPressed: (!provider.isValveOpen && !provider.sendingCommand)
-                        ? () => _sendValve(provider, 'VALVE_ON')
+                        ? () {
+                            HapticFeedback.lightImpact();
+                            _sendValve(provider, 'VALVE_ON',
+                                duration: valveDuration);
+                          }
                         : null,
                   ),
                 ),
@@ -333,11 +328,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: ValveButton(
                     label: 'TUTUP',
                     icon: Icons.stop,
-                    color: AppColors.success,
+                    color: AppColors.danger,
                     // Fix #16: TUTUP selalu aktif (safety) — saat status
                     // tidak diketahui pun user boleh memaksa menutup.
                     onPressed: !provider.sendingCommand
-                        ? () => _sendValve(provider, 'VALVE_OFF')
+                        ? () {
+                            HapticFeedback.lightImpact();
+                            _sendValve(provider, 'VALVE_OFF');
+                          }
                         : null,
                   ),
                 ),
@@ -349,8 +347,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ],
             const SizedBox(height: 12),
             DurationPicker(
-              onSelected: (duration) =>
-                  _sendValve(provider, 'VALVE_ON', duration: duration),
+              selectedDuration: _selectedValveDuration,
+              onSelected: (d) => setState(() => _selectedValveDuration = d),
             ),
           ],
         ),
@@ -372,24 +370,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   'Riwayat Kelembaban',
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
-                Row(
-                  children: ChartRange.values.map((range) {
-                    final selected = provider.selectedChartRange == range;
-                    return Padding(
-                      padding: const EdgeInsets.only(left: 4),
-                      child: ChoiceChip(
-                        label: Text(range.label),
-                        selected: selected,
-                        onSelected: (_) => provider.setChartRange(range),
-                        selectedColor: AppColors.primaryGreen,
-                        labelStyle: TextStyle(
-                          color: selected ? Colors.white : null,
-                          fontSize: 12,
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: ChartRange.values.map((range) {
+                      final selected = provider.selectedChartRange == range;
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: ChoiceChip(
+                          label: Text(range.label),
+                          selected: selected,
+                          showCheckmark: false,
+                          onSelected: (_) => provider.setChartRange(range),
+                          selectedColor: Theme.of(context).colorScheme.primary,
+                          labelStyle: TextStyle(
+                            color: selected ? Colors.white : null,
+                            fontSize: 12,
+                          ),
+                          visualDensity: VisualDensity.compact,
                         ),
-                        visualDensity: VisualDensity.compact,
-                      ),
-                    );
-                  }).toList(),
+                      );
+                    }).toList(),
+                  ),
                 ),
               ],
             ),
@@ -466,56 +468,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Konfigurasi',
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            const SizedBox(height: 16),
-
-            // Mode
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Mode Operasi'),
-                ToggleButtons(
-                  isSelected: [config.isAutoMode, config.isManualMode],
-                  onPressed: (index) async {
-                    config.mode = index == 0 ? 'auto' : 'manual';
-                    final ok = await provider.updateConfig(config);
-                    if (!mounted) return;
-                    final messenger = ScaffoldMessenger.of(context);
-                    messenger.hideCurrentSnackBar();
-                    messenger.showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          ok
-                              ? 'Mode ${index == 0 ? 'Otomatis' : 'Manual'} diterapkan ✓'
-                              : (provider.errorMessage ?? 'Gagal menyimpan mode'),
-                        ),
-                        backgroundColor: ok
-                            ? AppColors.success
-                            : AppColors.danger,
-                        duration: const Duration(seconds: 3),
-                      ),
-                    );
-                  },
-                  borderRadius: BorderRadius.circular(8),
-                  selectedColor: Colors.white,
-                  fillColor: AppColors.primaryGreen,
-                  constraints: const BoxConstraints(
-                    minWidth: 100,
-                    minHeight: 36,
-                  ),
-                  children: const [
-                    Text('Otomatis'),
-                    Text('Manual'),
-                  ],
+                Text(
+                  'Konfigurasi',
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                TextButton.icon(
+                  onPressed: saveConfig,
+                  icon: const Icon(Icons.save, size: 16),
+                  label: const Text('Simpan'),
                 ),
               ],
             ),
+            const SizedBox(height: 16),
+            _buildModeToggle(provider, config),
             const Divider(),
-
-            // Threshold kering
             ConfigSlider(
               label: 'Threshold Kering',
               subtitle: 'Tanah dianggap kering jika < ${_dry.round()}%',
@@ -527,8 +496,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
               onChangeEnd: (_) => saveConfig(),
             ),
             const Divider(),
-
-            // Threshold basah
             ConfigSlider(
               label: 'Threshold Basah',
               subtitle: 'Tanah dianggap basah jika > ${_wet.round()}%',
@@ -540,8 +507,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
               onChangeEnd: (_) => saveConfig(),
             ),
             const Divider(),
-
-            // Durasi valve
             ConfigSlider(
               label: 'Durasi Valve',
               subtitle: '${_duration.round()} detik',
@@ -553,8 +518,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
               onChangeEnd: (_) => saveConfig(),
             ),
             const Divider(),
-
-            // Interval baca
             ConfigSlider(
               label: 'Interval Baca',
               subtitle: 'Setiap ${_intervalMin.round()} menit',
@@ -568,6 +531,36 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildModeToggle(DashboardProvider provider, SystemConfig config) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text('Mode Operasi', style: Theme.of(context).textTheme.bodyMedium),
+        SegmentedButton<String>(
+          segments: const [
+            ButtonSegment(value: 'auto', label: Text('Otomatis'), icon: Icon(Icons.auto_awesome, size: 16)),
+            ButtonSegment(value: 'manual', label: Text('Manual'), icon: Icon(Icons.touch_app, size: 16)),
+          ],
+          selected: {config.isAutoMode ? 'auto' : 'manual'},
+          onSelectionChanged: (selected) async {
+            final previous = config.mode;
+            config.mode = selected.first;
+            final ok = await provider.updateConfig(config);
+            if (!ok && mounted) {
+              setState(() => config.mode = previous);
+            }
+          },
+          style: ButtonStyle(
+            visualDensity: VisualDensity.compact,
+            textStyle: WidgetStatePropertyAll(
+              Theme.of(context).textTheme.labelMedium,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

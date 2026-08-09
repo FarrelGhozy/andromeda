@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class ValveButton extends StatelessWidget {
   final String label;
@@ -19,7 +20,12 @@ class ValveButton extends StatelessWidget {
     return SizedBox(
       height: 56,
       child: ElevatedButton.icon(
-        onPressed: onPressed,
+        onPressed: onPressed != null
+            ? () {
+                HapticFeedback.lightImpact();
+                onPressed!();
+              }
+            : null,
         icon: Icon(icon, color: Colors.white),
         label: Text(
           label,
