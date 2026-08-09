@@ -36,11 +36,11 @@ extension ChartRangeExtension on ChartRange {
   String get label {
     switch (this) {
       case ChartRange.day1:
-        return '1H';
+        return 'Hari ini';
       case ChartRange.day7:
-        return '7H';
+        return '7 Hari';
       case ChartRange.day30:
-        return '30H';
+        return '30 Hari';
     }
   }
 

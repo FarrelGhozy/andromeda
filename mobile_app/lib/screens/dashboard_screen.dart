@@ -12,6 +12,7 @@ import '../widgets/config_slider.dart';
 import '../widgets/status_badge.dart';
 import '../widgets/duration_picker.dart';
 import '../widgets/error_banner.dart';
+import '../widgets/loading_overlay.dart';
 import '../config/theme_config.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -68,16 +69,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         builder: (context, provider, _) {
           switch (provider.state) {
             case DashboardState.loading:
-              return const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 16),
-                    Text('Memuat data...'),
-                  ],
-                ),
-              );
+              return const ShimmerDashboard();
             case DashboardState.error:
               return ErrorBanner(
                 message: provider.errorMessage ?? 'Terjadi kesalahan',

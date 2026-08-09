@@ -20,6 +20,7 @@ dependencies:
   # STATE MANAGEMENT
   # ====================
   provider: ^6.1.0
+  shared_preferences: ^2.3.0
 
   # ====================
   # CHART & VISUALISASI

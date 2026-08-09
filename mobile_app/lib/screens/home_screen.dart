@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../config/theme_config.dart';
 import '../providers/devices_provider.dart';
 import '../widgets/error_banner.dart';
+import '../widgets/loading_overlay.dart';
 import '../routes.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -38,7 +39,12 @@ class HomeScreen extends StatelessWidget {
       body: Consumer<DevicesProvider>(
         builder: (context, provider, _) {
           if (provider.isLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              itemCount: 3,
+              itemBuilder: (_, __) => const ShimmerDeviceCard(),
+            );
           }
 
           if (provider.error != null) {
