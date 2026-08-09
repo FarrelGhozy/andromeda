@@ -21,8 +21,9 @@ class MoistureChart extends StatelessWidget {
       return const Center(child: Text('Belum ada data'));
     }
 
-    // Balik urutan (dari terlama ke terbaru) untuk chart
-    final sorted = data.reversed.toList();
+    // Data dari repository sudah ascending (terlama → terbaru).
+    // X-axis: kiri = terlama, kanan = terbaru.
+    final sorted = data.toList();
 
     return LineChart(
       LineChartData(

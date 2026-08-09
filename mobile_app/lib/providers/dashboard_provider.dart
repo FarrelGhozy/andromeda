@@ -24,8 +24,11 @@ class DashboardProvider extends ChangeNotifier {
   StreamSubscription? _sensorSub;
   StreamSubscription? _configSub;
 
+  bool _sendingCommand = false;
+
   // Getters
   String get deviceId => _deviceId;
+  bool get sendingCommand => _sendingCommand;
   DashboardState get state => _state;
   SensorReading? get latestReading => _latestReading;
   List<SensorReading> get history => _history;
@@ -88,26 +91,39 @@ class DashboardProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> sendValveCommand(String command,
+  /// Kirim perintah valve. Return `true` jika berhasil terkirim.
+  Future<bool> sendValveCommand(String command,
       {int duration = 30}) async {
+    if (_sendingCommand) return false;
+    _sendingCommand = true;
+    notifyListeners();
     try {
       await _sensorRepo.sendCommand(
         deviceId: _deviceId,
         command: command,
         duration: duration,
       );
+      _errorMessage = null;
+      return true;
     } catch (e) {
       _errorMessage = 'Gagal kirim perintah: $e';
+      return false;
+    } finally {
+      _sendingCommand = false;
       notifyListeners();
     }
   }
 
-  Future<void> updateConfig(SystemConfig newConfig) async {
+  /// Update config. Mengembalikan `true` jika tersimpan di server.
+  Future<bool> updateConfig(SystemConfig newConfig) async {
     try {
       await _configRepo.updateConfig(_deviceId, newConfig);
+      _errorMessage = null;
+      return true;
     } catch (e) {
       _errorMessage = 'Gagal update config: $e';
       notifyListeners();
+      return false;
     }
   }
 

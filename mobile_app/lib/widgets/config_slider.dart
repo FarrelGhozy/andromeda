@@ -9,6 +9,7 @@ class ConfigSlider extends StatelessWidget {
   final double max;
   final int? divisions;
   final ValueChanged<double> onChanged;
+  final ValueChanged<double>? onChangeEnd;
 
   const ConfigSlider({
     super.key,
@@ -19,6 +20,7 @@ class ConfigSlider extends StatelessWidget {
     required this.max,
     this.divisions,
     required this.onChanged,
+    this.onChangeEnd,
   });
 
   @override
@@ -55,6 +57,7 @@ class ConfigSlider extends StatelessWidget {
           activeColor: AppColors.primaryGreen,
           inactiveColor: Colors.grey[300],
           onChanged: onChanged,
+          onChangeEnd: onChangeEnd,
         ),
       ],
     );

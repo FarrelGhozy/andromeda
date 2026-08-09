@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../config/theme_config.dart';
 import '../providers/devices_provider.dart';
+import '../models/device.dart';
+import '../models/sensor_reading.dart';
 import '../widgets/moisture_gauge.dart';
 import '../widgets/status_badge.dart';
 import '../routes.dart';
@@ -40,6 +42,7 @@ class Esp32Screen extends StatelessWidget {
                 return _PetakCard(
                   device: device,
                   reading: reading,
+                  isOnline: provider.isFresh(reading),
                   onTap: () => Navigator.pushNamed(
                     context,
                     AppRoutes.dashboard,
@@ -56,20 +59,21 @@ class Esp32Screen extends StatelessWidget {
 }
 
 class _PetakCard extends StatelessWidget {
-  final dynamic device;
-  final dynamic reading;
+  final Device device;
+  final SensorReading? reading;
+  final bool isOnline;
   final VoidCallback onTap;
 
   const _PetakCard({
     required this.device,
     required this.reading,
+    required this.isOnline,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final moisture = reading?.moisturePercent ?? 0.0;
-    final isOnline = reading != null;
     final isValveOn = reading?.isValveOpen ?? false;
 
     return Card(
@@ -81,7 +85,11 @@ class _PetakCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              MoistureGauge(percent: moisture, size: 100),
+              MoistureGauge(
+                percent: moisture,
+                size: 100,
+                offline: !isOnline,
+              ),
               const SizedBox(height: 8),
               Text(
                 device.name,

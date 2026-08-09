@@ -6,12 +6,18 @@ class MoistureGauge extends StatelessWidget {
   final double percent;
   final double size;
   final bool showLabel;
+  final bool offline;
+  final int thresholdDry;
+  final int thresholdWet;
 
   const MoistureGauge({
     super.key,
     required this.percent,
     required this.size,
     this.showLabel = true,
+    this.offline = false,
+    this.thresholdDry = 30,
+    this.thresholdWet = 70,
   });
 
   @override
@@ -24,7 +30,7 @@ class MoistureGauge extends StatelessWidget {
       height: size,
       child: CustomPaint(
         painter: _GaugePainter(
-          percent: (percent / 100).clamp(0.0, 1.0),
+          percent: offline ? 0 : (percent / 100).clamp(0.0, 1.0),
           color: color,
           backgroundColor: Colors.grey[200]!,
           strokeWidth: size * 0.12,
@@ -35,7 +41,7 @@ class MoistureGauge extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      '${percent.toStringAsFixed(0)}%',
+                      offline ? '—' : '${percent.toStringAsFixed(0)}%',
                       style: TextStyle(
                         fontSize: size * 0.28,
                         fontWeight: FontWeight.bold,
@@ -46,7 +52,7 @@ class MoistureGauge extends StatelessWidget {
                       label,
                       style: TextStyle(
                         fontSize: size * 0.11,
-                        color: Colors.grey[600],
+                        color: offline ? Colors.grey[500] : Colors.grey[600],
                       ),
                     ),
                   ],
@@ -58,14 +64,16 @@ class MoistureGauge extends StatelessWidget {
   }
 
   Color _getColor() {
-    if (percent < 30) return AppColors.danger;
-    if (percent < 70) return AppColors.warning;
+    if (offline) return AppColors.offline;
+    if (percent < thresholdDry) return AppColors.danger;
+    if (percent < thresholdWet) return AppColors.warning;
     return AppColors.primaryGreen;
   }
 
   String _getLabel() {
-    if (percent < 30) return 'KERING';
-    if (percent < 70) return 'LEMBAB';
+    if (offline) return 'OFFLINE';
+    if (percent < thresholdDry) return 'KERING';
+    if (percent < thresholdWet) return 'LEMBAB';
     return 'BASAH';
   }
 }

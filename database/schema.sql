@@ -115,6 +115,7 @@ BEGIN
 END
 $$;
 
+ALTER PUBLICATION supabase_realtime ADD TABLE devices;
 ALTER PUBLICATION supabase_realtime ADD TABLE sensor_readings;
 ALTER PUBLICATION supabase_realtime ADD TABLE system_config;
 ALTER PUBLICATION supabase_realtime ADD TABLE pending_commands;

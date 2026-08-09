@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../providers/dashboard_provider.dart';
+import '../providers/devices_provider.dart';
 import '../models/enums.dart';
+import '../models/system_config.dart';
 import '../widgets/moisture_gauge.dart';
 import '../widgets/valve_button.dart';
 import '../widgets/moisture_chart.dart';
@@ -21,6 +23,25 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  // Nilai slider lokal (agar drag tidak spam update ke server).
+  // Disinkronkan dari config saat berubah (lihat _syncConfigLocals).
+  double _dry = 30;
+  double _wet = 70;
+  double _duration = 30;
+  double _intervalMin = 30;
+  DateTime? _configVersion;
+
+  void _syncConfigLocals(SystemConfig? config) {
+    if (config == null) return;
+    if (_configVersion != config.updatedAt) {
+      _configVersion = config.updatedAt;
+      _dry = config.thresholdDry.toDouble();
+      _wet = config.thresholdWet.toDouble();
+      _duration = config.valveDuration.toDouble();
+      _intervalMin = config.readIntervalMinutes.toDouble();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -106,6 +127,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildGaugeSection(DashboardProvider provider) {
     final reading = provider.latestReading;
     final percent = reading?.moisturePercent ?? 0;
+    final fresh = reading != null &&
+        DateTime.now().difference(reading.createdAt) <=
+            DevicesProvider.onlineWindow;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -120,6 +144,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
               percent: percent,
               size: 200,
               showLabel: true,
+              offline: !fresh,
+              thresholdDry: provider.config?.thresholdDry ?? 30,
+              thresholdWet: provider.config?.thresholdWet ?? 70,
             ),
             const SizedBox(height: 16),
             Row(
@@ -133,13 +160,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ? DateFormat('HH:mm').format(reading!.createdAt)
                       : '—',
                 ),
+                if (reading?.batteryVoltage != null) ...[
+                  const SizedBox(width: 16),
+                  _infoChip(
+                    Icons.battery_std,
+                    '${reading!.batteryVoltage!.toStringAsFixed(1)}V',
+                  ),
+                ],
               ],
             ),
-            if (reading?.rssi != null) ...[
+            if (!fresh) ...[
               const SizedBox(height: 8),
               Text(
-                'WiFi: ${reading!.rssi} dBm',
-                style: Theme.of(context).textTheme.bodySmall,
+                'Menunggu data terbaru dari perangkat…',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[600],
+                  fontStyle: FontStyle.italic,
+                ),
               ),
             ],
           ],
@@ -162,6 +200,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
           const SizedBox(width: 6),
           Text(text, style: TextStyle(fontSize: 12, color: Colors.grey[700])),
         ],
+      ),
+    );
+  }
+
+  /// Kirim perintah valve dengan feedback SnackBar (sukses/gagal).
+  Future<void> _sendValve(
+      DashboardProvider provider, String command, {int? duration}) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final ok = await provider.sendValveCommand(command,
+        duration: duration ?? 30);
+    if (!mounted) return;
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(
+          ok
+              ? (command == 'VALVE_ON'
+                  ? 'Perintah BUKA valve terkirim ✓'
+                  : 'Perintah TUTUP valve terkirim ✓')
+              : (provider.errorMessage ?? 'Gagal mengirim perintah'),
+        ),
+        backgroundColor: ok ? AppColors.success : AppColors.danger,
+        duration: const Duration(seconds: 3),
       ),
     );
   }
@@ -233,8 +294,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     label: 'BUKA',
                     icon: Icons.play_arrow,
                     color: AppColors.danger,
-                    onPressed: !provider.isValveOpen
-                        ? () => provider.sendValveCommand('VALVE_ON')
+                    onPressed: (!provider.isValveOpen && !provider.sendingCommand)
+                        ? () => _sendValve(provider, 'VALVE_ON')
                         : null,
                   ),
                 ),
@@ -244,17 +305,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     label: 'TUTUP',
                     icon: Icons.stop,
                     color: AppColors.success,
-                    onPressed: provider.isValveOpen
-                        ? () => provider.sendValveCommand('VALVE_OFF')
+                    onPressed: (provider.isValveOpen && !provider.sendingCommand)
+                        ? () => _sendValve(provider, 'VALVE_OFF')
                         : null,
                   ),
                 ),
               ],
             ),
+            if (provider.sendingCommand) ...[
+              const SizedBox(height: 8),
+              const LinearProgressIndicator(minHeight: 2),
+            ],
             const SizedBox(height: 12),
             DurationPicker(
               onSelected: (duration) =>
-                  provider.sendValveCommand('VALVE_ON', duration: duration),
+                  _sendValve(provider, 'VALVE_ON', duration: duration),
             ),
           ],
         ),
@@ -335,6 +400,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
       );
     }
 
+    _syncConfigLocals(config);
+
+    Future<void> _saveWithFeedback(
+        DashboardProvider provider, SystemConfig updated) async {
+      final messenger = ScaffoldMessenger.of(context);
+      final ok = await provider.updateConfig(updated);
+      if (!mounted) return;
+      messenger.hideCurrentSnackBar();
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            ok ? 'Konfigurasi tersimpan ✓' : (provider.errorMessage ?? 'Gagal menyimpan konfigurasi'),
+          ),
+          backgroundColor: ok ? AppColors.success : AppColors.danger,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
+
+    void saveConfig() {
+      final updated = config.copyWith(
+        thresholdDry: _dry.round(),
+        thresholdWet: _wet.round(),
+        valveDuration: _duration.round(),
+        readInterval: (_intervalMin * 60).round(),
+      );
+      _saveWithFeedback(provider, updated);
+    }
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -354,9 +448,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 const Text('Mode Operasi'),
                 ToggleButtons(
                   isSelected: [config.isAutoMode, config.isManualMode],
-                  onPressed: (index) {
+                  onPressed: (index) async {
                     config.mode = index == 0 ? 'auto' : 'manual';
-                    provider.updateConfig(config);
+                    final ok = await provider.updateConfig(config);
+                    if (!mounted) return;
+                    final messenger = ScaffoldMessenger.of(context);
+                    messenger.hideCurrentSnackBar();
+                    messenger.showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          ok
+                              ? 'Mode ${index == 0 ? 'Otomatis' : 'Manual'} diterapkan ✓'
+                              : (provider.errorMessage ?? 'Gagal menyimpan mode'),
+                        ),
+                        backgroundColor: ok
+                            ? AppColors.success
+                            : AppColors.danger,
+                        duration: const Duration(seconds: 3),
+                      ),
+                    );
                   },
                   borderRadius: BorderRadius.circular(8),
                   selectedColor: Colors.white,
@@ -377,60 +487,52 @@ class _DashboardScreenState extends State<DashboardScreen> {
             // Threshold kering
             ConfigSlider(
               label: 'Threshold Kering',
-              subtitle: 'Tanah dianggap kering jika < ${config.thresholdDry}%',
-              value: config.thresholdDry.toDouble(),
+              subtitle: 'Tanah dianggap kering jika < ${_dry.round()}%',
+              value: _dry,
               min: 10,
               max: 60,
               divisions: 10,
-              onChanged: (v) {
-                config.thresholdDry = v.round();
-                provider.updateConfig(config);
-              },
+              onChanged: (v) => setState(() => _dry = v),
+              onChangeEnd: (_) => saveConfig(),
             ),
             const Divider(),
 
             // Threshold basah
             ConfigSlider(
               label: 'Threshold Basah',
-              subtitle: 'Tanah dianggap basah jika > ${config.thresholdWet}%',
-              value: config.thresholdWet.toDouble(),
+              subtitle: 'Tanah dianggap basah jika > ${_wet.round()}%',
+              value: _wet,
               min: 40,
               max: 90,
               divisions: 10,
-              onChanged: (v) {
-                config.thresholdWet = v.round();
-                provider.updateConfig(config);
-              },
+              onChanged: (v) => setState(() => _wet = v),
+              onChangeEnd: (_) => saveConfig(),
             ),
             const Divider(),
 
             // Durasi valve
             ConfigSlider(
               label: 'Durasi Valve',
-              subtitle: '${config.valveDuration} detik',
-              value: config.valveDuration.toDouble(),
+              subtitle: '${_duration.round()} detik',
+              value: _duration,
               min: 5,
               max: 120,
               divisions: 23,
-              onChanged: (v) {
-                config.valveDuration = v.round();
-                provider.updateConfig(config);
-              },
+              onChanged: (v) => setState(() => _duration = v),
+              onChangeEnd: (_) => saveConfig(),
             ),
             const Divider(),
 
             // Interval baca
             ConfigSlider(
               label: 'Interval Baca',
-              subtitle: 'Setiap ${config.readIntervalMinutes} menit',
-              value: config.readIntervalMinutes.toDouble(),
+              subtitle: 'Setiap ${_intervalMin.round()} menit',
+              value: _intervalMin,
               min: 5,
               max: 120,
               divisions: 23,
-              onChanged: (v) {
-                config.readInterval = (v * 60).round();
-                provider.updateConfig(config);
-              },
+              onChanged: (v) => setState(() => _intervalMin = v),
+              onChangeEnd: (_) => saveConfig(),
             ),
           ],
         ),

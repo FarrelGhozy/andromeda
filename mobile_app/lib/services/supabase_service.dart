@@ -18,7 +18,7 @@ class SupabaseService {
   /// Cek koneksi Supabase
   Future<bool> checkConnection() async {
     try {
-      final response = await client.from('devices').select().limit(1);
+      await client.from('devices').select().limit(1);
       return true;
     } catch (_) {
       return false;

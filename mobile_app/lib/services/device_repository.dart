@@ -16,6 +16,12 @@ class DeviceRepository {
         .map((maps) => maps.map((m) => Device.fromJson(m)).toList());
   }
 
+  /// Ambil daftar semua device sekali (tanpa realtime)
+  Future<List<Device>> getDevices() async {
+    final response = await _client.from('devices').select().order('id');
+    return (response as List).map((m) => Device.fromJson(m)).toList();
+  }
+
   /// Ambil 1 device
   Future<Device?> getDevice(String deviceId) async {
     try {
