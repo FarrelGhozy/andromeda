@@ -28,7 +28,18 @@
 #define DEFAULT_THRESHOLD_DRY 30
 #define DEFAULT_THRESHOLD_WET 70
 #define DEFAULT_VALVE_DURATION_MS 30000
-#define DEFAULT_READ_INTERVAL_SEC 1800
+// ============================================================
+// INTERVAL PENGIRIMAN DATA SENSOR KE SERVER (detik)
+//   DIPAKAI HANYA JIKA system_config.read_interval belum ada
+//   di Supabase (fallback). Nilai di DB selalu menang (lihat
+//   main.cpp refreshAllConfigs / loop step 5).
+//
+//   MODE DEBUG: 5 detik — dikirim SANGAT sering tiap 5 detik agar
+//   data tampak live di app (debug cepat). HANYA untuk debugging!
+//   Setelah selesai ubah ke 300 (5 menit) atau 1800 (30 menit)
+//   untuk hemat baterai/kuota dan hindari spam ke Supabase.
+// ============================================================
+#define DEFAULT_READ_INTERVAL_SEC 5
 
 // ============================================================
 // TIMING & SAFETY

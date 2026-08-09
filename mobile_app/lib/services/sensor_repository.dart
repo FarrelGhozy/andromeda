@@ -7,6 +7,18 @@ class SensorRepository {
 
   SensorRepository(this._client);
 
+  /// Ambil reading terbaru 1 petak sekali (fallback realtime).
+  Future<SensorReading?> getLatestReading(String deviceId) async {
+    final response = await _client
+        .from('sensor_readings')
+        .select()
+        .eq('device_id', deviceId)
+        .order('created_at', ascending: false)
+        .limit(1);
+    final list = response as List;
+    return list.isNotEmpty ? SensorReading.fromJson(list.first) : null;
+  }
+
   /// Stream data sensor terbaru untuk 1 petak
   Stream<SensorReading?> getLatestSensorStream(String deviceId) {
     return _client

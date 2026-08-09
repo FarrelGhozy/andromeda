@@ -102,19 +102,30 @@ class DashboardProvider extends ChangeNotifier {
     _countdownTimer?.cancel();
 
     try {
+      // Fetch reading terakhir sekali (fallback bila realtime lambat/gagal):
+      // gauge & chart langsung terisi, stream hanya menyegarkan sesudahnya.
+      _latestReading = await _sensorRepo.getLatestReading(deviceId);
+      notifyListeners();
+
       // Subscribe realtime sensor readings
       _sensorSub = _sensorRepo
           .getLatestSensorStream(deviceId)
           .listen((reading) {
         _latestReading = reading;
         notifyListeners();
+      }, onError: (Object e, StackTrace st) {
+        debugPrint('sensor stream error: $e');
       });
 
       // Subscribe realtime config
       _configSub = _configRepo.getConfigStream(deviceId).listen((config) {
         _config = config;
         notifyListeners();
+      }, onError: (Object e, StackTrace st) {
+        debugPrint('config stream error: $e');
       });
+      // Fallback config sekali jika stream gagal/diam.
+      _config ??= await _configRepo.getConfig(deviceId);
 
       // Subscribe realtime command terbaru (fix #18)
       _commandSub =
@@ -128,6 +139,8 @@ class DashboardProvider extends ChangeNotifier {
           _autoOffRemaining = Duration.zero;
         }
         notifyListeners();
+      }, onError: (Object e, StackTrace st) {
+        debugPrint('command stream error: $e');
       });
 
       // Expiry command pending yang basi (> 2×read_interval) (fix #20)
