@@ -220,7 +220,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildValveSection(DashboardProvider provider) {
-    final isOpen = provider.isValveOpen;
+    final status = provider.valveDisplayStatus;
+    final (icon, label, color, subtitle) = switch (status) {
+      ValveDisplayStatus.open => (
+          Icons.water_drop,
+          'TERBUKA',
+          AppColors.danger,
+          'Valve terbuka (data segar)',
+        ),
+      ValveDisplayStatus.closed => (
+          Icons.water_drop_outlined,
+          'TERTUTUP',
+          AppColors.success,
+          'Valve tertutup (data segar)',
+        ),
+      ValveDisplayStatus.unknown => (
+          Icons.help_outline,
+          'TIDAK DIKETAHUI',
+          AppColors.offline,
+          'Tidak ada data segar dari perangkat',
+        ),
+    };
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -237,21 +257,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    Icon(
-                      isOpen ? Icons.water_drop : Icons.water_drop_outlined,
-                      color: isOpen ? AppColors.danger : AppColors.success,
-                      size: 28,
-                    ),
+                    Icon(icon, color: color, size: 28),
                     const SizedBox(width: 8),
                     Text(
-                      isOpen ? 'TERBUKA' : 'TERTUTUP',
+                      label,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: isOpen ? AppColors.danger : AppColors.success,
+                        color: color,
                       ),
                     ),
                   ],
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
             ),
@@ -297,7 +318,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     label: 'TUTUP',
                     icon: Icons.stop,
                     color: AppColors.success,
-                    onPressed: (provider.isValveOpen && !provider.sendingCommand)
+                    // Fix #16: TUTUP selalu aktif (safety) — saat status
+                    // tidak diketahui pun user boleh memaksa menutup.
+                    onPressed: !provider.sendingCommand
                         ? () => _sendValve(provider, 'VALVE_OFF')
                         : null,
                   ),

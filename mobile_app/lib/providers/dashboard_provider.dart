@@ -5,8 +5,13 @@ import '../models/system_config.dart';
 import '../models/enums.dart';
 import '../services/sensor_repository.dart';
 import '../services/config_repository.dart';
+import 'devices_provider.dart';
 
 enum DashboardState { loading, ready, error }
+
+/// Status valve yang JUJUR berdasarkan umur data (fix #16):
+/// data basi/tidak ada ≠ "tertutup" — itu "tidak diketahui".
+enum ValveDisplayStatus { open, closed, unknown }
 
 class DashboardProvider extends ChangeNotifier {
   final SensorRepository _sensorRepo;
@@ -36,7 +41,20 @@ class DashboardProvider extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   ChartRange get selectedChartRange => _selectedChartRange;
   int get selectedChartDays => _selectedChartRange.days;
+  /// Valve dianggap terbuka hanya jika reading SEGAR mengatakannya.
   bool get isValveOpen => _latestReading?.isValveOpen ?? false;
+
+  /// Status valve dengan kesadaran umur data (fix #16):
+  /// - reading segar → open/closed sesuai `valve_status`
+  /// - reading basi / tidak ada → `unknown` (bukan TERTUTUP!)
+  ValveDisplayStatus get valveDisplayStatus {
+    final r = _latestReading;
+    if (r == null) return ValveDisplayStatus.unknown;
+    final fresh = DateTime.now().difference(r.createdAt) <=
+        DevicesProvider.onlineWindow;
+    if (!fresh) return ValveDisplayStatus.unknown;
+    return r.isValveOpen ? ValveDisplayStatus.open : ValveDisplayStatus.closed;
+  }
 
   DashboardProvider(this._sensorRepo, this._configRepo);
 
