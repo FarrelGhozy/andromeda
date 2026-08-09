@@ -1,5 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/sensor_reading.dart';
+import '../models/pending_command.dart';
 
 class SensorRepository {
   final SupabaseClient _client;
