@@ -11,8 +11,8 @@
 // KONFIGURASI JARINGAN
 // ============================================================
 // #define WIFI_SSID "HUAWEI-B535-932"
-#define WIFI_SSID "WIFI_Premium"
-#define WIFI_PASSWORD "senyumdulu"
+#define WIFI_SSID "KUOTA_MURAH_MAS"
+#define WIFI_PASSWORD "janganmintaan"
 
 // ============================================================
 // KONFIGURASI SUPABASE
