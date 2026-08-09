@@ -1,5 +1,11 @@
 # 🧠 Arsitektur ESP32 — ANDROMEDA
 
+> ⚠️ **ARSITEKTUR FINAL (issue #21): 1 LAHAN, 6 PETA K, 1 ESP32 (esp32-01).**
+> Dokumen ini adalah rancangan awal (sejarah desain) — beberapa bagian
+> (mis. "6 ESP32 per petak", "Lahan B") TIDAK lagi berlaku.
+> Untuk kondisi terkini baca: `hardware/pinout-wiring.md`, `database/schema.sql`,
+> `hardware/firmware/include/devices/esp32-01.h`.
+
 **ANDROMEDA** (Android Routine Monitoring Electronic Drip Automation)  
 Sistem Irigasi Tetes Otomatis Berbasis IoT  
 Program PDB (Program Desa Binaan) — **Desa Merayan**

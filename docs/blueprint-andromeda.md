@@ -1,5 +1,10 @@
 # 📋 Perencanaan Matang & Detail — ANDROMEDA
 
+> ⚠️ **ARSITEKTUR FINAL (issue #21): 1 LAHAN, 6 PETA K, 1 ESP32 (esp32-01).**
+> Dokumen ini perencanaan awal (18 Juli 2026) — bagian yang menyebut
+> "Lahan B" / petak lintas lahan TIDAK lagi berlaku.
+> Untuk kondisi terkini: `database/schema.sql` (idempoten, siap project baru).
+
 **Android Routine Monitoring Electronic Drip Automation**  
 Sistem Irigasi Tetes Otomatis Berbasis IoT  
 Program PDB (Program Desa Binaan) — **Desa Merayan**

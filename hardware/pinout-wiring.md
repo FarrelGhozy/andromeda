@@ -1,14 +1,13 @@
-# Pinout & Wiring ANDROMEDA — ESP32-01 & ESP32-02
+# Pinout & Wiring ANDROMEDA — ESP32-01 (1 lahan, 6 petak)
 
 ## Gambaran Sistem
 
-Setiap **ESP32 DevKit 30-pin** menangani **6 petak** (bedengan) sekaligus.
-Total ada **2 unit ESP32** untuk 12 petak:
+Satu **ESP32 DevKit 30-pin** (esp32-01) menangani **6 petak** (bedengan) di **Lahan A**.
+(Arsitektur final: 1 lahan 6 petak — BUKAN 2 ESP32/12 petak. Lihat issue #21.)
 
 | ESP32 | Petak | Lahan | Lokasi |
 |-------|-------|-------|--------|
 | **esp32-01** | petak-01 s.d. petak-06 | Lahan A | |
-| **esp32-02** | petak-07 s.d. petak-12 | Lahan B | |
 
 ---
 
@@ -27,16 +26,16 @@ Total ada **2 unit ESP32** untuk 12 petak:
          GPIO 18 ◄──┤                             ├──► GPIO 17
           GPIO 5 ◄──┤                             ├──► GPIO 16
          GPIO 25 ◄──┤                             ├──► GPIO 4
-         GPIO 26 ◄──┤  ⚡ RELAY 1 (petak-01/07)  ├──► GPIO 0  (BOOT — jangan dipakai)
-         GPIO 27 ◄──┤  ⚡ RELAY 2 (petak-02/08)  ├──► GPIO 2  (💡 LED built-in)
-         GPIO 14 ◄──┤  ⚡ RELAY 3 (petak-03/09)  ├──► GPIO 15 ⚡ RELAY 6 (petak-06/12)
-         GPIO 12 ◄──┤  ⚡ RELAY 4 (petak-04/10)  ├──► GPIO 13 ⚡ RELAY 5 (petak-05/11)
+         GPIO 26 ◄──┤  ⚡ RELAY 1 (petak-01)  ├──► GPIO 0  (BOOT — jangan dipakai)
+         GPIO 27 ◄──┤  ⚡ RELAY 2 (petak-02)  ├──► GPIO 2  (💡 LED built-in)
+         GPIO 14 ◄──┤  ⚡ RELAY 3 (petak-03)  ├──► GPIO 15 ⚡ RELAY 6 (petak-06)
+         GPIO 12 ◄──┤  ⚡ RELAY 4 (petak-04)  ├──► GPIO 13 ⚡ RELAY 5 (petak-05)
           GND  ◄──┤                             ├──► GND
-         VP / 36 ◄──┤  🌱 SENSOR 5 (petak-05/11) ├──► VIN (5V input)
-         VN / 39 ◄──┤  🌱 SENSOR 6 (petak-06/12) ├──► 3.3V (output)
-    D34 / GPIO 34 ◄──┤  🌱 SENSOR 3 (petak-03/09) ├──► 5V  (output dari USB/VIN)
-    D35 / GPIO 35 ◄──┤  🌱 SENSOR 4 (petak-04/10) ├──► GND
-    GPIO 32 ◄──┤  🌱 SENSOR 1 (petak-01/07) ├──► GPIO 33 🌱 SENSOR 2 (petak-02/08)
+         VP / 36 ◄──┤  🌱 SENSOR 5 (petak-05) ├──► VIN (5V input)
+         VN / 39 ◄──┤  🌱 SENSOR 6 (petak-06) ├──► 3.3V (output)
+    D34 / GPIO 34 ◄──┤  🌱 SENSOR 3 (petak-03) ├──► 5V  (output dari USB/VIN)
+    D35 / GPIO 35 ◄──┤  🌱 SENSOR 4 (petak-04) ├──► GND
+    GPIO 32 ◄──┤  🌱 SENSOR 1 (petak-01) ├──► GPIO 33 🌱 SENSOR 2 (petak-02)
           GND  ◄──┤                             ├──► GND
          GPIO 4 ◄──┤                             ├──► GPIO 5
                     └─────────────────────────────┘
@@ -48,14 +47,14 @@ Total ada **2 unit ESP32** untuk 12 petak:
 
 ### 🌱 Sensor Kelembaban Tanah (Capacitive Soil Sensor v1.2)
 
-| Petak (esp32-01) | Petak (esp32-02) | GPIO ESP32 | Pin Fisik | Fungsi |
-|:----------------:|:----------------:|:----------:|:---------:|--------|
-| petak-01 | petak-07 | **GPIO 32** | ADC1_CH4 | Sensor 1 — ADC 12-bit |
-| petak-02 | petak-08 | **GPIO 33** | ADC1_CH5 | Sensor 2 — ADC 12-bit |
-| petak-03 | petak-09 | **GPIO 34** | ADC1_CH6 | Sensor 3 — ADC 12-bit (input-only) |
-| petak-04 | petak-10 | **GPIO 35** | ADC1_CH7 | Sensor 4 — ADC 12-bit (input-only) |
-| petak-05 | petak-11 | **GPIO 36** | ADC1_CH0 | Sensor 5 — ADC 12-bit (input-only) |
-| petak-06 | petak-12 | **GPIO 39** | ADC1_CH3 | Sensor 6 — ADC 12-bit (input-only) |
+| Petak | GPIO ESP32 | Pin Fisik | Fungsi |
+|:-----:|:----------:|:---------:|--------|
+| petak-01 | **GPIO 32** | ADC1_CH4 | Sensor 1 — ADC 12-bit |
+| petak-02 | **GPIO 33** | ADC1_CH5 | Sensor 2 — ADC 12-bit |
+| petak-03 | **GPIO 34** | ADC1_CH6 | Sensor 3 — ADC 12-bit (input-only) |
+| petak-04 | **GPIO 35** | ADC1_CH7 | Sensor 4 — ADC 12-bit (input-only) |
+| petak-05 | **GPIO 36** | ADC1_CH0 | Sensor 5 — ADC 12-bit (input-only) |
+| petak-06 | **GPIO 39** | ADC1_CH3 | Sensor 6 — ADC 12-bit (input-only) |
 
 **Kabel Sensor (Capacitive Soil v1.2):**
 | Kabel Sensor | Hubungkan ke | Catatan |
@@ -66,14 +65,14 @@ Total ada **2 unit ESP32** untuk 12 petak:
 
 ### ⚡ Relay — Solenoid Valve (1-Channel 5V Optocoupler)
 
-| Petak (esp32-01) | Petak (esp32-02) | GPIO ESP32 | Pin Fisik | Fungsi |
-|:----------------:|:----------------:|:----------:|:---------:|--------|
-| petak-01 | petak-07 | **GPIO 26** | Digital | Relay 1 — Valve 1 |
-| petak-02 | petak-08 | **GPIO 27** | Digital | Relay 2 — Valve 2 |
-| petak-03 | petak-09 | **GPIO 14** | Digital | Relay 3 — Valve 3 |
-| petak-04 | petak-10 | **GPIO 12** | Digital | Relay 4 — Valve 4 |
-| petak-05 | petak-11 | **GPIO 13** | Digital | Relay 5 — Valve 5 |
-| petak-06 | petak-12 | **GPIO 15** | Digital | Relay 6 — Valve 6 |
+| Petak | GPIO ESP32 | Pin Fisik | Fungsi |
+|:-----:|:----------:|:---------:|--------|
+| petak-01 | **GPIO 26** | Digital | Relay 1 — Valve 1 |
+| petak-02 | **GPIO 27** | Digital | Relay 2 — Valve 2 |
+| petak-03 | **GPIO 14** | Digital | Relay 3 — Valve 3 |
+| petak-04 | **GPIO 12** | Digital | Relay 4 — Valve 4 |
+| petak-05 | **GPIO 13** | Digital | Relay 5 — Valve 5 |
+| petak-06 | **GPIO 15** | Digital | Relay 6 — Valve 6 |
 
 **Kabel Relay Module:**
 | Terminal Relay | Hubungkan ke | Catatan |
@@ -111,7 +110,7 @@ Total ada **2 unit ESP32** untuk 12 petak:
 
 ## Wiring Diagram Detail
 
-### 1 Sensor — 1 Relay — 1 Valve (contoh petak-01 / petak-07)
+### 1 Sensor — 1 Relay — 1 Valve (contoh petak-01)
 
 ```
   ESP32 DevKit              Capacitive Soil Sensor v1.2
@@ -225,22 +224,6 @@ Total ada **2 unit ESP32** untuk 12 petak:
 | 3.3V output | 50mA | 6 sensor × ~5mA = 30mA | ✅ Aman |
 | 5V (VIN) | 2A | ESP32 ~80mA + 6 relay × 70mA = 500mA | ✅ Aman |
 | Total via USB | 500mA | - | ⚠️ Jangan pakai USB untuk valve |
-
----
-
-## Perbandingan esp32-01 vs esp32-02
-
-| Aspek | esp32-01 | esp32-02 |
-|-------|:--------:|:--------:|
-| ESP32 ID | `esp32-01` | `esp32-02` |
-| Petak | 01 — 06 | 07 — 12 |
-| Lahan | A | B |
-| Sensor GPIO | 32, 33, 34, 35, 36, 39 | 32, 33, 34, 35, 36, 39 |
-| Relay GPIO | 26, 27, 14, 12, 13, 15 | 26, 27, 14, 12, 13, 15 |
-| LED GPIO | 2 | 2 |
-| **Wiring** | **IDENTIK** | **IDENTIK** |
-
-> Kedua ESP32 memiliki **pinout yang persis sama**. Yang membedakan hanyalah device ID dan petak ID di software.
 
 ---
 
