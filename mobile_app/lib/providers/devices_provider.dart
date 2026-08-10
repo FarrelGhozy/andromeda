@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../models/device.dart';
 import '../models/sensor_reading.dart';
@@ -11,6 +12,7 @@ class DevicesProvider extends ChangeNotifier {
   bool _isLoading = true;
   bool _readingsLoaded = false;
   String? _error;
+  StreamSubscription<SensorReading>? _liveSub;
 
   // Fallback "online" dari freshness reading (tanpa heartbeat):
   // ESP32 deep-sleep, data tiap readInterval (default 30 mnt) →
@@ -45,6 +47,29 @@ class DevicesProvider extends ChangeNotifier {
       },
     );
     refreshReadings();
+    _setupLiveReadings();
+  }
+
+  /// Sumber tunggal reading terbaru: update live dari realtime
+  /// (INSERT/UPDATE sensor_readings) supaya list & detail selalu sinkron.
+  void _setupLiveReadings() {
+    _liveSub?.cancel();
+    _liveSub = _deviceRepo.readingsLiveStream().listen(
+      _onLiveReading,
+      onError: (Object e, StackTrace st) {
+        debugPrint('readings live stream error: $e');
+      },
+    );
+  }
+
+  void _onLiveReading(SensorReading reading) {
+    final existing = _latestReadings[reading.deviceId];
+    if (existing == null || !reading.createdAt.isBefore(existing.createdAt)) {
+      _latestReadings[reading.deviceId] = reading;
+      _readingsLoaded = true;
+      _checkReady();
+      notifyListeners();
+    }
   }
 
   /// Fallback: ambil daftar device sekali (tanpa realtime).
@@ -130,5 +155,11 @@ class DevicesProvider extends ChangeNotifier {
     return devicesForEsp32(esp32Id)
         .where((d) => isDeviceOnline(d.deviceId))
         .length;
+  }
+
+  @override
+  void dispose() {
+    _liveSub?.cancel();
+    super.dispose();
   }
 }

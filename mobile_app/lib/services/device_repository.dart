@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/device.dart';
 import '../models/sensor_reading.dart';
@@ -48,5 +49,36 @@ class DeviceRepository {
     } catch (_) {
       return {};
     }
+  }
+
+  /// Stream realtime: tiap INSERT/UPDATE pada sensor_readings.
+  /// Dipakai agar list petak & detail selalu sinkron dengan data terbaru.
+  Stream<SensorReading> readingsLiveStream() {
+    final controller = StreamController<SensorReading>.broadcast();
+    final channel = _client.channel('sensor_readings_live');
+    void handle(PostgresChangePayload payload) {
+      if (payload.newRecord.isEmpty) return;
+      controller.add(SensorReading.fromJson(payload.newRecord));
+    }
+
+    channel
+        .onPostgresChanges(
+          event: PostgresChangeEvent.insert,
+          schema: 'public',
+          table: 'sensor_readings',
+          callback: handle,
+        )
+        .onPostgresChanges(
+          event: PostgresChangeEvent.update,
+          schema: 'public',
+          table: 'sensor_readings',
+          callback: handle,
+        )
+        .subscribe();
+    controller.onCancel = () {
+      channel.unsubscribe();
+      controller.close();
+    };
+    return controller.stream;
   }
 }

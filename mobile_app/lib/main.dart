@@ -33,7 +33,11 @@ void main() async {
           },
         ),
         ChangeNotifierProvider(
-          create: (_) => DashboardProvider(sensorRepo, configRepo),
+          create: (context) => DashboardProvider(
+            sensorRepo,
+            configRepo,
+            context.read<DevicesProvider>(),
+          ),
         ),
       ],
       child: const AndromedaApp(),

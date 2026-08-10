@@ -22,6 +22,9 @@ class DashboardProvider extends ChangeNotifier {
   final SensorRepository _sensorRepo;
   final ConfigRepository _configRepo;
 
+  /// Sumber tunggal reading terbaru (sync dengan list petak).
+  final DevicesProvider _devicesProvider;
+
   String _deviceId = '';
   DashboardState _state = DashboardState.loading;
 
@@ -31,9 +34,9 @@ class DashboardProvider extends ChangeNotifier {
   String? _errorMessage;
   ChartRange _selectedChartRange = ChartRange.day1;
 
-  StreamSubscription? _sensorSub;
   StreamSubscription? _configSub;
   StreamSubscription? _commandSub;
+  VoidCallback? _devicesListener;
 
   bool _sendingCommand = false;
 
@@ -86,7 +89,7 @@ class DashboardProvider extends ChangeNotifier {
     };
   }
 
-  DashboardProvider(this._sensorRepo, this._configRepo);
+  DashboardProvider(this._sensorRepo, this._configRepo, this._devicesProvider);
 
   Future<void> loadDevice(String deviceId) async {
     _deviceId = deviceId;
@@ -94,7 +97,10 @@ class DashboardProvider extends ChangeNotifier {
     notifyListeners();
 
     // Cancel subscription lama
-    _sensorSub?.cancel();
+    if (_devicesListener != null) {
+      _devicesProvider.removeListener(_devicesListener!);
+      _devicesListener = null;
+    }
     _configSub?.cancel();
     _commandSub?.cancel();
     _expiryTimer?.cancel();
@@ -102,20 +108,18 @@ class DashboardProvider extends ChangeNotifier {
     _countdownTimer?.cancel();
 
     try {
-      // Fetch reading terakhir sekali (fallback bila realtime lambat/gagal):
-      // gauge & chart langsung terisi, stream hanya menyegarkan sesudahnya.
-      _latestReading = await _sensorRepo.getLatestReading(deviceId);
-      notifyListeners();
+      // SUMBER TUNGGAL: baca nilai terbaru dari DevicesProvider (sama
+      // dengan yang tampil di list petak) → dijamin selalu sinkron.
+      _latestReading = _devicesProvider.latestFor(deviceId);
+      // Fallback: jika map kosong (realtime belum dapat), fetch sekali.
+      _latestReading ??= await _sensorRepo.getLatestReading(deviceId);
 
-      // Subscribe realtime sensor readings
-      _sensorSub = _sensorRepo
-          .getLatestSensorStream(deviceId)
-          .listen((reading) {
-        _latestReading = reading;
+      _devicesListener = () {
+        _latestReading = _devicesProvider.latestFor(_deviceId);
         notifyListeners();
-      }, onError: (Object e, StackTrace st) {
-        debugPrint('sensor stream error: $e');
-      });
+      };
+      _devicesProvider.addListener(_devicesListener!);
+      notifyListeners();
 
       // Subscribe realtime config
       _configSub = _configRepo.getConfigStream(deviceId).listen((config) {
@@ -294,7 +298,10 @@ class DashboardProvider extends ChangeNotifier {
 
   @override
   void dispose() {
-    _sensorSub?.cancel();
+    if (_devicesListener != null) {
+      _devicesProvider.removeListener(_devicesListener!);
+      _devicesListener = null;
+    }
     _configSub?.cancel();
     _commandSub?.cancel();
     _expiryTimer?.cancel();
