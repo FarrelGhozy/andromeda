@@ -17,6 +17,7 @@ bool postAllSensorReadings(const AllReadings& allReadings, const bool* valveStat
   HTTPClient http;
   String url = baseUrl + "/sensor_readings";
   http.begin(url);
+  http.setTimeout(5000);
   addHeaders(http);
 
   StaticJsonDocument<1024> doc;
@@ -62,6 +63,7 @@ SystemConfig getSystemConfig(const char* deviceId) {
   HTTPClient http;
   String url = baseUrl + "/system_config?device_id=eq." + String(deviceId) + "&select=*&limit=1";
   http.begin(url);
+  http.setTimeout(5000);
   addHeaders(http);
 
   int code = http.GET();
@@ -96,6 +98,7 @@ PendingCommand getPendingCommand(const char* deviceId) {
   String url = baseUrl + "/pending_commands?device_id=eq." + String(deviceId)
              + "&status=eq.pending&select=*&order=created_at.asc&limit=1";
   http.begin(url);
+  http.setTimeout(5000);
   addHeaders(http);
 
   int code = http.GET();
@@ -127,6 +130,7 @@ void markCommandExecuted(long commandId) {
   HTTPClient http;
   String url = baseUrl + "/pending_commands?id=eq." + String(commandId);
   http.begin(url);
+  http.setTimeout(5000);
   addHeaders(http);
   http.addHeader("Prefer", "return=minimal");
 
@@ -147,6 +151,7 @@ bool sendHeartbeat(const char* esp32Id) {
   HTTPClient http;
   String url = baseUrl + "/rpc/heartbeat";
   http.begin(url);
+  http.setTimeout(5000);
   addHeaders(http);
 
   StaticJsonDocument<128> doc;

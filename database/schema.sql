@@ -114,18 +114,16 @@ CREATE INDEX IF NOT EXISTS idx_pending_commands_device_status
 -- ============================================================
 -- 7. SEED: 6 petak (1 ESP32 = esp32-01) + config default
 --    Idempoten: ON CONFLICT → tidak dobel saat dijalankan ulang.
---    STATUS: hanya petak dengan sensor fisik terpasang yang
---    'active'. Petak-03..06 'inactive' (belum ada hardware) →
---    tidak tampil di app & tidak disentuh heartbeat(). Ubah ke
---    'active' setelah sensor dipasang.
+--    Semua petak 'active' (6 sensor dikelola esp32-01) — apk
+--    menampilkan semua, firmware merekam semua.
 -- ============================================================
 INSERT INTO devices (device_id, esp32_id, name, location, sensor_index, status) VALUES
   ('petak-01', 'esp32-01', 'Petak 1', 'Lahan A', 0, 'active'),
   ('petak-02', 'esp32-01', 'Petak 2', 'Lahan A', 1, 'active'),
-  ('petak-03', 'esp32-01', 'Petak 3', 'Lahan A', 2, 'inactive'),
-  ('petak-04', 'esp32-01', 'Petak 4', 'Lahan A', 3, 'inactive'),
-  ('petak-05', 'esp32-01', 'Petak 5', 'Lahan A', 4, 'inactive'),
-  ('petak-06', 'esp32-01', 'Petak 6', 'Lahan A', 5, 'inactive')
+  ('petak-03', 'esp32-01', 'Petak 3', 'Lahan A', 2, 'active'),
+  ('petak-04', 'esp32-01', 'Petak 4', 'Lahan A', 3, 'active'),
+  ('petak-05', 'esp32-01', 'Petak 5', 'Lahan A', 4, 'active'),
+  ('petak-06', 'esp32-01', 'Petak 6', 'Lahan A', 5, 'active')
 ON CONFLICT (device_id) DO NOTHING;
 
 INSERT INTO system_config (device_id, mode, threshold_dry, threshold_wet, valve_duration, read_interval)

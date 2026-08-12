@@ -30,6 +30,9 @@ void setup() {
   Serial.begin(115200);
   delay(500);
 
+  Serial.print("Reset reason: ");
+  Serial.println((int)esp_reset_reason());
+
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, HIGH);
 

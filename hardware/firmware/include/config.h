@@ -46,6 +46,9 @@
 // ============================================================
 #define WIFI_TIMEOUT_MS 10000
 #define VALVE_MAX_DURATION_MS 120000
-#define COMMAND_POLL_INTERVAL_MS 1000
+// Poll perintah dari app. 10s = 6x lebih hemat request WiFi
+// (sebelumnya 1s × 6 petak = 6 request/detik → beban WiFi tinggi
+// yang memicu puncak arus & reset daya pada power yang rapuh).
+#define COMMAND_POLL_INTERVAL_MS 10000
 
 #endif
