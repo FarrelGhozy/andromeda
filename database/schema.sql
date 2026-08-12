@@ -114,14 +114,18 @@ CREATE INDEX IF NOT EXISTS idx_pending_commands_device_status
 -- ============================================================
 -- 7. SEED: 6 petak (1 ESP32 = esp32-01) + config default
 --    Idempoten: ON CONFLICT → tidak dobel saat dijalankan ulang.
+--    STATUS: hanya petak dengan sensor fisik terpasang yang
+--    'active'. Petak-03..06 'inactive' (belum ada hardware) →
+--    tidak tampil di app & tidak disentuh heartbeat(). Ubah ke
+--    'active' setelah sensor dipasang.
 -- ============================================================
-INSERT INTO devices (device_id, esp32_id, name, location, sensor_index) VALUES
-  ('petak-01', 'esp32-01', 'Petak 1', 'Lahan A', 0),
-  ('petak-02', 'esp32-01', 'Petak 2', 'Lahan A', 1),
-  ('petak-03', 'esp32-01', 'Petak 3', 'Lahan A', 2),
-  ('petak-04', 'esp32-01', 'Petak 4', 'Lahan A', 3),
-  ('petak-05', 'esp32-01', 'Petak 5', 'Lahan A', 4),
-  ('petak-06', 'esp32-01', 'Petak 6', 'Lahan A', 5)
+INSERT INTO devices (device_id, esp32_id, name, location, sensor_index, status) VALUES
+  ('petak-01', 'esp32-01', 'Petak 1', 'Lahan A', 0, 'active'),
+  ('petak-02', 'esp32-01', 'Petak 2', 'Lahan A', 1, 'active'),
+  ('petak-03', 'esp32-01', 'Petak 3', 'Lahan A', 2, 'inactive'),
+  ('petak-04', 'esp32-01', 'Petak 4', 'Lahan A', 3, 'inactive'),
+  ('petak-05', 'esp32-01', 'Petak 5', 'Lahan A', 4, 'inactive'),
+  ('petak-06', 'esp32-01', 'Petak 6', 'Lahan A', 5, 'inactive')
 ON CONFLICT (device_id) DO NOTHING;
 
 INSERT INTO system_config (device_id, mode, threshold_dry, threshold_wet, valve_duration, read_interval)
@@ -215,12 +219,15 @@ $$;
 -- ============================================================
 -- 12. HEARTBEAT: ESP32 meng-update last_seen semua petaknya
 --     Dipanggil firmware berkala → status online akurat (3 mnt).
+--     Hanya petak status='active' yang disentuh — petak tanpa
+--     sensor (inactive) tidak boleh tampak "Online" di app.
 -- ============================================================
 CREATE OR REPLACE FUNCTION heartbeat(_esp32_id TEXT)
 RETURNS VOID LANGUAGE sql AS $$
   UPDATE devices
   SET last_seen = NOW()
-  WHERE esp32_id = _esp32_id;
+  WHERE esp32_id = _esp32_id
+    AND status = 'active';
 $$;
 
 -- ============================================================

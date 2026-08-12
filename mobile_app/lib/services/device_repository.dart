@@ -8,18 +8,25 @@ class DeviceRepository {
 
   DeviceRepository(this._client);
 
-  /// Stream daftar semua device (realtime)
+  /// Stream daftar device AKTIF saja (realtime).
+  /// Petak tanpa sensor (status 'inactive') tidak ditampilkan —
+  /// sinkron dengan kenyataan hardware & data di Supabase.
   Stream<List<Device>> getDevicesStream() {
     return _client
         .from('devices')
         .stream(primaryKey: ['id'])
+        .eq('status', 'active')
         .order('id')
         .map((maps) => maps.map((m) => Device.fromJson(m)).toList());
   }
 
-  /// Ambil daftar semua device sekali (tanpa realtime)
+  /// Ambil daftar device AKTIF sekali (tanpa realtime)
   Future<List<Device>> getDevices() async {
-    final response = await _client.from('devices').select().order('id');
+    final response = await _client
+        .from('devices')
+        .select()
+        .eq('status', 'active')
+        .order('id');
     return (response as List).map((m) => Device.fromJson(m)).toList();
   }
 
