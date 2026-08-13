@@ -555,6 +555,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
         valveDuration: _duration.round(),
         readInterval: (_intervalMin * 60).round(),
       );
+      // Fix #28: tolak konfigurasi invalid (kering ≥ basah).
+      if (!updated.isValid) {
+        final messenger = ScaffoldMessenger.of(context);
+        messenger.hideCurrentSnackBar();
+        messenger.showSnackBar(const SnackBar(
+          content: Text(
+              'Threshold kering harus lebih kecil dari threshold basah'),
+          backgroundColor: AppColors.danger,
+          duration: Duration(seconds: 3),
+        ));
+        return;
+      }
       _saveWithFeedback(provider, updated);
     }
 
@@ -588,7 +600,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
               min: 10,
               max: 60,
               divisions: 10,
-              onChanged: (v) => setState(() => _dry = v),
+              // Fix #28: kunci slider agar selalu dry < wet (margin 5).
+              onChanged: (v) => setState(
+                  () => _dry = v >= _wet ? _wet - 5 : v),
               onChangeEnd: (_) => saveConfig(),
             ),
             const Divider(),
@@ -599,7 +613,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
               min: 40,
               max: 90,
               divisions: 10,
-              onChanged: (v) => setState(() => _wet = v),
+              // Fix #28: kunci slider agar selalu wet > dry (margin 5).
+              onChanged: (v) => setState(
+                  () => _wet = v <= _dry ? _dry + 5 : v),
               onChangeEnd: (_) => saveConfig(),
             ),
             const Divider(),
