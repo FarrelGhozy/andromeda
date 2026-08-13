@@ -13,6 +13,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   String _statusText = 'Menghubungkan...';
+  bool _failed = false;
 
   @override
   void initState() {
@@ -21,6 +22,10 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _initApp() async {
+    setState(() {
+      _failed = false;
+      _statusText = 'Menghubungkan...';
+    });
     await Future.delayed(const Duration(milliseconds: 1500));
     if (!mounted) return;
 
@@ -31,7 +36,10 @@ class _SplashScreenState extends State<SplashScreen> {
       setState(() => _statusText = 'Memuat data...');
       _waitForData();
     } else {
-      setState(() => _statusText = 'Tidak terhubung ke server');
+      setState(() {
+        _failed = true;
+        _statusText = 'Tidak terhubung ke server';
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Tidak terhubung ke server.\nPeriksa koneksi internet Anda.'),
@@ -39,11 +47,6 @@ class _SplashScreenState extends State<SplashScreen> {
           duration: const Duration(seconds: 4),
         ),
       );
-      Future.delayed(const Duration(seconds: 2), () {
-        if (mounted) {
-          Navigator.pushReplacementNamed(context, AppRoutes.home);
-        }
-      });
     }
   }
 
@@ -116,14 +119,20 @@ class _SplashScreenState extends State<SplashScreen> {
 
               const Spacer(flex: 1),
 
-              const SizedBox(
-                width: 36,
-                height: 36,
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 3,
-                ),
-              ),
+              _failed
+                  ? const Icon(
+                      Icons.cloud_off_rounded,
+                      color: Colors.white,
+                      size: 36,
+                    )
+                  : const SizedBox(
+                      width: 36,
+                      height: 36,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 3,
+                      ),
+                    ),
               const SizedBox(height: 16),
               Text(
                 _statusText,
@@ -131,6 +140,18 @@ class _SplashScreenState extends State<SplashScreen> {
                       color: Colors.white.withValues(alpha: 0.8),
                     ),
               ),
+              if (_failed) ...[
+                const SizedBox(height: 16),
+                OutlinedButton.icon(
+                  onPressed: _initApp,
+                  icon: const Icon(Icons.refresh_rounded),
+                  label: const Text('Coba Lagi'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    side: const BorderSide(color: Colors.white),
+                  ),
+                ),
+              ],
 
               const Spacer(flex: 2),
 
