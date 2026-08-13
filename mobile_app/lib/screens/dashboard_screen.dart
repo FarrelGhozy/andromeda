@@ -522,6 +522,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ),
             ),
+            if (provider.hiddenFaultCount > 0) ...[
+              const SizedBox(height: 8),
+              // Fix #32: reading sensor error disembunyikan dari grafik
+              // (bukan spike 0%/100% palsu akibat kabel putus/open circuit).
+              Text(
+                '${provider.hiddenFaultCount} pembacaan sensor error disembunyikan',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontStyle: FontStyle.italic,
+                  color: AppColors.warning,
+                ),
+              ),
+            ],
           ],
         ),
       ),

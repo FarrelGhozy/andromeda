@@ -27,8 +27,11 @@ class MoistureChart extends StatelessWidget {
     }
 
     // Data dari repository sudah ascending (terlama → terbaru).
-    // X-axis: kiri = terlama, kanan = terbaru. (fix #4)
+    // X-axis: selisih menit dari data pertama → jarak titik proporsional
+    // dengan waktu nyata (bukan indeks array). (fix #4, #32)
     final sorted = data.toList();
+    final t0 = sorted.first.createdAt;
+    final totalMinutes = t0.difference(sorted.last.createdAt).inMinutes.abs();
 
     return LineChart(
       LineChartData(
@@ -43,6 +46,8 @@ class MoistureChart extends StatelessWidget {
           ),
         ),
         borderData: FlBorderData(show: false),
+        minX: 0,
+        maxX: totalMinutes.toDouble().clamp(1, double.infinity),
         minY: 0,
         maxY: 100,
         titlesData: FlTitlesData(
@@ -63,14 +68,19 @@ class MoistureChart extends StatelessWidget {
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              interval: (sorted.length / 5).ceilToDouble().clamp(1, double.infinity),
+              interval: (totalMinutes / 5).clamp(1, double.infinity),
               getTitlesWidget: (value, meta) {
-                final idx = value.toInt().clamp(0, sorted.length - 1);
-                final date = sorted[idx].createdAt;
+                final t = t0.add(Duration(minutes: value.toInt()));
+                // Range > 2 hari → sertakan tanggal agar tidak ambigu.
+                final label = totalMinutes > 2 * 24 * 60
+                    ? '${t.day}/${t.month} ${t.hour.toString().padLeft(2, '0')}:'
+                        '${t.minute.toString().padLeft(2, '0')}'
+                    : '${t.hour.toString().padLeft(2, '0')}:'
+                        '${t.minute.toString().padLeft(2, '0')}';
                 return Padding(
                   padding: const EdgeInsets.only(top: 4),
                   child: Text(
-                    '${date.hour}:${date.minute.toString().padLeft(2, '0')}',
+                    label,
                     style: TextStyle(
                       fontSize: 9,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -127,10 +137,13 @@ class MoistureChart extends StatelessWidget {
 
         lineBarsData: [
           LineChartBarData(
-            spots: sorted.asMap().entries.map((e) =>
-                FlSpot(e.key.toDouble(), e.value.moisturePercent)).toList(),
-            isCurved: true,
-            preventCurveOverShooting: true,
+            spots: sorted.map((r) => FlSpot(
+                  t0.difference(r.createdAt).inMinutes.abs().toDouble(),
+                  r.moisturePercent,
+                )).toList(),
+            // Fix #32: garis patah (bukan kurva) — tidak ada overshoot
+            // interpolasi palsu pada data renggang/spike.
+            isCurved: false,
             color: AppColors.primaryGreen,
             barWidth: 2.5,
             dotData: const FlDotData(show: false),

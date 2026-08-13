@@ -51,12 +51,15 @@ class SensorRepository {
     required DateTime since,
     required DateTime until,
   }) async {
+    // Fix #32: kirim dalam UTC — PostgREST mengartikan string tanpa
+    // offset sebagai UTC, padahal DateTime.now() lokal (WIB) → window
+    // bergeser 7 jam jika tidak dikonversi.
     final response = await _client
         .from('sensor_readings')
         .select()
         .eq('device_id', deviceId)
-        .gte('created_at', since.toIso8601String())
-        .lte('created_at', until.toIso8601String())
+        .gte('created_at', since.toUtc().toIso8601String())
+        .lte('created_at', until.toUtc().toIso8601String())
         .order('created_at');
     return (response as List)
         .map((e) => SensorReading.fromJson(e))
@@ -110,6 +113,6 @@ class SensorRepository {
         .update({'status': 'expired'})
         .eq('device_id', deviceId)
         .eq('status', 'pending')
-        .lt('created_at', olderThan.toIso8601String());
+        .lt('created_at', olderThan.toUtc().toIso8601String());
   }
 }

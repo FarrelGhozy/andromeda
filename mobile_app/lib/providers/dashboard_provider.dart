@@ -30,6 +30,7 @@ class DashboardProvider extends ChangeNotifier {
 
   SensorReading? _latestReading;
   List<SensorReading> _history = [];
+  int _hiddenFaultCount = 0;
   SystemConfig? _config;
   String? _errorMessage;
   ChartRange _selectedChartRange = ChartRange.day1;
@@ -53,6 +54,10 @@ class DashboardProvider extends ChangeNotifier {
   DashboardState get state => _state;
   SensorReading? get latestReading => _latestReading;
   List<SensorReading> get history => _history;
+  /// Jumlah reading sensor error yang disembunyikan dari grafik (fix #32):
+  /// ADC di luar rentang valid (kabel putus/open circuit) dipetakan firmware
+  /// ke 0%/100% — bukan kondisi tanah nyata, tidak boleh di-plot.
+  int get hiddenFaultCount => _hiddenFaultCount;
   SystemConfig? get config => _config;
   String? get errorMessage => _errorMessage;
   ChartRange get selectedChartRange => _selectedChartRange;
@@ -182,11 +187,15 @@ class DashboardProvider extends ChangeNotifier {
   Future<void> _loadHistory() async {
     final since = DateTime.now()
         .subtract(Duration(days: _selectedChartRange.days));
-    _history = await _sensorRepo.getHistory(
+    final all = await _sensorRepo.getHistory(
       deviceId: _deviceId,
       since: since,
       until: DateTime.now(),
     );
+    // Fix #32: buang reading sensor error (0%/100% palsu dari kabel
+    // putus/open circuit) agar grafik tidak punya spike aneh.
+    _history = all.where((r) => !r.isSensorFault).toList();
+    _hiddenFaultCount = all.length - _history.length;
   }
 
   Future<void> setChartRange(ChartRange range) async {
