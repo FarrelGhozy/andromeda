@@ -123,10 +123,13 @@ class _PetakCard extends StatelessWidget {
                   StatusBadge(
                     // Fix #16: data basi → status valve TIDAK DIKETAHUI,
                     // bukan "OFF" palsu.
+                    // Fix #25: ON = hijau (aktif), OFF = netral, "—" = abu.
                     text: isOnline ? (isValveOn ? 'ON' : 'OFF') : '—',
-                    color: isOnline
-                        ? (isValveOn ? AppColors.danger : AppColors.success)
-                        : AppColors.offline,
+                    color: !isOnline
+                        ? AppColors.offline
+                        : (isValveOn
+                            ? AppColors.success
+                            : theme.colorScheme.onSurfaceVariant),
                     fontSize: 10,
                   ),
                 ],

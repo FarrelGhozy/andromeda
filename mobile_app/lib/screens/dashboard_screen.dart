@@ -242,16 +242,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildValveSection(DashboardProvider provider) {
     final status = provider.valveDisplayStatus;
+    // Fix #25: konvensi — hijau = aktif/terbuka, netral = tertutup,
+    // abu-abu offline = tidak diketahui. Merah khusus bahaya (tombol TUTUP).
+    final neutral = Theme.of(context).colorScheme.onSurfaceVariant;
     final (icon, label, color) = switch (status) {
       ValveDisplayStatus.open => (
           Icons.water_drop,
           'TERBUKA',
-          AppColors.danger,
+          AppColors.success,
         ),
       ValveDisplayStatus.closed => (
           Icons.water_drop_outlined,
           'TERTUTUP',
-          AppColors.success,
+          neutral,
         ),
       ValveDisplayStatus.unknown => (
           Icons.help_outline,
