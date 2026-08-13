@@ -479,28 +479,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   'Riwayat Kelembaban',
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: ChartRange.values.map((range) {
-                      final selected = provider.selectedChartRange == range;
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 4),
-                        child: ChoiceChip(
-                          label: Text(range.label),
-                          selected: selected,
-                          showCheckmark: false,
-                          onSelected: (_) => provider.setChartRange(range),
-                          selectedColor: Theme.of(context).colorScheme.primary,
-                          labelStyle: TextStyle(
-                            color: selected ? Colors.white : null,
-                            fontSize: 12,
-                          ),
-                          visualDensity: VisualDensity.compact,
-                        ),
-                      );
-                    }).toList(),
+                DropdownMenu<ChartRange>(
+                  initialSelection: provider.selectedChartRange,
+                  label: const Text('Rentang Waktu'),
+                  textStyle: Theme.of(context).textTheme.bodyMedium,
+                  inputDecorationTheme: InputDecorationTheme(
+                    isDense: true,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                   ),
+                  dropdownMenuEntries: ChartRange.values.map((range) {
+                    return DropdownMenuEntry<ChartRange>(
+                      value: range,
+                      label: range.label,
+                    );
+                  }).toList(),
+                  onSelected: (range) {
+                    if (range != null) provider.setChartRange(range);
+                  },
                 ),
               ],
             ),
