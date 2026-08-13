@@ -34,6 +34,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   DateTime? _configVersion;
 
   // Durasi valve untuk tombol BUKA (dipilih via DurationPicker).
+  // Fix #24: default disinkronkan dari config (nilai nyata, bukan "∞").
   int _selectedValveDuration = 0;
 
   void _syncConfigLocals(SystemConfig? config) {
@@ -44,6 +45,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       _wet = config.thresholdWet.toDouble();
       _duration = config.valveDuration.toDouble();
       _intervalMin = config.readIntervalMinutes.toDouble();
+      // Jangan timpa pilihan user yang sudah diset (bukan default 0).
+      if (_selectedValveDuration == 0) {
+        _selectedValveDuration = config.valveDuration;
+      }
     }
   }
 
@@ -263,7 +268,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
     };
     final isAuto = provider.config?.isAutoMode == true;
-    final valveDuration = _selectedValveDuration > 0 ? _selectedValveDuration : 30;
+    // Fix #24: durasi yang dikirim = yang tampil di picker (default dari
+    // config); fallback 30 hanya jika config belum termuat.
+    final valveDuration = _selectedValveDuration > 0
+        ? _selectedValveDuration
+        : (provider.config?.valveDuration ?? 30);
 
     return Card(
       child: Padding(

@@ -13,7 +13,9 @@ class DurationPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final durations = [0, 15, 30, 60, 120];
+    // Fix #24: tanpa opsi "∞" — durasi selalu nilai nyata agar UI
+    // sinkron dengan yang dikirim (auto-OFF #19 selalu aktif).
+    final durations = [15, 30, 60, 120];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,8 +66,5 @@ class DurationPicker extends StatelessWidget {
     );
   }
 
-  String _labelFor(int duration) {
-    if (duration == 0) return '∞';
-    return '${duration}s';
-  }
+  String _labelFor(int duration) => '${duration}s';
 }
