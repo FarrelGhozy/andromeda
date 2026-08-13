@@ -63,16 +63,30 @@ class DashboardProvider extends ChangeNotifier {
   PendingCommand? get latestCommand => _latestCommand;
   Duration get autoOffRemaining => _autoOffRemaining;
 
-  /// Status valve dengan kesadaran umur data (fix #16):
-  /// - reading segar → open/closed sesuai `valve_status`
-  /// - reading basi / tidak ada → `unknown` (bukan TERTUTUP!)
+  /// Status valve dengan kesadaran umur data (fix #16/#29):
+  /// - device online (satu sumber kebenaran: DevicesProvider.onlineWindow)
+  ///   → open/closed sesuai `valve_status`
+  /// - device offline / data basi / tidak ada → `unknown` (bukan TERTUTUP!)
   ValveDisplayStatus get valveDisplayStatus {
     final r = _latestReading;
     if (r == null) return ValveDisplayStatus.unknown;
+    if (!_devicesProvider.isDeviceOnline(_deviceId)) {
+      return ValveDisplayStatus.unknown;
+    }
     final fresh = DateTime.now().difference(r.createdAt) <=
         DevicesProvider.onlineWindow;
     if (!fresh) return ValveDisplayStatus.unknown;
     return r.isValveOpen ? ValveDisplayStatus.open : ValveDisplayStatus.closed;
+  }
+
+  /// `true` jika reading saat ini masih segar & perangkat online
+  /// (satu sumber kebenaran sama dengan badge Online di list petak).
+  bool get isFresh {
+    final r = _latestReading;
+    if (r == null) return false;
+    return _devicesProvider.isDeviceOnline(_deviceId) &&
+        DateTime.now().difference(r.createdAt) <=
+            DevicesProvider.onlineWindow;
   }
 
   /// Status perintah valve terbaru (fix #18).

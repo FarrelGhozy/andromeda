@@ -14,16 +14,19 @@ class DevicesProvider extends ChangeNotifier {
   String? _error;
   StreamSubscription<SensorReading>? _liveSub;
 
-  // Fallback "online" dari freshness reading (tanpa heartbeat):
-  // ESP32 deep-sleep, data tiap readInterval (default 30 mnt) →
-  // 2x interval sebagai toleransi.
-  static const _onlineThresholdMinutes = 10;
-
-  // Window "kadaluarsa" untuk last_seen heartbeat.
-  // Heartbeat firmware kirim tiap 60s, jadi 3 menit cukup longgar.
-  static const _heartbeatThresholdMinutes = 3;
+  // =====================================================================
+  // SATU SUMBER KEBENARAN umur data (fix #29).
+  // ESP32 deep-sleep: bangun tiap read_interval (default 30 mnt), kirim
+  // reading + last_seen, lalu tidur. Jadi device TIDAK mengirim heartbeat
+  // terus-menerus; "online" berarti "sehat & masih dalam siklus berjalan".
+  // onlineWindow = 2× read_interval default (30 mnt) sebagai toleransi.
+  // Seluruh tampilan (badge list, gauge, status valve) memakai window ini
+  // supaya tidak ada kontradiksi Offline vs data "segar".
+  static const Duration onlineWindow = Duration(minutes: 60);
+  // =====================================================================
 
   List<Device> get devices => _devices;
+
   List<Device> get allDevices => _devices;
   SensorReading? latestFor(String deviceId) => _latestReadings[deviceId];
   bool get isLoading => _isLoading;
@@ -106,19 +109,18 @@ class DevicesProvider extends ChangeNotifier {
   }
 
   bool isDeviceOnline(String deviceId) {
-    // 1. Prioritas: heartbeat last_seen dari perangkat (akurat).
+    // last_seen di-set firmware saat bangun (satu siklus dengan reading).
     final device =
         _devices.where((d) => d.deviceId == deviceId).firstOrNull;
     final lastSeen = device?.lastSeen;
-    if (lastSeen != null) {
-      return DateTime.now().difference(lastSeen).inMinutes <
-          _heartbeatThresholdMinutes;
+    if (lastSeen != null &&
+        DateTime.now().difference(lastSeen) <= onlineWindow) {
+      return true;
     }
-    // 2. Fallback: kalau belum ada heartbeat, tebak dari data terakhir.
+    // Fallback: tebak dari data terakhir yang masih segar.
     final reading = _latestReadings[deviceId];
     if (reading == null) return false;
-    return DateTime.now().difference(reading.createdAt).inMinutes <
-        _onlineThresholdMinutes;
+    return DateTime.now().difference(reading.createdAt) <= onlineWindow;
   }
 
   List<String> get esp32Ids {
@@ -141,11 +143,7 @@ class DevicesProvider extends ChangeNotifier {
     return '$esp32Id — $location';
   }
 
-  /// Jendela "data segar" untuk GAUGE (bukan online count):
-  /// reading dianggap masih layak tampil ≤ 2x readInterval.
-  static const Duration onlineWindow = Duration(minutes: 60);
-
-  /// `true` jika reading ada dan masih segar (≤ 60 menit).
+  /// `true` jika reading ada dan masih segar (≤ onlineWindow).
   bool isFresh(SensorReading? reading) {
     if (reading == null) return false;
     return DateTime.now().difference(reading.createdAt) <= onlineWindow;

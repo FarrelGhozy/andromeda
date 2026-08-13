@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../providers/dashboard_provider.dart';
-import '../providers/devices_provider.dart';
 import '../models/enums.dart';
 import '../models/sensor_reading.dart';
 import '../models/system_config.dart';
@@ -115,9 +114,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildGaugeSection(DashboardProvider provider) {
     final reading = provider.latestReading;
     final percent = reading?.moisturePercent ?? 0;
-    final fresh = reading != null &&
-        DateTime.now().difference(reading.createdAt) <=
-            DevicesProvider.onlineWindow;
+    final fresh = provider.isFresh;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -138,17 +135,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   size: gaugeSize,
                   showLabel: true,
                   greyedOut: !fresh,
-                  fault: fresh && reading.isSensorFault == true,
+                  fault: fresh && reading?.isSensorFault == true,
                   thresholdDry: provider.config?.thresholdDry ?? 30,
                   thresholdWet: provider.config?.thresholdWet ?? 70,
                 );
               },
             ),
             const SizedBox(height: 16),
-            if (fresh && reading.isSensorFault == true) ...[
+            if (fresh && reading?.isSensorFault == true) ...[
               Text(
                 '⚠ Sensor bermasalah — periksa kabel sensor '
-                '(ADC ${reading.moisture} di luar rentang valid '
+                '(ADC ${reading?.moisture ?? 0} di luar rentang valid '
                 '${SensorReading.minValidRaw}–${SensorReading.maxValidRaw})',
                 textAlign: TextAlign.center,
                 style: TextStyle(
