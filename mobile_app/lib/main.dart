@@ -45,25 +45,8 @@ void main() async {
   );
 }
 
-class AndromedaApp extends StatefulWidget {
+class AndromedaApp extends StatelessWidget {
   const AndromedaApp({super.key});
-
-  static _AndromedaAppState? of(BuildContext context) {
-    return context.findAncestorStateOfType<_AndromedaAppState>();
-  }
-
-  @override
-  State<AndromedaApp> createState() => _AndromedaAppState();
-}
-
-class _AndromedaAppState extends State<AndromedaApp> {
-  bool _isDarkMode = false;
-
-  void toggleTheme(bool isDark) {
-    setState(() => _isDarkMode = isDark);
-  }
-
-  bool get isDarkMode => _isDarkMode;
 
   @override
   Widget build(BuildContext context) {
