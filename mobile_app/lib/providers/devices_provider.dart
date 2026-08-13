@@ -123,6 +123,27 @@ class DevicesProvider extends ChangeNotifier {
     return DateTime.now().difference(reading.createdAt) <= onlineWindow;
   }
 
+  /// Nama tampilan petak: nama custom jika ada, fallback ke 'PETAK 01'.
+  String displayNameFor(String deviceId) {
+    final device = _devices.where((d) => d.deviceId == deviceId).firstOrNull;
+    final name = device?.name.trim() ?? '';
+    if (name.isNotEmpty) return name;
+    return deviceId.toUpperCase().replaceAll('-', ' ');
+  }
+
+  /// Ganti nama petak dari aplikasi. Return `true` jika tersimpan.
+  /// Tidak menyentuh `_error` (dipakai home_screen untuk ErrorBanner).
+  Future<bool> renameDevice(String deviceId, String newName) async {
+    final trimmed = newName.trim();
+    if (trimmed.isEmpty || trimmed.length > 40) return false;
+    try {
+      await _deviceRepo.renameDevice(deviceId, trimmed);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
   List<String> get esp32Ids {
     final ids = _devices.map((d) => d.esp32Id).toSet().toList();
     ids.sort();

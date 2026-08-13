@@ -6,12 +6,33 @@ import '../providers/devices_provider.dart';
 import '../models/device.dart';
 import '../models/sensor_reading.dart';
 import '../widgets/moisture_gauge.dart';
+import '../widgets/rename_petak_dialog.dart';
 import '../widgets/status_badge.dart';
 import '../routes.dart';
 
 class Esp32Screen extends StatelessWidget {
   final String esp32Id;
   const Esp32Screen({super.key, required this.esp32Id});
+
+  /// Buka dialog ganti nama petak + feedback SnackBar.
+  Future<void> _renamePetak(
+      BuildContext context, DevicesProvider provider, Device device) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final saved = await showRenamePetakDialog(
+      context,
+      deviceId: device.deviceId,
+      currentName: device.name,
+      onRename: (name) => provider.renameDevice(device.deviceId, name),
+    );
+    if (!saved) return;
+    if (!context.mounted) return;
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(const SnackBar(
+      content: Text('Nama petak diubah ✓'),
+      backgroundColor: AppColors.success,
+      duration: Duration(seconds: 3),
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +74,10 @@ class Esp32Screen extends StatelessWidget {
                       arguments: device.deviceId,
                     );
                   },
+                  onRename: () {
+                    HapticFeedback.lightImpact();
+                    _renamePetak(context, provider, device);
+                  },
                 );
               },
             ),
@@ -68,12 +93,14 @@ class _PetakCard extends StatelessWidget {
   final SensorReading? reading;
   final bool isOnline;
   final VoidCallback onTap;
+  final VoidCallback onRename;
 
   const _PetakCard({
     required this.device,
     required this.reading,
     required this.isOnline,
     required this.onTap,
+    required this.onRename,
   });
 
   @override
@@ -84,59 +111,83 @@ class _PetakCard extends StatelessWidget {
 
     return Card(
       color: isOnline ? null : theme.colorScheme.surfaceContainerLow,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              MoistureGauge(
-                percent: moisture,
-                size: 100,
-                greyedOut: !isOnline,
-                fault: isOnline && reading?.isSensorFault == true,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                device.name,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  // Fix #27: warna teks offline adaptif terhadap tema.
-                  color: isOnline ? null : theme.colorScheme.onSurfaceVariant,
-                ),
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 4),
-              Row(
+      child: Stack(
+        children: [
+          InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(16),
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  StatusBadge(
-                    text: isOnline ? 'Online' : 'Offline',
-                    color: isOnline ? AppColors.success : AppColors.offline,
-                    fontSize: 10,
+                  MoistureGauge(
+                    percent: moisture,
+                    size: 100,
+                    greyedOut: !isOnline,
+                    fault: isOnline && reading?.isSensorFault == true,
                   ),
-                  const SizedBox(width: 4),
-                  StatusBadge(
-                    // Fix #16: data basi → status valve TIDAK DIKETAHUI,
-                    // bukan "OFF" palsu.
-                    // Fix #25: ON = hijau (aktif), OFF = netral, "—" = abu.
-                    text: isOnline ? (isValveOn ? 'ON' : 'OFF') : '—',
-                    color: !isOnline
-                        ? AppColors.offline
-                        : (isValveOn
+                  const SizedBox(height: 8),
+                  Text(
+                    device.name,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      // Fix #27: warna teks offline adaptif terhadap tema.
+                      color: isOnline
+                          ? null
+                          : theme.colorScheme.onSurfaceVariant,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      StatusBadge(
+                        text: isOnline ? 'Online' : 'Offline',
+                        color: isOnline
                             ? AppColors.success
-                            : theme.colorScheme.onSurfaceVariant),
-                    fontSize: 10,
+                            : AppColors.offline,
+                        fontSize: 10,
+                      ),
+                      const SizedBox(width: 4),
+                      StatusBadge(
+                        // Fix #16: data basi → status valve TIDAK DIKETAHUI,
+                        // bukan "OFF" palsu.
+                        // Fix #25: ON = hijau (aktif), OFF = netral, "—" = abu.
+                        text: isOnline ? (isValveOn ? 'ON' : 'OFF') : '—',
+                        color: !isOnline
+                            ? AppColors.offline
+                            : (isValveOn
+                                ? AppColors.success
+                                : theme.colorScheme.onSurfaceVariant),
+                        fontSize: 10,
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
+          Positioned(
+            top: 4,
+            right: 4,
+            child: IconButton(
+              icon: Icon(
+                Icons.edit,
+                size: 16,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+              tooltip: 'Ganti nama petak',
+              visualDensity: VisualDensity.compact,
+              constraints: const BoxConstraints(),
+              padding: const EdgeInsets.all(6),
+              onPressed: onRename,
+            ),
+          ),
+        ],
       ),
     );
   }

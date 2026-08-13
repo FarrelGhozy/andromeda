@@ -3,10 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../providers/dashboard_provider.dart';
+import '../providers/devices_provider.dart';
 import '../models/enums.dart';
 import '../models/sensor_reading.dart';
 import '../models/system_config.dart';
 import '../widgets/moisture_gauge.dart';
+import '../widgets/rename_petak_dialog.dart';
 import '../widgets/valve_button.dart';
 import '../widgets/moisture_chart.dart';
 import '../widgets/config_slider.dart';
@@ -60,12 +62,51 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
+  /// Buka dialog ganti nama petak + feedback SnackBar.
+  Future<void> _renamePetak(BuildContext context) async {
+    final devicesProvider = context.read<DevicesProvider>();
+    final device = devicesProvider.devices
+        .where((d) => d.deviceId == widget.deviceId)
+        .firstOrNull;
+    final messenger = ScaffoldMessenger.of(context);
+    final saved = await showRenamePetakDialog(
+      context,
+      deviceId: widget.deviceId,
+      currentName: device?.name ?? '',
+      onRename: (name) =>
+          devicesProvider.renameDevice(widget.deviceId, name),
+    );
+    if (!saved) return;
+    if (!mounted) return;
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(const SnackBar(
+      content: Text('Nama petak diubah ✓'),
+      backgroundColor: AppColors.success,
+      duration: Duration(seconds: 3),
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.deviceId.toUpperCase().replaceAll('-', ' ')),
+        // Nama custom petak (sesuai tanaman), fallback ke device_id.
+        title: Consumer<DevicesProvider>(
+          builder: (context, provider, _) => Text(
+            provider.displayNameFor(widget.deviceId),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.edit_outlined),
+            onPressed: () {
+              HapticFeedback.lightImpact();
+              _renamePetak(context);
+            },
+            tooltip: 'Ganti nama petak',
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
@@ -481,18 +522,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 DropdownMenu<ChartRange>(
                   initialSelection: provider.selectedChartRange,
-                  label: const Text('Rentang Waktu'),
-                  textStyle: Theme.of(context).textTheme.bodyMedium,
+                  width: 140,
+                  hintText: 'Rentang',
+                  textStyle: Theme.of(context).textTheme.bodySmall,
                   inputDecorationTheme: InputDecorationTheme(
                     isDense: true,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                     contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
+                      horizontal: 8,
+                      vertical: 4,
                     ),
                   ),
+                  menuHeight: 140,
                   dropdownMenuEntries: ChartRange.values.map((range) {
                     return DropdownMenuEntry<ChartRange>(
                       value: range,
@@ -688,6 +731,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ButtonSegment(value: 'manual', label: Text('Manual'), icon: Icon(Icons.touch_app, size: 16)),
           ],
           selected: {config.isAutoMode ? 'auto' : 'manual'},
+          // Sembunyikan ceklist: hanya warna background + teks yang berubah.
+          selectedIcon: const SizedBox.shrink(),
           onSelectionChanged: (selected) async {
             final previous = config.mode;
             config.mode = selected.first;
@@ -700,6 +745,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
             visualDensity: VisualDensity.compact,
             textStyle: WidgetStatePropertyAll(
               Theme.of(context).textTheme.labelMedium,
+            ),
+            backgroundColor: WidgetStateProperty.resolveWith(
+              (states) => states.contains(WidgetState.selected)
+                  ? Theme.of(context).colorScheme.primary
+                  : Colors.transparent,
+            ),
+            foregroundColor: WidgetStateProperty.resolveWith(
+              (states) => states.contains(WidgetState.selected)
+                  ? (Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black87
+                      : Colors.white)
+                  : Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ),

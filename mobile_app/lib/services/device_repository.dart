@@ -23,6 +23,15 @@ class DeviceRepository {
     return (response as List).map((m) => Device.fromJson(m)).toList();
   }
 
+  /// Ganti nama petak (custom nama sesuai tanaman di lahan).
+  /// Realtime stream devices otomatis menyebarkan perubahan ke semua layar.
+  Future<void> renameDevice(String deviceId, String newName) async {
+    await _client
+        .from('devices')
+        .update({'name': newName})
+        .eq('device_id', deviceId);
+  }
+
   /// Ambil 1 device
   Future<Device?> getDevice(String deviceId) async {
     try {
