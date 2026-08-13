@@ -29,7 +29,9 @@ class MoistureGauge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = (greyedOut || fault) ? AppColors.offline : _getColor();
+    // Fix #26: fault (SENSOR ERROR) → warning kuning via _getColor();
+    // abu-abu hanya untuk perangkat offline / data basi.
+    final color = greyedOut ? AppColors.offline : _getColor();
     final label = _getLabel();
     final theme = Theme.of(context);
 
@@ -65,9 +67,12 @@ class MoistureGauge extends StatelessWidget {
                       label,
                       style: TextStyle(
                         fontSize: size * 0.11,
+                        // Fix #26: label SENSOR ERROR ikut kuning warning.
                         color: greyedOut
                             ? AppColors.offline
-                            : theme.colorScheme.onSurfaceVariant,
+                            : (fault
+                                ? AppColors.warning
+                                : theme.colorScheme.onSurfaceVariant),
                       ),
                     ),
                   ],
