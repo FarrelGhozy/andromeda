@@ -189,7 +189,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
           // Notifikasi
           _buildCard(
-            title: 'Tampilan',
+            title: 'Notifikasi',
             children: [
               SwitchListTile(
                 title: const Text('Alert Kelembaban Kritis'),
