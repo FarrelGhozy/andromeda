@@ -182,7 +182,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 'Menunggu data terbaru dari perangkat…',
                 style: TextStyle(
                   fontSize: 12,
-                  color: Colors.grey[600],
+                  // Fix #27: warna adaptif terhadap tema.
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontStyle: FontStyle.italic,
                 ),
               ),
@@ -503,7 +504,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   : Center(
                       child: Text(
                         'Belum ada data',
-                        style: TextStyle(color: Colors.grey[500]),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                       ),
                     ),
             ),
@@ -522,7 +525,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           child: Center(
             child: Text(
               'Konfigurasi belum tersedia',
-              style: TextStyle(color: Colors.grey[500]),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
         ),

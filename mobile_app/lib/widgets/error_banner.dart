@@ -12,6 +12,7 @@ class ErrorBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -21,12 +22,13 @@ class ErrorBanner extends StatelessWidget {
             Icon(
               Icons.cloud_off_rounded,
               size: 72,
-              color: Colors.grey[400],
+              // Fix #27: warna adaptif terhadap tema.
+              color: theme.colorScheme.onSurfaceVariant,
             ),
             const SizedBox(height: 20),
             Text(
               'Gagal Memuat Data',
-              style: Theme.of(context).textTheme.titleLarge,
+              style: theme.textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
             Text(
@@ -34,7 +36,7 @@ class ErrorBanner extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.grey[600],
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
             if (onRetry != null) ...[

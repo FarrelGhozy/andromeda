@@ -31,6 +31,7 @@ class MoistureGauge extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = (greyedOut || fault) ? AppColors.offline : _getColor();
     final label = _getLabel();
+    final theme = Theme.of(context);
 
     return SizedBox(
       width: size,
@@ -39,7 +40,8 @@ class MoistureGauge extends StatelessWidget {
         painter: _GaugePainter(
           percent: (greyedOut || fault) ? 0 : (percent / 100).clamp(0.0, 1.0),
           color: color,
-          backgroundColor: Colors.grey[200]!,
+          // Fix #27: warna ring adaptif terhadap tema terang/gelap.
+          backgroundColor: theme.colorScheme.surfaceContainerHighest,
           strokeWidth: size * 0.12,
         ),
         child: showLabel
@@ -63,7 +65,9 @@ class MoistureGauge extends StatelessWidget {
                       label,
                       style: TextStyle(
                         fontSize: size * 0.11,
-                        color: greyedOut ? AppColors.offline : Colors.grey[600],
+                        color: greyedOut
+                            ? AppColors.offline
+                            : theme.colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],

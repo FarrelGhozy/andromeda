@@ -102,22 +102,28 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildEmptyState(BuildContext context, DevicesProvider provider) {
+    final theme = Theme.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.sensors_off, size: 80, color: Colors.grey[300]),
+            Icon(
+              Icons.sensors_off,
+              size: 80,
+              // Fix #27: warna adaptif terhadap tema.
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
             const SizedBox(height: 16),
             Text('Belum ada ESP32 terdaftar',
-                style: Theme.of(context).textTheme.titleMedium),
+                style: theme.textTheme.titleMedium),
             const SizedBox(height: 8),
             Text(
               'Pastikan ESP32 sudah terhubung\ndan terdaftar di database',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.grey[500],
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: 24),

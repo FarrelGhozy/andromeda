@@ -103,7 +103,8 @@ class _PetakCard extends StatelessWidget {
                 device.name,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: isOnline ? null : Colors.grey,
+                  // Fix #27: warna teks offline adaptif terhadap tema.
+                  color: isOnline ? null : theme.colorScheme.onSurfaceVariant,
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 1,

@@ -18,7 +18,12 @@ class MoistureChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (data.isEmpty) {
-      return const Center(child: Text('Belum ada data'));
+      return Center(
+        child: Text(
+          'Belum ada data',
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+        ),
+      );
     }
 
     // Data dari repository sudah ascending (terlama → terbaru).
@@ -32,7 +37,8 @@ class MoistureChart extends StatelessWidget {
           drawVerticalLine: false,
           horizontalInterval: 20,
           getDrawingHorizontalLine: (value) => FlLine(
-            color: Colors.grey[200]!,
+            // Fix #27: warna grid adaptif terhadap tema.
+            color: Theme.of(context).colorScheme.outlineVariant,
             strokeWidth: 1,
           ),
         ),
@@ -47,7 +53,10 @@ class MoistureChart extends StatelessWidget {
               interval: 20,
               getTitlesWidget: (value, meta) => Text(
                 '${value.toInt()}%',
-                style: TextStyle(fontSize: 10, color: Colors.grey[500]),
+                style: TextStyle(
+                  fontSize: 10,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
             ),
           ),
@@ -62,7 +71,10 @@ class MoistureChart extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 4),
                   child: Text(
                     '${date.hour}:${date.minute.toString().padLeft(2, '0')}',
-                    style: TextStyle(fontSize: 9, color: Colors.grey[500]),
+                    style: TextStyle(
+                      fontSize: 9,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 );
               },

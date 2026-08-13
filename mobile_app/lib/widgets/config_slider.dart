@@ -49,7 +49,8 @@ class ConfigSlider extends StatelessWidget {
           max: max,
           divisions: divisions,
           activeColor: AppColors.primaryGreen,
-          inactiveColor: Colors.grey[300],
+          // Fix #27: track nonaktif adaptif terhadap tema.
+          inactiveColor: theme.colorScheme.surfaceContainerHighest,
           onChanged: onChanged,
           onChangeEnd: onChangeEnd,
         ),
