@@ -12,6 +12,16 @@ Program PDB (Program Desa Binaan) — **Desa Merayan**
 
 ---
 
+## 📲 Download APK
+
+**Versi terbaru: [v0.1.3 - BIMA](https://github.com/FarrelGhozy/andromeda/releases/latest)**
+
+[⬇️ Download app-release.apk](https://github.com/FarrelGhozy/andromeda/releases/latest/download/app-release.apk)
+
+> Install di HP Android dengan mengizinkan *install dari sumber tidak dikenal*. Riwayat rilis: [GitHub Releases](https://github.com/FarrelGhozy/andromeda/releases)
+
+---
+
 ## 🌾 Tentang
 
 **ANDROMEDA** mengotomatiskan irigasi tetes untuk petani di **Desa Merayan** — sensor kelembaban tanah dibaca **ESP32**, data dikirim ke **Supabase**, dan petani memantau/mengontrol dari **HP Android** kapan aja. Tenaga dari **aki 100Ah + solar panel 300Wp**, internet dari **router 4G LTE** (Rp 15.000/bulan), air mengalir dari **tandon + solenoid valve** tanpa pompa.
