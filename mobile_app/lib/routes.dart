@@ -4,6 +4,7 @@ import 'screens/home_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/esp32_screen.dart';
 import 'screens/settings_screen.dart';
+import 'screens/weather_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -11,6 +12,7 @@ class AppRoutes {
   static const String dashboard = '/dashboard';
   static const String esp32Detail = '/esp32';
   static const String settings = '/settings';
+  static const String weather = '/weather';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -30,6 +32,8 @@ class AppRoutes {
         );
       case AppRoutes.settings:
         return MaterialPageRoute(builder: (_) => const SettingsScreen());
+      case AppRoutes.weather:
+        return MaterialPageRoute(builder: (_) => const WeatherScreen());
       default:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
     }

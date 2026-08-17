@@ -86,9 +86,16 @@ class HomeScreen extends StatelessWidget {
       onRefresh: provider.refreshReadings,
       child: ListView.builder(
         padding: const EdgeInsets.symmetric(vertical: 8),
-        itemCount: esp32Ids.length,
+        // index 0 = menu fitur (cuaca), sisanya daftar lahan.
+        itemCount: esp32Ids.length + 1,
         itemBuilder: (context, index) {
-          final esp32Id = esp32Ids[index];
+          if (index == 0) {
+            return const Padding(
+              padding: EdgeInsets.fromLTRB(16, 4, 16, 8),
+              child: _WeatherMenuCard(),
+            );
+          }
+          final esp32Id = esp32Ids[index - 1];
           final devices = provider.devicesForEsp32(esp32Id);
           final onlineCount = provider.onlineCountForEsp32(esp32Id);
           final totalCount = devices.length;
@@ -152,6 +159,61 @@ class HomeScreen extends StatelessWidget {
               label: const Text('Refresh'),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Kartu menu fitur — entry point ke halaman Cuaca (Fase 1).
+/// Fase 2/3 akan menambah menu Jurnal & Rekapan di sini.
+class _WeatherMenuCard extends StatelessWidget {
+  const _WeatherMenuCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      child: InkWell(
+        onTap: () {
+          HapticFeedback.lightImpact();
+          Navigator.pushNamed(context, AppRoutes.weather);
+        },
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: AppColors.accentOrange.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(Icons.wb_sunny,
+                    color: AppColors.accentOrange, size: 28),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Cuaca', style: theme.textTheme.titleSmall),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Prakiraan 7 hari & rekomendasi irigasi untuk lahan Anda',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right,
+                  color: theme.colorScheme.onSurfaceVariant),
+            ],
+          ),
         ),
       ),
     );
