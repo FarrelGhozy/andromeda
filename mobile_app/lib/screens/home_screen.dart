@@ -92,7 +92,25 @@ class HomeScreen extends StatelessWidget {
           if (index == 0) {
             return const Padding(
               padding: EdgeInsets.fromLTRB(16, 4, 16, 8),
-              child: _WeatherMenuCard(),
+              child: Column(
+                children: [
+                  _FeatureMenuCard(
+                    icon: Icons.wb_sunny,
+                    color: AppColors.accentOrange,
+                    title: 'Cuaca',
+                    subtitle: 'Prakiraan 7 hari & rekomendasi irigasi untuk lahan Anda',
+                    route: AppRoutes.weather,
+                  ),
+                  SizedBox(height: 8),
+                  _FeatureMenuCard(
+                    icon: Icons.menu_book_outlined,
+                    color: AppColors.accentBlue,
+                    title: 'Jurnal & Pengetahuan',
+                    subtitle: 'Catatan perawatan tanaman & pustaka tips petani',
+                    route: AppRoutes.journal,
+                  ),
+                ],
+              ),
             );
           }
           final esp32Id = esp32Ids[index - 1];
@@ -165,10 +183,22 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-/// Kartu menu fitur — entry point ke halaman Cuaca (Fase 1).
-/// Fase 2/3 akan menambah menu Jurnal & Rekapan di sini.
-class _WeatherMenuCard extends StatelessWidget {
-  const _WeatherMenuCard();
+/// Kartu menu fitur — entry point halaman Cuaca (Fase 1) & Jurnal (Fase 2).
+/// Fase 3 akan menambah menu Rekapan di sini.
+class _FeatureMenuCard extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final String title;
+  final String subtitle;
+  final String route;
+
+  const _FeatureMenuCard({
+    required this.icon,
+    required this.color,
+    required this.title,
+    required this.subtitle,
+    required this.route,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -177,7 +207,7 @@ class _WeatherMenuCard extends StatelessWidget {
       child: InkWell(
         onTap: () {
           HapticFeedback.lightImpact();
-          Navigator.pushNamed(context, AppRoutes.weather);
+          Navigator.pushNamed(context, route);
         },
         borderRadius: BorderRadius.circular(16),
         child: Padding(
@@ -188,21 +218,20 @@ class _WeatherMenuCard extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: AppColors.accentOrange.withValues(alpha: 0.12),
+                  color: color.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(Icons.wb_sunny,
-                    color: AppColors.accentOrange, size: 28),
+                child: Icon(icon, color: color, size: 28),
               ),
               const SizedBox(width: 14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Cuaca', style: theme.textTheme.titleSmall),
+                    Text(title, style: theme.textTheme.titleSmall),
                     const SizedBox(height: 2),
                     Text(
-                      'Prakiraan 7 hari & rekomendasi irigasi untuk lahan Anda',
+                      subtitle,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
                       ),

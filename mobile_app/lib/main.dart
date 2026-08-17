@@ -13,6 +13,7 @@ import 'providers/dashboard_provider.dart';
 import 'providers/theme_provider.dart';
 import 'providers/connectivity_provider.dart';
 import 'providers/weather_provider.dart';
+import 'providers/journal_provider.dart';
 import 'routes.dart';
 
 void main() async {
@@ -42,6 +43,13 @@ void main() async {
         ChangeNotifierProvider(
           create: (_) {
             final p = WeatherProvider(WeatherService(), localStore);
+            p.init();
+            return p;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (_) {
+            final p = JournalProvider(localStore);
             p.init();
             return p;
           },
