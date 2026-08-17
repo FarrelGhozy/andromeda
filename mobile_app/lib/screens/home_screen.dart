@@ -7,6 +7,8 @@ import '../providers/connectivity_provider.dart';
 import '../widgets/error_banner.dart';
 import '../widgets/loading_overlay.dart';
 import '../widgets/offline_banner.dart';
+import '../widgets/summary_cards.dart';
+import '../widgets/summary_chart.dart';
 import '../routes.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -86,8 +88,8 @@ class HomeScreen extends StatelessWidget {
       onRefresh: provider.refreshReadings,
       child: ListView.builder(
         padding: const EdgeInsets.symmetric(vertical: 8),
-        // index 0 = menu fitur (cuaca), sisanya daftar lahan.
-        itemCount: esp32Ids.length + 1,
+        // index 0 = menu fitur, index 1 = rekapan, sisanya daftar lahan.
+        itemCount: esp32Ids.length + 2,
         itemBuilder: (context, index) {
           if (index == 0) {
             return const Padding(
@@ -113,7 +115,20 @@ class HomeScreen extends StatelessWidget {
               ),
             );
           }
-          final esp32Id = esp32Ids[index - 1];
+          if (index == 1) {
+            // Rekapan semua sensor (Fase 3) — ringkasan + grafik batang.
+            return const Padding(
+              padding: EdgeInsets.fromLTRB(16, 4, 16, 8),
+              child: Column(
+                children: [
+                  SummarySection(),
+                  SizedBox(height: 8),
+                  SummaryChart(),
+                ],
+              ),
+            );
+          }
+          final esp32Id = esp32Ids[index - 2];
           final devices = provider.devicesForEsp32(esp32Id);
           final onlineCount = provider.onlineCountForEsp32(esp32Id);
           final totalCount = devices.length;
