@@ -3,8 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../config/theme_config.dart';
 import '../providers/devices_provider.dart';
+import '../providers/connectivity_provider.dart';
 import '../widgets/error_banner.dart';
 import '../widgets/loading_overlay.dart';
+import '../widgets/offline_banner.dart';
 import '../routes.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -41,57 +43,71 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Consumer<DevicesProvider>(
-        builder: (context, provider, _) {
-          if (provider.isLoading) {
-            return ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              itemCount: 3,
-              itemBuilder: (_, __) => const ShimmerDeviceCard(),
-            );
-          }
+      body: Consumer2<DevicesProvider, ConnectivityProvider>(
+        builder: (context, provider, connectivity, _) {
+          return Column(
+            children: [
+              // Fase 0 — peringatan offline di homepage.
+              if (connectivity.isOffline)
+                OfflineBanner(cachedAt: provider.cachedAt),
+              Expanded(
+                child: _buildContent(context, provider),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
 
-          if (provider.error != null) {
-            return ErrorBanner(
-              message: provider.error!,
-              onRetry: provider.refreshReadings,
-            );
-          }
+  Widget _buildContent(BuildContext context, DevicesProvider provider) {
+    if (provider.isLoading) {
+      return ListView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        itemCount: 3,
+        itemBuilder: (_, __) => const ShimmerDeviceCard(),
+      );
+    }
 
-          final esp32Ids = provider.esp32Ids;
-          if (esp32Ids.isEmpty) {
-            return _buildEmptyState(context, provider);
-          }
+    if (provider.error != null) {
+      return ErrorBanner(
+        message: provider.error!,
+        onRetry: provider.refreshReadings,
+      );
+    }
 
-          return RefreshIndicator(
-            onRefresh: provider.refreshReadings,
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              itemCount: esp32Ids.length,
-              itemBuilder: (context, index) {
-                final esp32Id = esp32Ids[index];
-                final devices = provider.devicesForEsp32(esp32Id);
-                final onlineCount = provider.onlineCountForEsp32(esp32Id);
-                final totalCount = devices.length;
-                final location = devices.isNotEmpty ? devices.first.location : '';
+    final esp32Ids = provider.esp32Ids;
+    if (esp32Ids.isEmpty) {
+      return _buildEmptyState(context, provider);
+    }
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  child: _Esp32Card(
-                    esp32Id: esp32Id,
-                    location: location,
-                    onlineCount: onlineCount,
-                    totalCount: totalCount,
-                    onTap: () {
-                      HapticFeedback.lightImpact();
-                      Navigator.pushNamed(
-                        context,
-                        AppRoutes.esp32Detail,
-                        arguments: esp32Id,
-                      );
-                    },
-                  ),
+    return RefreshIndicator(
+      onRefresh: provider.refreshReadings,
+      child: ListView.builder(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        itemCount: esp32Ids.length,
+        itemBuilder: (context, index) {
+          final esp32Id = esp32Ids[index];
+          final devices = provider.devicesForEsp32(esp32Id);
+          final onlineCount = provider.onlineCountForEsp32(esp32Id);
+          final totalCount = devices.length;
+          final location = devices.isNotEmpty ? devices.first.location : '';
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            child: _Esp32Card(
+              esp32Id: esp32Id,
+              location: location,
+              onlineCount: onlineCount,
+              totalCount: totalCount,
+              showSavedBadge: context.watch<ConnectivityProvider>().isOffline,
+              onTap: () {
+                HapticFeedback.lightImpact();
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.esp32Detail,
+                  arguments: esp32Id,
                 );
               },
             ),
@@ -147,6 +163,7 @@ class _Esp32Card extends StatelessWidget {
   final String location;
   final int onlineCount;
   final int totalCount;
+  final bool showSavedBadge;
   final VoidCallback onTap;
 
   const _Esp32Card({
@@ -154,6 +171,7 @@ class _Esp32Card extends StatelessWidget {
     required this.location,
     required this.onlineCount,
     required this.totalCount,
+    this.showSavedBadge = false,
     required this.onTap,
   });
 
@@ -208,6 +226,13 @@ class _Esp32Card extends StatelessWidget {
                           '$totalCount Petak',
                           AppColors.accentBlue,
                         ),
+                        if (showSavedBadge) ...[
+                          const SizedBox(width: 8),
+                          _miniBadge(
+                            'Data tersimpan',
+                            AppColors.warning,
+                          ),
+                        ],
                       ],
                     ),
                   ],

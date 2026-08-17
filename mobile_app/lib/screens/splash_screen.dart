@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/supabase_service.dart';
 import '../providers/devices_provider.dart';
+import '../providers/connectivity_provider.dart';
 import '../routes.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -13,7 +14,6 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   String _statusText = 'Menghubungkan...';
-  bool _failed = false;
 
   @override
   void initState() {
@@ -23,7 +23,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _initApp() async {
     setState(() {
-      _failed = false;
       _statusText = 'Menghubungkan...';
     });
     await Future.delayed(const Duration(milliseconds: 1500));
@@ -32,22 +31,18 @@ class _SplashScreenState extends State<SplashScreen> {
     final connected = await SupabaseService().checkConnection();
     if (!mounted) return;
 
+    // Beri tahu ConnectivityProvider hasil pengecekan agar banner di
+    // homepage langsung akurat (Fase 0 — offline mode).
+    context.read<ConnectivityProvider>().applyServerReachable(connected);
+
     if (connected) {
       setState(() => _statusText = 'Memuat data...');
-      _waitForData();
     } else {
-      setState(() {
-        _failed = true;
-        _statusText = 'Tidak terhubung ke server';
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Tidak terhubung ke server.\nPeriksa koneksi internet Anda.'),
-          backgroundColor: Colors.red,
-          duration: const Duration(seconds: 4),
-        ),
-      );
+      // Offline BUKAN penghalang — tetap masuk; provider akan memulihkan
+      // snapshot terakhir dari cache (Fase 0).
+      setState(() => _statusText = 'Mode offline — memuat data tersimpan...');
     }
+    _waitForData();
   }
 
   Future<void> _waitForData() async {
@@ -119,20 +114,14 @@ class _SplashScreenState extends State<SplashScreen> {
 
               const Spacer(flex: 1),
 
-              _failed
-                  ? const Icon(
-                      Icons.cloud_off_rounded,
-                      color: Colors.white,
-                      size: 36,
-                    )
-                  : const SizedBox(
-                      width: 36,
-                      height: 36,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 3,
-                      ),
-                    ),
+              const SizedBox(
+                width: 36,
+                height: 36,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 3,
+                ),
+              ),
               const SizedBox(height: 16),
               Text(
                 _statusText,
@@ -140,19 +129,6 @@ class _SplashScreenState extends State<SplashScreen> {
                       color: Colors.white.withValues(alpha: 0.8),
                     ),
               ),
-              if (_failed) ...[
-                const SizedBox(height: 16),
-                OutlinedButton.icon(
-                  onPressed: _initApp,
-                  icon: const Icon(Icons.refresh_rounded),
-                  label: const Text('Coba Lagi'),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    side: const BorderSide(color: Colors.white),
-                  ),
-                ),
-              ],
-
               const Spacer(flex: 2),
 
               Text(

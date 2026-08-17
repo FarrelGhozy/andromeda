@@ -46,18 +46,17 @@ class DeviceRepository {
     }
   }
 
-  /// Ambil data terbaru untuk semua petak (via RPC)
+  /// Ambil data terbaru untuk semua petak (via RPC).
+  /// TIDAK menelan error: saat offline/gagal, exception dilempar ke
+  /// pemanggil (DevicesProvider) agar cache snapshot bisa dipulihkan —
+  /// map kosong palsu akan membuat app mengira data "segar" padahal tidak.
   Future<Map<String, SensorReading?>> getLatestReadings() async {
-    try {
-      final response = await _client.rpc('get_latest_readings');
-      final list = response as List;
-      return {
-        for (var item in list)
-          item['device_id'] as String: SensorReading.fromJson(item),
-      };
-    } catch (_) {
-      return {};
-    }
+    final response = await _client.rpc('get_latest_readings');
+    final list = response as List;
+    return {
+      for (var item in list)
+        item['device_id'] as String: SensorReading.fromJson(item),
+    };
   }
 
   /// Stream realtime: tiap INSERT/UPDATE pada sensor_readings.
