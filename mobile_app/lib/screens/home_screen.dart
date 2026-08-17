@@ -3,8 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../config/theme_config.dart';
 import '../providers/devices_provider.dart';
+import '../providers/connectivity_provider.dart';
 import '../widgets/error_banner.dart';
 import '../widgets/loading_overlay.dart';
+import '../widgets/offline_banner.dart';
+import '../widgets/summary_cards.dart';
+import '../widgets/summary_chart.dart';
 import '../routes.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -41,57 +45,109 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Consumer<DevicesProvider>(
-        builder: (context, provider, _) {
-          if (provider.isLoading) {
-            return ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              itemCount: 3,
-              itemBuilder: (_, __) => const ShimmerDeviceCard(),
-            );
-          }
+      body: Consumer2<DevicesProvider, ConnectivityProvider>(
+        builder: (context, provider, connectivity, _) {
+          return Column(
+            children: [
+              // Fase 0 — peringatan offline di homepage.
+              if (connectivity.isOffline)
+                OfflineBanner(cachedAt: provider.cachedAt),
+              Expanded(
+                child: _buildContent(context, provider),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
 
-          if (provider.error != null) {
-            return ErrorBanner(
-              message: provider.error!,
-              onRetry: provider.refreshReadings,
-            );
-          }
+  Widget _buildContent(BuildContext context, DevicesProvider provider) {
+    if (provider.isLoading) {
+      return ListView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        itemCount: 3,
+        itemBuilder: (_, __) => const ShimmerDeviceCard(),
+      );
+    }
 
-          final esp32Ids = provider.esp32Ids;
-          if (esp32Ids.isEmpty) {
-            return _buildEmptyState(context, provider);
-          }
+    if (provider.error != null) {
+      return ErrorBanner(
+        message: provider.error!,
+        onRetry: provider.refreshReadings,
+      );
+    }
 
-          return RefreshIndicator(
-            onRefresh: provider.refreshReadings,
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              itemCount: esp32Ids.length,
-              itemBuilder: (context, index) {
-                final esp32Id = esp32Ids[index];
-                final devices = provider.devicesForEsp32(esp32Id);
-                final onlineCount = provider.onlineCountForEsp32(esp32Id);
-                final totalCount = devices.length;
-                final location = devices.isNotEmpty ? devices.first.location : '';
+    final esp32Ids = provider.esp32Ids;
+    if (esp32Ids.isEmpty) {
+      return _buildEmptyState(context, provider);
+    }
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  child: _Esp32Card(
-                    esp32Id: esp32Id,
-                    location: location,
-                    onlineCount: onlineCount,
-                    totalCount: totalCount,
-                    onTap: () {
-                      HapticFeedback.lightImpact();
-                      Navigator.pushNamed(
-                        context,
-                        AppRoutes.esp32Detail,
-                        arguments: esp32Id,
-                      );
-                    },
+    return RefreshIndicator(
+      onRefresh: provider.refreshReadings,
+      child: ListView.builder(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        // index 0 = menu fitur, index 1 = rekapan, sisanya daftar lahan.
+        itemCount: esp32Ids.length + 2,
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            return const Padding(
+              padding: EdgeInsets.fromLTRB(16, 4, 16, 8),
+              child: Column(
+                children: [
+                  _FeatureMenuCard(
+                    icon: Icons.wb_sunny,
+                    color: AppColors.accentOrange,
+                    title: 'Cuaca',
+                    subtitle: 'Prakiraan 7 hari & rekomendasi irigasi untuk lahan Anda',
+                    route: AppRoutes.weather,
                   ),
+                  SizedBox(height: 8),
+                  _FeatureMenuCard(
+                    icon: Icons.menu_book_outlined,
+                    color: AppColors.accentBlue,
+                    title: 'Jurnal & Pengetahuan',
+                    subtitle: 'Catatan perawatan tanaman & pustaka tips petani',
+                    route: AppRoutes.journal,
+                  ),
+                ],
+              ),
+            );
+          }
+          if (index == 1) {
+            // Rekapan semua sensor (Fase 3) — ringkasan + grafik batang.
+            return const Padding(
+              padding: EdgeInsets.fromLTRB(16, 4, 16, 8),
+              child: Column(
+                children: [
+                  SummarySection(),
+                  SizedBox(height: 8),
+                  SummaryChart(),
+                ],
+              ),
+            );
+          }
+          final esp32Id = esp32Ids[index - 2];
+          final devices = provider.devicesForEsp32(esp32Id);
+          final onlineCount = provider.onlineCountForEsp32(esp32Id);
+          final totalCount = devices.length;
+          final location = devices.isNotEmpty ? devices.first.location : '';
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            child: _Esp32Card(
+              esp32Id: esp32Id,
+              location: location,
+              onlineCount: onlineCount,
+              totalCount: totalCount,
+              showSavedBadge: context.watch<ConnectivityProvider>().isOffline,
+              onTap: () {
+                HapticFeedback.lightImpact();
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.esp32Detail,
+                  arguments: esp32Id,
                 );
               },
             ),
@@ -142,11 +198,78 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
+/// Kartu menu fitur — entry point halaman Cuaca (Fase 1) & Jurnal (Fase 2).
+/// Fase 3 akan menambah menu Rekapan di sini.
+class _FeatureMenuCard extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final String title;
+  final String subtitle;
+  final String route;
+
+  const _FeatureMenuCard({
+    required this.icon,
+    required this.color,
+    required this.title,
+    required this.subtitle,
+    required this.route,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      child: InkWell(
+        onTap: () {
+          HapticFeedback.lightImpact();
+          Navigator.pushNamed(context, route);
+        },
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(icon, color: color, size: 28),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: theme.textTheme.titleSmall),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right,
+                  color: theme.colorScheme.onSurfaceVariant),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _Esp32Card extends StatelessWidget {
   final String esp32Id;
   final String location;
   final int onlineCount;
   final int totalCount;
+  final bool showSavedBadge;
   final VoidCallback onTap;
 
   const _Esp32Card({
@@ -154,6 +277,7 @@ class _Esp32Card extends StatelessWidget {
     required this.location,
     required this.onlineCount,
     required this.totalCount,
+    this.showSavedBadge = false,
     required this.onTap,
   });
 
@@ -208,6 +332,13 @@ class _Esp32Card extends StatelessWidget {
                           '$totalCount Petak',
                           AppColors.accentBlue,
                         ),
+                        if (showSavedBadge) ...[
+                          const SizedBox(width: 8),
+                          _miniBadge(
+                            'Data tersimpan',
+                            AppColors.warning,
+                          ),
+                        ],
                       ],
                     ),
                   ],

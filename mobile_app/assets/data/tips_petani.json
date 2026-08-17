@@ -1,0 +1,202 @@
+[
+  {
+    "id": "kelembaban-artinya",
+    "category": "penyiraman",
+    "title": "Angka kelembaban di aplikasi itu artinya apa?",
+    "summary": "Belajar membaca angka % di aplikasi ANDROMEDA — kapan tanah basah, kapan sudah waktunya siram.",
+    "sections": [
+      {
+        "heading": "Angka 0 sampai 100",
+        "body": "Aplikasi menampilkan kelembaban tanah dalam angka persen. Angka itu diukur sensor yang ditanam di dekat akar tanaman. 100% artinya tanah sangat basah, 0% artinya kering kerontang. Kebanyakan tanah yang bagus untuk tanaman berada di antara 30% sampai 80%."
+      },
+      {
+        "heading": "Cara membacanya",
+        "body": "Kalau angka 80% ke atas, tanah masih basah kuyup — jangan disiram dulu. Kalau sudah turun ke 30% ke bawah, tanah mulai kering dan akar mulai haus, saatnya siap-siap siram. Tiap tanaman beda selera: sayur daun suka tanah yang selalu lembab, sedangkan cabai dan umbi-umbian lebih tahan kering."
+      },
+      {
+        "heading": "Yang perlu diingat",
+        "body": "Angka yang naik turun itu normal, apalagi setelah hujan atau habis disiram. Jangan panik kalau angka berubah sedikit. Yang penting perhatikan kecenderungannya: kalau terus turun selama berhari-hari dan cuaca panas, berarti lahan butuh air."
+      }
+    ]
+  },
+  {
+    "id": "kapan-siram",
+    "category": "penyiraman",
+    "title": "Kapan lahan perlu disiram?",
+    "summary": "Tanda-tanda tanah kering yang bisa dilihat dan dirasakan, plus cara memakai data aplikasi.",
+    "sections": [
+      {
+        "heading": "Cek tanah langsung",
+        "body": "Cara paling sederhana: ambil segenggam tanah dari kedalaman sekitar 5-10 cm. Kalau tanahnya menggumpal dan lengket, masih basah. Kalau hancur bertepung dan tidak bisa dibentuk, tanah sudah kering. Kalau berdebu, itu sudah kering sekali — segera siram."
+      },
+      {
+        "heading": "Lihat tanamannya",
+        "body": "Daun mulai layu di siang hari padahal paginya masih segar, itu tanda akar kesulitan menyerap air. Tapi hati-hati: layu juga bisa karena panas berlebih. Kombinasikan dengan angka kelembaban di aplikasi supaya tidak salah tebak."
+      },
+      {
+        "heading": "Waktu terbaik menyiram",
+        "body": "Pagi hari sebelum jam 9 atau sore setelah jam 4 adalah waktu paling baik. Air tidak cepat menguap, jadi lebih hemat. Menyiram di tengah hari saat terik membuat air banyak yang hilang sebelum sempat diserap akar."
+      }
+    ]
+  },
+  {
+    "id": "hemat-air",
+    "category": "penyiraman",
+    "title": "Tips hemat air pakai irigasi tetes",
+    "summary": "Cara memakai sistem irigasi tetes ANDROMEDA supaya air tidak mubazir dan tanaman tetap sehat.",
+    "sections": [
+      {
+        "heading": "Siram pelan dan dekat akar",
+        "body": "Irigasi tetes mengalirkan air pelan-pelan tepat di dekat akar. Itu lebih hemat daripada menyiram dengan selang atau ember yang airnya banyak terbuang ke tanah kosong. Pastikan titik tetes dekat batang tanaman, bukan di jalan setapak."
+      },
+      {
+        "heading": "Atur durasi dengan bijak",
+        "body": "Jangan menyiram terlalu lama dalam sekali jalan. Lebih baik frekuensi lebih sering dengan durasi pendek, supaya air meresap ke akar, bukan menggenang. Mulai dari 15-30 menit, lalu pantau angka kelembaban di aplikasi selama beberapa hari."
+      },
+      {
+        "heading": "Manfaatkan data",
+        "body": "Aplikasi mencatat riwayat kelembaban. Dari situ kita bisa tahu seberapa cepat tanah mengering setelah disiram. Kalau tanah cepat kering di musim kemarau, tambah frekuensi. Kalau habis hujan, tunda penyiraman — fitur cuaca bisa membantu memprediksi."
+      }
+    ]
+  },
+  {
+    "id": "pupuk-npk",
+    "category": "pemupukan",
+    "title": "Pupuk itu bukan cuma NPK",
+    "summary": "Mengenal jenis pupuk yang umum dipakai petani dan fungsinya masing-masing.",
+    "sections": [
+      {
+        "heading": "Pupuk utama: NPK",
+        "body": "NPK adalah singkatan dari Nitrogen (N), Fosfor (P), dan Kalium (K). Nitrogen bikin daun hijau dan subur, fosfor bikin akar kuat dan buah bagus, kalium bikin tanaman tahan penyakit dan buah lebih berat. Kebanyakan pupuk kimia yang dijual mengandung ketiganya."
+      },
+      {
+        "heading": "Pupuk organik",
+        "body": "Pupuk kandang, kompos, dan pupuk hijau memperbaiki struktur tanah — tanah jadi gembur dan mudah menahan air. Pupuk organik bekerja pelan-pelan, jadi cocok dipakai sebagai dasar sebelum tanam."
+      },
+      {
+        "heading": "Kombinasi yang sehat",
+        "body": "Petani yang baik tidak memilih salah satu, tapi memakai keduanya: pupuk organik sebagai pondasi, dan pupuk kimia untuk kebutuhan cepat saat tanaman sedang tumbuh atau berbuah. Catat di jurnal jenis dan dosis yang dipakai supaya tahun depan bisa dibandingkan."
+      }
+    ]
+  },
+  {
+    "id": "pupuk-kapan",
+    "category": "pemupukan",
+    "title": "Kapan dan berapa banyak memupuk?",
+    "summary": "Panduan sederhana memberi pupuk sesuai fase pertumbuhan tanaman.",
+    "sections": [
+      {
+        "heading": "Saat awal tanam",
+        "body": "Sebelum atau saat tanam, taburkan pupuk dasar (bisa organik atau NPK dosis rendah) di lubang tanam. Ini bekal pertama untuk akar yang baru tumbuh. Jangan berlebihan — akar muda bisa terbakar pupuk yang terlalu pekat."
+      },
+      {
+        "heading": "Saat tanaman tumbuh",
+        "body": "Setelah 2-4 minggu, tanaman butuh nitrogen untuk daun. Beri pupuk susulan secukupnya. Untuk tanaman buah seperti cabai dan tomat, saat mulai berbunga kurangi nitrogen dan perbanyak fosfor dan kalium supaya buahnya banyak."
+      },
+      {
+        "heading": "Aturan praktis",
+        "body": "Ikuti dosis yang tertera di kemasan — jangan menggandakan karena ingin cepat subur. Pupuk berlebih tidak hanya buang uang, tapi juga bisa merusak tanah dan membuat tanaman mudah terserang penyakit. Catat setiap pemupukan di jurnal aplikasi."
+      }
+    ]
+  },
+  {
+    "id": "hama-umum",
+    "category": "hama",
+    "title": "Hama umum di musim kemarau & hujan",
+    "summary": "Mengenali hama yang sering muncul tiap musim dan cara sederhana mengendalikannya.",
+    "sections": [
+      {
+        "heading": "Musim kemarau",
+        "body": "Saat kemarau, kutu daun dan tungau sering muncul karena udara kering. Daun jadi keriting, menguning, atau ada sarang halus di balik daun. Cek bagian bawah daun secara rutin — hama kecil suka bersembunyi di sana."
+      },
+      {
+        "heading": "Musim hujan",
+        "body": "Hujan lebat memicu jamur dan penyakit seperti bercak daun. Tanah yang becek juga menarik ulat dan siput. Hindari air menggenang di sekitar batang, dan jangan terlalu rapat menanam supaya udara bisa lewat."
+      },
+      {
+        "heading": "Cara sederhana mengendalikan",
+        "body": "Mulai dari cara paling ringan: buang daun terserang, semprot air sabun untuk kutu, dan pasang perangkap. Gunakan obat kimia hanya kalau serangan sudah parah, sesuai dosis kemasan. Catat serangan hama di jurnal — pola dari catatan membantu mencegah di musim berikutnya."
+      }
+    ]
+  },
+  {
+    "id": "sensor-masalah",
+    "category": "perawatan",
+    "title": "Sensor kelembaban bermasalah?",
+    "summary": "Kenali tanda sensor error di aplikasi dan cara sederhana memeriksanya.",
+    "sections": [
+      {
+        "heading": "Tanda-tanda sensor bermasalah",
+        "body": "Kalau angka kelembaban tiba-tiba 0% atau 100% terus-menerus tanpa perubahan, atau aplikasi menandai 'sensor error', kemungkinan besar kabel sensor longgar, putus, atau ujung sensor kotor. Sensor yang sehat angkanya ikut naik turun."
+      },
+      {
+        "heading": "Pemeriksaan sederhana",
+        "body": "Cek dulu kabel penghubung sensor ke alat — pastikan tidak putus dan colokannya kencang. Bersihkan ujung sensor yang tertanam di tanah dengan kain, karena tanah atau kerak bisa menghalangi pembacaan. Pastikan juga kabel tidak terinjak atau digigit tikus."
+      },
+      {
+        "heading": "Kapan harus mengganti",
+        "body": "Kalau sudah dibersihkan dan kabel dicek tapi angka tetap aneh, sensor mungkin sudah aus. Sensor yang terus-terusan terendam air atau terkena panas punya umur lebih pendek. Ganti dengan yang baru dan catat tanggal penggantiannya di jurnal."
+      }
+    ]
+  },
+  {
+    "id": "aki-panel",
+    "category": "perawatan",
+    "title": "Merawat aki & panel surya sistem irigasi",
+    "summary": "Cara menjaga sumber daya sistem irigasi tetap awet dan tidak mati mendadak.",
+    "sections": [
+      {
+        "heading": "Panel surya",
+        "body": "Bersihkan permukaan panel dari debu, daun, dan kotoran burung secara rutin — paling tidak dua minggu sekali. Panel yang kotor bisa kehilangan banyak tenaga. Pastikan juga tidak ada pohon atau bangunan yang menaungi panel saat matahari terik."
+      },
+      {
+        "heading": "Aki",
+        "body": "Aki menyimpan tenaga untuk malam hari dan saat mendung. Cek air aki secara berkala (kalau jenis aki basah) dan pastikan terminalnya kencang serta tidak berkarat. Aki yang kendor atau berkarat bisa bikin alat mati mendadak meski panel bersih."
+      },
+      {
+        "heading": "Kebiasaan sehat",
+        "body": "Buat jadwal perawatan bulanan: bersihkan panel, cek aki, cek kabel. Catat di jurnal setiap kali melakukan perawatan. Sistem irigasi yang dirawat rutin jauh lebih jarang ngadat di musim yang paling butuh air."
+      }
+    ]
+  },
+  {
+    "id": "mencatat",
+    "category": "lainnya",
+    "title": "Mencatat yang benar = panen yang terencana",
+    "summary": "Kenapa catatan kecil harian bisa menjadi harta paling berharga bagi petani.",
+    "sections": [
+      {
+        "heading": "Ingatan manusia terbatas",
+        "body": "Seminggu lalu kapan terakhir memupuk? Pupuk apa dan berapa banyak? Tahun lalu saat kapan hama mulai menyerang? Sulit diingat semua. Catatan sederhana di jurnal aplikasi menyimpan jawabannya, tinggal dibuka kapan saja."
+      },
+      {
+        "heading": "Apa yang patut dicatat",
+        "body": "Cukup hal-hal penting: tanggal penyiraman dan pemupukan, jenis serta dosis pupuk, serangan hama dan obatnya, cuaca yang tidak biasa, dan hasil panen. Tidak perlu panjang — dua tiga kalimat sudah cukup."
+      },
+      {
+        "heading": "Dari catatan jadi keputusan",
+        "body": "Dengan catatan yang rutin, pola mulai terlihat: 'setiap habis hujan deras dua hari, daun mulai bercak'. Dari pola itu kita bisa bertindak lebih awal musim depan. Petani yang mencatat jarang menebak-nebak."
+      }
+    ]
+  },
+  {
+    "id": "cuaca-ekstrem",
+    "category": "lainnya",
+    "title": "Cuaca ekstrem: apa yang harus dilakukan",
+    "summary": "Langkah sederhana menghadapi panas menyengat atau hujan deras berkepanjangan.",
+    "sections": [
+      {
+        "heading": "Panas ekstrem",
+        "body": "Saat suhu sangat tinggi, air menguap lebih cepat. Tambah frekuensi penyiraman dengan durasi pendek, dan siram di pagi atau sore hari. Mulsa — jerami atau daun kering di permukaan tanah — sangat membantu menahan air. Fitur cuaca di aplikasi bisa memberi peringatan lebih awal."
+      },
+      {
+        "heading": "Hujan berkepanjangan",
+        "body": "Saat hujan terus-menerus, tunda penyiraman dan pastikan air tidak menggenang di sekitar akar — genangan membuat akar busuk. Waspadai jamur di daun. Kalau perlu, buat saluran kecil supaya air cepat mengalir keluar dari lahan."
+      },
+      {
+        "heading": "Persiapan lebih awal",
+        "body": "Pantau prakiraan cuaca 7 hari di aplikasi setiap pagi. Kalau besok hujan lebat, tunda pemupukan (pupuk bisa hanyut). Kalau panas panjang datang, siapkan stok air. Sedikit persiapan lebih awal lebih murah daripada memperbaiki tanaman yang rusak."
+      }
+    ]
+  }
+]

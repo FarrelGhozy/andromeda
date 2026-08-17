@@ -167,14 +167,24 @@ class DashboardProvider extends ChangeNotifier {
       });
 
       // Expiry command pending yang basi (> 2×read_interval) (fix #20)
-      final interval = _config?.readIntervalMinutes ?? 30;
-      await _sensorRepo.expireStaleCommands(
-        deviceId,
-        DateTime.now().subtract(Duration(minutes: 2 * interval)),
-      );
+      // Offline-safe: gagal saat tanpa koneksi → bukan kondisi fatal.
+      try {
+        final interval = _config?.readIntervalMinutes ?? 30;
+        await _sensorRepo.expireStaleCommands(
+          deviceId,
+          DateTime.now().subtract(Duration(minutes: 2 * interval)),
+        );
+      } catch (_) {
+        // offline — expiry akan berjalan saat koneksi kembali.
+      }
 
-      // Load history
-      await _loadHistory();
+      // Load history — offline-safe: grafik kosong + fault count 0.
+      try {
+        await _loadHistory();
+      } catch (_) {
+        _history = [];
+        _hiddenFaultCount = 0;
+      }
 
       _state = DashboardState.ready;
     } catch (e) {

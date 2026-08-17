@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import '../models/device.dart';
 import '../models/sensor_reading.dart';
 import '../services/device_repository.dart';
+import '../services/cache_repository.dart';
 
 class DevicesProvider extends ChangeNotifier {
   final DeviceRepository _deviceRepo;
+  final CacheRepository _cacheRepo;
 
   List<Device> _devices = [];
   Map<String, SensorReading?> _latestReadings = {};
@@ -13,6 +15,8 @@ class DevicesProvider extends ChangeNotifier {
   bool _readingsLoaded = false;
   String? _error;
   StreamSubscription<SensorReading>? _liveSub;
+  /// Waktu snapshot offline terakhir dimuat (null = data live/realtime).
+  DateTime? _cachedAt;
 
   // =====================================================================
   // SATU SUMBER KEBENARAN umur data (fix #29).
@@ -32,8 +36,11 @@ class DevicesProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
   bool get isReady => !_isLoading;
+  /// Kapan data tersimpan terakhir dimuat dari cache (null = data live).
+  DateTime? get cachedAt => _cachedAt;
 
-  DevicesProvider(this._deviceRepo);
+  DevicesProvider(this._deviceRepo, {required CacheRepository cacheRepo})
+      : _cacheRepo = cacheRepo;
 
   void init() {
     _deviceRepo.getDevicesStream().listen(
@@ -41,6 +48,14 @@ class DevicesProvider extends ChangeNotifier {
         _devices = devices;
         _error = null;
         _checkReady();
+        // Simpan snapshot SETIAP stream devices mengirim data — di sinilah
+        // daftar device lengkap pertama kali tersedia (refreshReadings di
+        // init() bisa selesai lebih dulu saat _devices masih kosong, sehingga
+        // guard isEmpty di CacheRepository men-skip penyimpanan).
+        _cacheRepo.saveSnapshot(
+          devices: devices,
+          readings: _latestReadings,
+        );
       },
       onError: (Object e) {
         // Real-time gagal (mis. tabel belum dipublikasi Realtime) →
@@ -81,9 +96,16 @@ class DevicesProvider extends ChangeNotifier {
       final devices = await _deviceRepo.getDevices();
       _devices = devices;
       _checkReady();
+      // Jalur fallback realtime — simpan snapshot di sini juga karena
+      // stream devices bisa error (tabel belum di-publish Realtime) dan
+      // listener stream tidak sempat mengeksekusi saveSnapshot.
+      await _cacheRepo.saveSnapshot(
+        devices: devices,
+        readings: _latestReadings,
+      );
     } catch (e) {
-      _error = 'Gagal memuat data: $e';
       _readingsLoaded = true;
+      await _restoreFromCache();
       _checkReady();
     }
   }
@@ -100,12 +122,31 @@ class DevicesProvider extends ChangeNotifier {
     try {
       _latestReadings = await _deviceRepo.getLatestReadings();
       _readingsLoaded = true;
+      _cachedAt = null; // data live
       _checkReady();
+      // Simpan snapshot untuk mode offline (skip jika devices kosong).
+      await _cacheRepo.saveSnapshot(
+        devices: _devices,
+        readings: _latestReadings,
+      );
     } catch (e) {
-      _error = 'Gagal memuat data: $e';
       _readingsLoaded = true;
+      await _restoreFromCache();
       _checkReady();
     }
+  }
+
+  /// Pulihkan snapshot terakhir dari cache saat fetch gagal (offline).
+  /// Tidak menimpa data live jika ada — hanya mengisi saat kosong/gagal.
+  Future<void> _restoreFromCache() async {
+    final snapshot = await _cacheRepo.loadSnapshot();
+    if (snapshot == null) return;
+    _devices = snapshot.devices;
+    _latestReadings = snapshot.readings;
+    _cachedAt = snapshot.savedAt;
+    _error = null;
+    _readingsLoaded = true;
+    notifyListeners();
   }
 
   bool isDeviceOnline(String deviceId) {

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../providers/dashboard_provider.dart';
 import '../providers/devices_provider.dart';
+import '../providers/connectivity_provider.dart';
 import '../models/enums.dart';
 import '../models/sensor_reading.dart';
 import '../models/system_config.dart';
@@ -59,6 +60,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<DashboardProvider>().loadDevice(widget.deviceId);
+      // Fase 0 — trigger offline: beri tahu segera saat halaman dibuka
+      // dalam keadaan offline (tombol valve juga dinonaktifkan).
+      if (context.read<ConnectivityProvider>().isOffline) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Offline — perintah valve tidak bisa dikirim'),
+          backgroundColor: AppColors.danger,
+          duration: Duration(seconds: 4),
+        ));
+      }
     });
   }
 
@@ -288,6 +298,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildValveSection(DashboardProvider provider) {
     final status = provider.valveDisplayStatus;
+    // Fase 0 — saat offline, kontrol valve tidak boleh dikirim.
+    final isOffline = context.watch<ConnectivityProvider>().isOffline;
     // Fix #25: konvensi — hijau = aktif/terbuka, netral = tertutup,
     // abu-abu offline = tidak diketahui. Merah khusus bahaya (tombol TUTUP).
     final neutral = Theme.of(context).colorScheme.onSurfaceVariant;
@@ -365,7 +377,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     label: 'BUKA',
                     icon: Icons.play_arrow,
                     color: AppColors.success,
-                    onPressed: (!provider.isValveOpen && !provider.sendingCommand)
+                    onPressed: (!provider.isValveOpen &&
+                            !provider.sendingCommand &&
+                            !isOffline)
                         ? () {
                             HapticFeedback.lightImpact();
                             _sendValve(provider, 'VALVE_ON',
@@ -382,7 +396,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     color: AppColors.danger,
                     // Fix #16: TUTUP selalu aktif (safety) — saat status
                     // tidak diketahui pun user boleh memaksa menutup.
-                    onPressed: !provider.sendingCommand
+                    onPressed: (!provider.sendingCommand && !isOffline)
                         ? () {
                             HapticFeedback.lightImpact();
                             _sendValve(provider, 'VALVE_OFF');

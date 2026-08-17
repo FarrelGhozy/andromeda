@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../config/theme_config.dart';
 import '../providers/devices_provider.dart';
+import '../providers/connectivity_provider.dart';
 import '../models/device.dart';
 import '../models/sensor_reading.dart';
 import '../widgets/moisture_gauge.dart';
@@ -40,8 +41,8 @@ class Esp32Screen extends StatelessWidget {
       appBar: AppBar(
         title: Text(esp32Id),
       ),
-      body: Consumer<DevicesProvider>(
-        builder: (context, provider, _) {
+      body: Consumer2<DevicesProvider, ConnectivityProvider>(
+        builder: (context, provider, connectivity, _) {
           final devices = provider.devicesForEsp32(esp32Id);
           if (devices.isEmpty) {
             return const Center(child: Text('Tidak ada petak'));
@@ -66,6 +67,7 @@ class Esp32Screen extends StatelessWidget {
                   device: device,
                   reading: reading,
                   isOnline: isOnline,
+                  showSavedBadge: connectivity.isOffline,
                   onTap: () {
                     HapticFeedback.lightImpact();
                     Navigator.pushNamed(
@@ -92,6 +94,7 @@ class _PetakCard extends StatelessWidget {
   final Device device;
   final SensorReading? reading;
   final bool isOnline;
+  final bool showSavedBadge;
   final VoidCallback onTap;
   final VoidCallback onRename;
 
@@ -99,6 +102,7 @@ class _PetakCard extends StatelessWidget {
     required this.device,
     required this.reading,
     required this.isOnline,
+    this.showSavedBadge = false,
     required this.onTap,
     required this.onRename,
   });
@@ -165,6 +169,14 @@ class _PetakCard extends StatelessWidget {
                                 : theme.colorScheme.onSurfaceVariant),
                         fontSize: 10,
                       ),
+                      if (showSavedBadge) ...[
+                        const SizedBox(width: 4),
+                        StatusBadge(
+                          text: 'Tersimpan',
+                          color: AppColors.warning,
+                          fontSize: 10,
+                        ),
+                      ],
                     ],
                   ),
                 ],

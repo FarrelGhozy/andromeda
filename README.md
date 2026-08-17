@@ -14,7 +14,7 @@ Program PDB (Program Desa Binaan) — **Desa Merayan**
 
 ## 📲 Download APK
 
-**Versi terbaru: [v0.1.3 - BIMA](https://github.com/FarrelGhozy/andromeda/releases/latest)**
+**Versi terbaru: [v0.2.0 - GATOTKACA](https://github.com/FarrelGhozy/andromeda/releases/latest)**
 
 [⬇️ Download app-release.apk](https://github.com/FarrelGhozy/andromeda/releases/latest/download/app-release.apk)
 
@@ -33,6 +33,10 @@ Program PDB (Program Desa Binaan) — **Desa Merayan**
 - ⚙️ **Atur threshold** — batas kering/basah sesuai tanaman
 - 📈 **Grafik historis** — riwayat kelembaban
 - 🟢 **Status online/offline** akurat via heartbeat ESP32
+- 🌦️ **Cuaca** — prakiraan 7 hari + rekomendasi irigasi (Open-Meteo, lokasi lahan tersimpan lokal)
+- 📓 **Jurnal & Pengetahuan Petani** — catatan perawatan harian + pustaka tips (lokal, offline)
+- 📊 **Rekapan semua sensor** — ringkasan & grafik batang di halaman utama
+- 📴 **Offline mode** — aplikasi tetap jalan tanpa internet (data tersimpan + peringatan)
 
 ---
 

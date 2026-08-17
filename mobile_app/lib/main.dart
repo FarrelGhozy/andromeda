@@ -5,9 +5,15 @@ import 'services/supabase_service.dart';
 import 'services/device_repository.dart';
 import 'services/sensor_repository.dart';
 import 'services/config_repository.dart';
+import 'services/local_store.dart';
+import 'services/cache_repository.dart';
+import 'services/weather_service.dart';
 import 'providers/devices_provider.dart';
 import 'providers/dashboard_provider.dart';
 import 'providers/theme_provider.dart';
+import 'providers/connectivity_provider.dart';
+import 'providers/weather_provider.dart';
+import 'providers/journal_provider.dart';
 import 'routes.dart';
 
 void main() async {
@@ -20,6 +26,8 @@ void main() async {
   final deviceRepo = DeviceRepository(client);
   final sensorRepo = SensorRepository(client);
   final configRepo = ConfigRepository(client);
+  final localStore = LocalStore();
+  final cacheRepo = CacheRepository(localStore);
 
   runApp(
     MultiProvider(
@@ -27,7 +35,28 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(
           create: (_) {
-            final p = DevicesProvider(deviceRepo);
+            final p = ConnectivityProvider();
+            p.init();
+            return p;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (_) {
+            final p = WeatherProvider(WeatherService(), localStore);
+            p.init();
+            return p;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (_) {
+            final p = JournalProvider(localStore);
+            p.init();
+            return p;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (_) {
+            final p = DevicesProvider(deviceRepo, cacheRepo: cacheRepo);
             p.init();
             return p;
           },
