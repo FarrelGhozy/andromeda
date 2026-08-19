@@ -14,7 +14,7 @@ Program PDB (Program Desa Binaan) — **Desa Merayan**
 
 ## 📲 Download APK
 
-**Versi terbaru: [v0.2.0 - GATOTKACA](https://github.com/FarrelGhozy/andromeda/releases/latest)**
+**Versi terbaru: [v0.2.1 - GATOTKACA](https://github.com/FarrelGhozy/andromeda/releases/latest)**
 
 [⬇️ Download app-release.apk](https://github.com/FarrelGhozy/andromeda/releases/latest/download/app-release.apk)
 
