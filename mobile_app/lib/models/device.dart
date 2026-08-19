@@ -23,6 +23,24 @@ class Device {
 
   bool get isActive => status == 'active';
 
+  Device copyWith({
+    String? name,
+    String? location,
+    String? status,
+    DateTime? lastSeen,
+  }) =>
+      Device(
+        id: id,
+        deviceId: deviceId,
+        esp32Id: esp32Id,
+        name: name ?? this.name,
+        location: location ?? this.location,
+        sensorIndex: sensorIndex,
+        status: status ?? this.status,
+        lastSeen: lastSeen ?? this.lastSeen,
+        createdAt: createdAt,
+      );
+
   factory Device.fromJson(Map<String, dynamic> json) => Device(
         id: json['id'] ?? 0,
         deviceId: json['device_id'] ?? '',

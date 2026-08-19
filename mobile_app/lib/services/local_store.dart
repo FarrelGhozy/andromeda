@@ -14,6 +14,7 @@ class LocalStore {
   static const String weatherLocationKey = 'weather_location';
   static const String weatherCacheKey = 'weather_cache';
   static const String weatherCacheAtKey = 'weather_cache_at';
+  static const String weatherCacheLocationKey = 'weather_cache_location';
 
   // --- Jurnal (Fase 2) ---
   static const String journalEntriesKey = 'journal_entries';

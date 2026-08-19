@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../config/theme_config.dart';
 
 /// Banner peringatan offline di homepage.
 /// Menampilkan kapan data terakhir disimpan (dari snapshot cache) supaya
@@ -11,11 +10,27 @@ class OfflineBanner extends StatelessWidget {
 
   static String formatSavedTime(DateTime t) {
     const days = [
-      'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu',
+      'Senin',
+      'Selasa',
+      'Rabu',
+      'Kamis',
+      'Jumat',
+      'Sabtu',
+      'Minggu',
     ];
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
-      'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'Mei',
+      'Jun',
+      'Jul',
+      'Agu',
+      'Sep',
+      'Okt',
+      'Nov',
+      'Des',
     ];
     final hh = t.hour.toString().padLeft(2, '0');
     final mm = t.minute.toString().padLeft(2, '0');
@@ -25,21 +40,27 @@ class OfflineBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cached = cachedAt;
-    final timeText = cached != null ? ' — data tersimpan ${formatSavedTime(cached)}' : '';
+    final timeText =
+        cached != null ? ' — data tersimpan ${formatSavedTime(cached)}' : '';
+    final colors = Theme.of(context).colorScheme;
 
     return Container(
       width: double.infinity,
-      color: AppColors.danger,
+      color: colors.tertiaryContainer,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Row(
         children: [
-          const Icon(Icons.cloud_off_rounded, color: Colors.white, size: 20),
+          Icon(
+            Icons.cloud_off_rounded,
+            color: colors.onTertiaryContainer,
+            size: 20,
+          ),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               'Offline$timeText',
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: colors.onTertiaryContainer,
                 fontWeight: FontWeight.w600,
               ),
             ),

@@ -204,7 +204,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 '(ADC ${reading?.moisture ?? 0} di luar rentang valid '
                 '${SensorReading.minValidRaw}–${SensorReading.maxValidRaw})',
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   color: AppColors.warning,
                   fontWeight: FontWeight.w600,
                   fontSize: 12,
@@ -212,24 +212,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
               const SizedBox(height: 8),
             ],
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 12,
+              runSpacing: 8,
               children: [
                 _infoChip(Icons.sensors, 'ADC: ${reading?.moisture ?? 0}'),
-                const SizedBox(width: 16),
                 _infoChip(
                   Icons.access_time,
                   reading?.createdAt != null
                       ? DateFormat('HH:mm').format(reading!.createdAt)
                       : '—',
                 ),
-                if (reading?.batteryVoltage != null) ...[
-                  const SizedBox(width: 16),
+                if (reading?.batteryVoltage != null)
                   _infoChip(
                     Icons.battery_std,
                     '${reading!.batteryVoltage!.toStringAsFixed(1)}V',
                   ),
-                ],
               ],
             ),
             if (!fresh) ...[
@@ -333,8 +332,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 12,
+              runSpacing: 8,
               children: [
                 Text(
                   'Status Valve',
@@ -586,7 +588,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               // (bukan spike 0%/100% palsu akibat kabel putus/open circuit).
               Text(
                 '${provider.hiddenFaultCount} pembacaan sensor error disembunyikan',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 11,
                   fontStyle: FontStyle.italic,
                   color: AppColors.warning,
@@ -619,7 +621,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     _syncConfigLocals(config);
 
-    Future<void> _saveWithFeedback(
+    Future<void> saveWithFeedback(
         DashboardProvider provider, SystemConfig updated) async {
       final messenger = ScaffoldMessenger.of(context);
       final ok = await provider.updateConfig(updated);
@@ -655,7 +657,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ));
         return;
       }
-      _saveWithFeedback(provider, updated);
+      saveWithFeedback(provider, updated);
     }
 
     return Card(
@@ -735,42 +737,46 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildModeToggle(DashboardProvider provider, SystemConfig config) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Mode Operasi', style: Theme.of(context).textTheme.bodyMedium),
-        SegmentedButton<String>(
-          segments: const [
-            ButtonSegment(value: 'auto', label: Text('Otomatis'), icon: Icon(Icons.auto_awesome, size: 16)),
-            ButtonSegment(value: 'manual', label: Text('Manual'), icon: Icon(Icons.touch_app, size: 16)),
-          ],
-          selected: {config.isAutoMode ? 'auto' : 'manual'},
-          // Sembunyikan ceklist: hanya warna background + teks yang berubah.
-          selectedIcon: const SizedBox.shrink(),
-          onSelectionChanged: (selected) async {
-            final previous = config.mode;
-            config.mode = selected.first;
-            final ok = await provider.updateConfig(config);
-            if (!ok && mounted) {
-              setState(() => config.mode = previous);
-            }
-          },
-          style: ButtonStyle(
-            visualDensity: VisualDensity.compact,
-            textStyle: WidgetStatePropertyAll(
-              Theme.of(context).textTheme.labelMedium,
-            ),
-            backgroundColor: WidgetStateProperty.resolveWith(
-              (states) => states.contains(WidgetState.selected)
-                  ? Theme.of(context).colorScheme.primary
-                  : Colors.transparent,
-            ),
-            foregroundColor: WidgetStateProperty.resolveWith(
-              (states) => states.contains(WidgetState.selected)
-                  ? (Theme.of(context).brightness == Brightness.dark
-                      ? Colors.black87
-                      : Colors.white)
-                  : Theme.of(context).colorScheme.onSurface,
+        const SizedBox(height: 10),
+        SizedBox(
+          width: double.infinity,
+          child: SegmentedButton<String>(
+            segments: const [
+              ButtonSegment(value: 'auto', label: Text('Otomatis'), icon: Icon(Icons.auto_awesome, size: 16)),
+              ButtonSegment(value: 'manual', label: Text('Manual'), icon: Icon(Icons.touch_app, size: 16)),
+            ],
+            selected: {config.isAutoMode ? 'auto' : 'manual'},
+            // Sembunyikan ceklist: hanya warna background + teks yang berubah.
+            selectedIcon: const SizedBox.shrink(),
+            onSelectionChanged: (selected) async {
+              final previous = config.mode;
+              config.mode = selected.first;
+              final ok = await provider.updateConfig(config);
+              if (!ok && mounted) {
+                setState(() => config.mode = previous);
+              }
+            },
+            style: ButtonStyle(
+              visualDensity: VisualDensity.compact,
+              textStyle: WidgetStatePropertyAll(
+                Theme.of(context).textTheme.labelMedium,
+              ),
+              backgroundColor: WidgetStateProperty.resolveWith(
+                (states) => states.contains(WidgetState.selected)
+                    ? Theme.of(context).colorScheme.primary
+                    : Colors.transparent,
+              ),
+              foregroundColor: WidgetStateProperty.resolveWith(
+                (states) => states.contains(WidgetState.selected)
+                    ? (Theme.of(context).brightness == Brightness.dark
+                        ? Colors.black87
+                        : Colors.white)
+                    : Theme.of(context).colorScheme.onSurface,
+              ),
             ),
           ),
         ),

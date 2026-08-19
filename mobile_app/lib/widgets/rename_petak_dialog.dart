@@ -14,11 +14,12 @@ Future<bool> showRenamePetakDialog(
 }) async {
   final saved = await showDialog<bool>(
     context: context,
-    builder: (_) => _RenamePetakDialog(
-      deviceId: deviceId,
-      currentName: currentName,
-      onRename: onRename,
-    ),
+    builder:
+        (_) => _RenamePetakDialog(
+          deviceId: deviceId,
+          currentName: currentName,
+          onRename: onRename,
+        ),
   );
   return saved ?? false;
 }
@@ -98,11 +99,13 @@ class _RenamePetakDialogState extends State<_RenamePetakDialog> {
       setState(() => _saving = false);
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
-        ..showSnackBar(const SnackBar(
-          content: Text('Gagal mengubah nama petak — periksa koneksi'),
-          backgroundColor: AppColors.danger,
-          duration: Duration(seconds: 3),
-        ));
+        ..showSnackBar(
+          const SnackBar(
+            content: Text('Gagal mengubah nama petak — periksa koneksi'),
+            backgroundColor: AppColors.danger,
+            duration: Duration(seconds: 3),
+          ),
+        );
     }
   }
 
@@ -110,12 +113,18 @@ class _RenamePetakDialogState extends State<_RenamePetakDialog> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return AlertDialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
       title: Row(
         children: [
-          Icon(Icons.edit_outlined,
-              color: theme.colorScheme.primary, size: 22),
+          Icon(Icons.edit_outlined, color: theme.colorScheme.primary, size: 22),
           const SizedBox(width: 8),
-          const Text('Ganti Nama Petak'),
+          const Expanded(
+            child: Text(
+              'Ganti Nama Petak',
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ],
       ),
       content: SingleChildScrollView(
@@ -158,35 +167,36 @@ class _RenamePetakDialogState extends State<_RenamePetakDialog> {
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: _plantSuggestions.map((plant) {
-                final selected = _controller.text.trim() == plant;
-                return ChoiceChip(
-                  label: Text(plant),
-                  selected: selected,
-                  showCheckmark: false,
-                  visualDensity: VisualDensity.compact,
-                  onSelected: (_) => _controller.text = plant,
-                );
-              }).toList(),
+              children:
+                  _plantSuggestions.map((plant) {
+                    final selected = _controller.text.trim() == plant;
+                    return ChoiceChip(
+                      label: Text(plant),
+                      selected: selected,
+                      showCheckmark: false,
+                      visualDensity: VisualDensity.compact,
+                      onSelected: (_) => _controller.text = plant,
+                    );
+                  }).toList(),
             ),
           ],
         ),
       ),
       actions: [
         TextButton(
-          onPressed:
-              _saving ? null : () => Navigator.of(context).pop(false),
+          onPressed: _saving ? null : () => Navigator.of(context).pop(false),
           child: const Text('Batal'),
         ),
         FilledButton.icon(
           onPressed: _saving ? null : _save,
-          icon: _saving
-              ? const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Icon(Icons.check, size: 18),
+          icon:
+              _saving
+                  ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                  : const Icon(Icons.check, size: 18),
           label: const Text('Simpan'),
         ),
       ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import '../services/supabase_service.dart';
 import '../providers/devices_provider.dart';
@@ -14,21 +15,32 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   String _statusText = 'Menghubungkan...';
+  String _version = '';
 
   @override
   void initState() {
     super.initState();
+    _loadVersion();
     _initApp();
+  }
+
+  Future<void> _loadVersion() async {
+    try {
+      final info = await PackageInfo.fromPlatform();
+      if (mounted) setState(() => _version = 'v${info.version}');
+    } catch (_) {}
   }
 
   Future<void> _initApp() async {
     setState(() {
       _statusText = 'Menghubungkan...';
     });
-    await Future.delayed(const Duration(milliseconds: 1500));
+    final connectionCheck = SupabaseService().checkConnection();
+    // Tampilkan identitas merek sejenak sambil cek koneksi berjalan paralel.
+    await Future.delayed(const Duration(milliseconds: 600));
     if (!mounted) return;
 
-    final connected = await SupabaseService().checkConnection();
+    final connected = await connectionCheck;
     if (!mounted) return;
 
     // Beri tahu ConnectivityProvider hasil pengecekan agar banner di
@@ -139,12 +151,13 @@ class _SplashScreenState extends State<SplashScreen> {
                     ),
               ),
               const SizedBox(height: 8),
-              Text(
-                'v1.0.0',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.white.withValues(alpha: 0.3),
-                    ),
-              ),
+              if (_version.isNotEmpty)
+                Text(
+                  _version,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Colors.white.withValues(alpha: 0.5),
+                      ),
+                ),
               const SizedBox(height: 32),
             ],
           ),

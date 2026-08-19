@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppColors {
-  static const Color primaryGreen = Color(0xFF2E7D32);
-  static const Color primaryDark = Color(0xFF1B5E20);
-  static const Color primaryLight = Color(0xFFA5D6A7);
-  static const Color accentBlue = Color(0xFF1565C0);
-  static const Color accentOrange = Color(0xFFE65100);
+  static const Color primaryGreen = Color(0xFF247A4B);
+  static const Color primaryDark = Color(0xFF155334);
+  static const Color primaryLight = Color(0xFFB9DEC9);
+  static const Color accentBlue = Color(0xFF2378A0);
+  static const Color accentOrange = Color(0xFFD96F32);
 
-  static const Color success = Color(0xFF4CAF50);
-  static const Color danger = Color(0xFFF44336);
-  static const Color warning = Color(0xFFFFC107);
-  static const Color offline = Color(0xFF9E9E9E);
+  static const Color success = Color(0xFF2D8A57);
+  static const Color danger = Color(0xFFC84A42);
+  static const Color warning = Color(0xFFD69927);
+  static const Color offline = Color(0xFF7B8580);
 
-  static const Color bgLight = Color(0xFFF5F5F5);
+  static const Color bgLight = Color(0xFFF4F7F3);
   static const Color cardLight = Colors.white;
-  static const Color bgDark = Color(0xFF121212);
-  static const Color cardDark = Color(0xFF1E1E1E);
+  static const Color bgDark = Color(0xFF0F1712);
+  static const Color cardDark = Color(0xFF18221C);
 }
 
 class AppSpacing {
@@ -42,21 +42,16 @@ class AppTheme {
 
   static ThemeData _buildTheme(Brightness brightness) {
     final isDark = brightness == Brightness.dark;
-    final colorScheme = isDark
-        ? const ColorScheme.dark(
-            primary: AppColors.primaryLight,
-            secondary: AppColors.accentBlue,
-            tertiary: AppColors.accentOrange,
-            surface: AppColors.bgDark,
-            error: AppColors.danger,
-          )
-        : const ColorScheme.light(
-            primary: AppColors.primaryGreen,
-            secondary: AppColors.accentBlue,
-            tertiary: AppColors.accentOrange,
-            surface: AppColors.bgLight,
-            error: AppColors.danger,
-          );
+    final colorScheme = ColorScheme.fromSeed(
+      seedColor: AppColors.primaryGreen,
+      brightness: brightness,
+    ).copyWith(
+      primary: isDark ? AppColors.primaryLight : AppColors.primaryGreen,
+      secondary: AppColors.accentBlue,
+      tertiary: AppColors.accentOrange,
+      surface: isDark ? AppColors.cardDark : AppColors.cardLight,
+      error: AppColors.danger,
+    );
 
     final textTheme = GoogleFonts.plusJakartaSansTextTheme(
       isDark ? ThemeData.dark().textTheme : ThemeData.light().textTheme,
@@ -67,32 +62,101 @@ class AppTheme {
       brightness: brightness,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: isDark ? AppColors.bgDark : AppColors.bgLight,
-      textTheme: textTheme,
+      textTheme: textTheme.copyWith(
+        headlineLarge: textTheme.headlineLarge?.copyWith(
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.8,
+        ),
+        headlineSmall: textTheme.headlineSmall?.copyWith(
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.4,
+        ),
+        titleLarge: textTheme.titleLarge?.copyWith(
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.2,
+        ),
+        titleMedium: textTheme.titleMedium?.copyWith(
+          fontWeight: FontWeight.w700,
+        ),
+        titleSmall: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+        labelLarge: textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+      ),
       appBarTheme: AppBarTheme(
-        backgroundColor: colorScheme.primary,
-        foregroundColor: isDark ? Colors.black87 : Colors.white,
+        backgroundColor: isDark ? AppColors.bgDark : AppColors.bgLight,
+        foregroundColor: colorScheme.onSurface,
         elevation: 0,
-        centerTitle: true,
+        scrolledUnderElevation: 0,
+        centerTitle: false,
         titleTextStyle: textTheme.titleLarge?.copyWith(
-          color: isDark ? Colors.black87 : Colors.white,
+          color: colorScheme.onSurface,
+          fontWeight: FontWeight.w700,
         ),
       ),
       cardTheme: CardThemeData(
-        elevation: 1,
+        elevation: 0,
         color: isDark ? AppColors.cardDark : AppColors.cardLight,
         surfaceTintColor: Colors.transparent,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(
+            color: colorScheme.outlineVariant.withValues(alpha: 0.7),
+          ),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          minimumSize: const Size(48, 52),
+          elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(14),
           ),
           textStyle: textTheme.labelLarge,
+        ),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          minimumSize: const Size(48, 52),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          textStyle: textTheme.labelLarge,
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          minimumSize: const Size(48, 52),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          side: BorderSide(color: colorScheme.outlineVariant),
+          textStyle: textTheme.labelLarge,
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor:
+            isDark
+                ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
+                : Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: colorScheme.outlineVariant),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: colorScheme.outlineVariant),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: colorScheme.primary, width: 1.5),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
         ),
       ),
       dividerTheme: DividerThemeData(
@@ -102,9 +166,12 @@ class AppTheme {
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        backgroundColor:
+            isDark
+                ? colorScheme.surfaceContainerHighest
+                : const Color(0xFF203129),
+        contentTextStyle: textTheme.bodyMedium?.copyWith(color: Colors.white),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       ),
       sliderTheme: SliderThemeData(
         activeTrackColor: colorScheme.primary,
@@ -115,9 +182,11 @@ class AppTheme {
         valueIndicatorTextStyle: const TextStyle(color: Colors.white),
       ),
       chipTheme: ChipThemeData(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
     );
   }

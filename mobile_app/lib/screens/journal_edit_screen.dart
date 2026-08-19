@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../config/theme_config.dart';
 import '../models/journal_entry.dart';
@@ -21,6 +20,8 @@ class _JournalEditScreenState extends State<JournalEditScreen> {
   String _category = 'penyiraman';
   String? _editId; // null = tambah baru
   bool _argsLoaded = false;
+  bool _saving = false;
+  bool _deleting = false;
 
   @override
   void initState() {
@@ -51,10 +52,11 @@ class _JournalEditScreenState extends State<JournalEditScreen> {
       firstDate: DateTime(2020),
       lastDate: DateTime.now().add(const Duration(days: 1)),
     );
-    if (picked != null) setState(() => _date = picked);
+    if (picked != null && mounted) setState(() => _date = picked);
   }
 
   Future<void> _save() async {
+    if (_saving || _deleting) return;
     final title = _titleController.text.trim();
     final content = _contentController.text.trim();
     if (title.isEmpty) {
@@ -64,6 +66,7 @@ class _JournalEditScreenState extends State<JournalEditScreen> {
       ));
       return;
     }
+    setState(() => _saving = true);
     final provider = context.read<JournalProvider>();
     final entry = JournalEntry(
       id: _editId,
@@ -72,16 +75,27 @@ class _JournalEditScreenState extends State<JournalEditScreen> {
       title: title,
       content: content,
     );
-    if (_editId == null) {
-      await provider.addEntry(entry);
-    } else {
-      await provider.updateEntry(entry);
+    try {
+      if (_editId == null) {
+        await provider.addEntry(entry);
+      } else {
+        await provider.updateEntry(entry);
+      }
+      if (!mounted) return;
+      Navigator.pop(context);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _saving = false);
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Catatan belum tersimpan. Silakan coba lagi.'),
+        backgroundColor: AppColors.danger,
+      ));
     }
-    if (!mounted) return;
-    Navigator.pop(context);
   }
 
   Future<void> _delete() async {
+    if (_saving || _deleting || _editId == null) return;
+    final provider = context.read<JournalProvider>();
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -99,9 +113,19 @@ class _JournalEditScreenState extends State<JournalEditScreen> {
         ],
       ),
     );
-    if (confirmed != true || _editId == null) return;
-    await context.read<JournalProvider>().deleteEntry(_editId!);
-    if (mounted) Navigator.pop(context);
+    if (confirmed != true || !mounted) return;
+    setState(() => _deleting = true);
+    try {
+      await provider.deleteEntry(_editId!);
+      if (mounted) Navigator.pop(context);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _deleting = false);
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Catatan belum terhapus. Silakan coba lagi.'),
+        backgroundColor: AppColors.danger,
+      ));
+    }
   }
 
   @override
@@ -113,14 +137,26 @@ class _JournalEditScreenState extends State<JournalEditScreen> {
         actions: [
           if (_editId != null)
             IconButton(
-              icon: const Icon(Icons.delete_outline),
+              icon: _deleting
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.delete_outline),
               tooltip: 'Hapus',
-              onPressed: _delete,
+              onPressed: _saving || _deleting ? null : _delete,
             ),
           IconButton(
-            icon: const Icon(Icons.check),
+            icon: _saving
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.check),
             tooltip: 'Simpan',
-            onPressed: _save,
+            onPressed: _saving || _deleting ? null : _save,
           ),
         ],
       ),
@@ -141,7 +177,7 @@ class _JournalEditScreenState extends State<JournalEditScreen> {
           const SizedBox(height: 12),
           // Kategori
           DropdownButtonFormField<String>(
-            value: _category,
+            initialValue: _category,
             decoration: const InputDecoration(
               labelText: 'Kategori',
               border: OutlineInputBorder(),
@@ -177,9 +213,15 @@ class _JournalEditScreenState extends State<JournalEditScreen> {
           ),
           const SizedBox(height: 24),
           FilledButton.icon(
-            onPressed: _save,
-            icon: const Icon(Icons.save_outlined),
-            label: const Text('Simpan Catatan'),
+            onPressed: _saving || _deleting ? null : _save,
+            icon: _saving
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.save_outlined),
+            label: Text(_saving ? 'Menyimpan…' : 'Simpan Catatan'),
           ),
         ],
       ),

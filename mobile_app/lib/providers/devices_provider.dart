@@ -15,6 +15,7 @@ class DevicesProvider extends ChangeNotifier {
   bool _readingsLoaded = false;
   String? _error;
   StreamSubscription<SensorReading>? _liveSub;
+
   /// Waktu snapshot offline terakhir dimuat (null = data live/realtime).
   DateTime? _cachedAt;
 
@@ -36,11 +37,12 @@ class DevicesProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
   bool get isReady => !_isLoading;
+
   /// Kapan data tersimpan terakhir dimuat dari cache (null = data live).
   DateTime? get cachedAt => _cachedAt;
 
   DevicesProvider(this._deviceRepo, {required CacheRepository cacheRepo})
-      : _cacheRepo = cacheRepo;
+    : _cacheRepo = cacheRepo;
 
   void init() {
     _deviceRepo.getDevicesStream().listen(
@@ -52,10 +54,7 @@ class DevicesProvider extends ChangeNotifier {
         // daftar device lengkap pertama kali tersedia (refreshReadings di
         // init() bisa selesai lebih dulu saat _devices masih kosong, sehingga
         // guard isEmpty di CacheRepository men-skip penyimpanan).
-        _cacheRepo.saveSnapshot(
-          devices: devices,
-          readings: _latestReadings,
-        );
+        _cacheRepo.saveSnapshot(devices: devices, readings: _latestReadings);
       },
       onError: (Object e) {
         // Real-time gagal (mis. tabel belum dipublikasi Realtime) →
@@ -151,8 +150,7 @@ class DevicesProvider extends ChangeNotifier {
 
   bool isDeviceOnline(String deviceId) {
     // last_seen di-set firmware saat bangun (satu siklus dengan reading).
-    final device =
-        _devices.where((d) => d.deviceId == deviceId).firstOrNull;
+    final device = _devices.where((d) => d.deviceId == deviceId).firstOrNull;
     final lastSeen = device?.lastSeen;
     if (lastSeen != null &&
         DateTime.now().difference(lastSeen) <= onlineWindow) {
@@ -177,12 +175,32 @@ class DevicesProvider extends ChangeNotifier {
   Future<bool> renameDevice(String deviceId, String newName) async {
     final trimmed = newName.trim();
     if (trimmed.isEmpty || trimmed.length > 40) return false;
+    final index = _devices.indexWhere((d) => d.deviceId == deviceId);
+    if (index < 0) return false;
+    final previous = _devices[index];
+
+    // Perbarui layar langsung. Ini juga membuat rename tetap terasa berhasil
+    // ketika Realtime sedang lambat atau tidak tersedia.
+    _devices[index] = previous.copyWith(name: trimmed);
+    notifyListeners();
     try {
       await _deviceRepo.renameDevice(deviceId, trimmed);
-      return true;
     } catch (_) {
+      final currentIndex = _devices.indexWhere((d) => d.deviceId == deviceId);
+      if (currentIndex >= 0) _devices[currentIndex] = previous;
+      notifyListeners();
       return false;
     }
+
+    // Cache bersifat best-effort; kegagalan cache tidak boleh membatalkan
+    // rename yang sudah berhasil tersimpan di server.
+    try {
+      await _cacheRepo.saveSnapshot(
+        devices: _devices,
+        readings: _latestReadings,
+      );
+    } catch (_) {}
+    return true;
   }
 
   List<String> get esp32Ids {
@@ -192,9 +210,7 @@ class DevicesProvider extends ChangeNotifier {
   }
 
   List<Device> devicesForEsp32(String esp32Id) {
-    return _devices
-        .where((d) => d.esp32Id == esp32Id)
-        .toList()
+    return _devices.where((d) => d.esp32Id == esp32Id).toList()
       ..sort((a, b) => a.sensorIndex.compareTo(b.sensorIndex));
   }
 
@@ -212,9 +228,9 @@ class DevicesProvider extends ChangeNotifier {
   }
 
   int onlineCountForEsp32(String esp32Id) {
-    return devicesForEsp32(esp32Id)
-        .where((d) => isDeviceOnline(d.deviceId))
-        .length;
+    return devicesForEsp32(
+      esp32Id,
+    ).where((d) => isDeviceOnline(d.deviceId)).length;
   }
 
   @override

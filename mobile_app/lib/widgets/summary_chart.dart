@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -31,103 +32,133 @@ class SummaryChart extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Kelembaban per Petak', style: theme.textTheme.titleSmall),
-            const SizedBox(height: 12),
-            SizedBox(
-              height: 180,
-              child: BarChart(
-                BarChartData(
-                  gridData: FlGridData(
-                    show: true,
-                    drawVerticalLine: false,
-                    horizontalInterval: 20,
-                    getDrawingHorizontalLine: (value) => FlLine(
-                      // Fix #27: warna grid adaptif terhadap tema.
-                      color: theme.colorScheme.outlineVariant,
-                      strokeWidth: 1,
-                    ),
-                  ),
-                  borderData: FlBorderData(show: false),
-                  minY: 0,
-                  maxY: 100,
-                  titlesData: FlTitlesData(
-                    leftTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        reservedSize: 32,
-                        interval: 20,
-                        getTitlesWidget: (value, meta) => Text(
-                          '${value.toInt()}',
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: theme.colorScheme.onSurfaceVariant,
+            Text('Kelembaban tiap petak', style: theme.textTheme.titleSmall),
+            const SizedBox(height: 3),
+            Text(
+              'Geser grafik jika seluruh petak belum terlihat.',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 16),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final chartWidth = math.max(
+                  constraints.maxWidth,
+                  petaks.length * 52.0,
+                );
+                return Semantics(
+                  label: 'Grafik kelembaban ${petaks.length} petak',
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: SizedBox(
+                      width: chartWidth,
+                      height: 190,
+                      child: BarChart(
+                        BarChartData(
+                          gridData: FlGridData(
+                            show: true,
+                            drawVerticalLine: false,
+                            horizontalInterval: 20,
+                            getDrawingHorizontalLine:
+                                (value) => FlLine(
+                                  // Fix #27: warna grid adaptif terhadap tema.
+                                  color: theme.colorScheme.outlineVariant,
+                                  strokeWidth: 1,
+                                ),
                           ),
+                          borderData: FlBorderData(show: false),
+                          minY: 0,
+                          maxY: 100,
+                          titlesData: FlTitlesData(
+                            leftTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                showTitles: true,
+                                reservedSize: 32,
+                                interval: 20,
+                                getTitlesWidget:
+                                    (value, meta) => Text(
+                                      '${value.toInt()}',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color:
+                                            theme.colorScheme.onSurfaceVariant,
+                                      ),
+                                    ),
+                              ),
+                            ),
+                            rightTitles: const AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
+                            topTitles: const AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
+                            bottomTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                showTitles: true,
+                                interval: 1,
+                                getTitlesWidget: (value, meta) {
+                                  final i = value.toInt();
+                                  if (i < 0 || i >= petaks.length) {
+                                    return const SizedBox.shrink();
+                                  }
+                                  // Nama petak dipotong agar tidak bertumpuk.
+                                  final label = petaks[i].label
+                                      .replaceAll('PETAK ', '')
+                                      .replaceAll('Petak ', '');
+                                  return Padding(
+                                    padding: const EdgeInsets.only(top: 6),
+                                    child: Text(
+                                      label.length > 8
+                                          ? '${label.substring(0, 7)}…'
+                                          : label,
+                                      style: TextStyle(
+                                        fontSize: 9,
+                                        color:
+                                            theme.colorScheme.onSurfaceVariant,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                          barGroups: [
+                            for (var i = 0; i < petaks.length; i++)
+                              BarChartGroupData(
+                                x: i,
+                                barRods: [
+                                  BarChartRodData(
+                                    toY:
+                                        petaks[i].fresh
+                                            ? petaks[i].moisture
+                                            : 0,
+                                    width: 18,
+                                    borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(4),
+                                    ),
+                                    color: _barColor(petaks[i]),
+                                  ),
+                                ],
+                              ),
+                          ],
                         ),
                       ),
                     ),
-                    rightTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                    topTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        getTitlesWidget: (value, meta) {
-                          final i = value.toInt();
-                          if (i < 0 || i >= petaks.length) {
-                            return const SizedBox.shrink();
-                          }
-                          // Nama petak dipotong agar tidak bertumpuk.
-                          final label = petaks[i].label
-                              .replaceAll('PETAK ', '')
-                              .replaceAll('Petak ', '');
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 6),
-                            child: Text(
-                              label.length > 8
-                                  ? '${label.substring(0, 7)}…'
-                                  : label,
-                              style: TextStyle(
-                                fontSize: 9,
-                                color: theme.colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
                   ),
-                  barGroups: [
-                    for (var i = 0; i < petaks.length; i++)
-                      BarChartGroupData(
-                        x: i,
-                        barRods: [
-                          BarChartRodData(
-                            toY: petaks[i].fresh ? petaks[i].moisture : 0,
-                            width: 16,
-                            borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(4),
-                            ),
-                            color: _barColor(petaks[i]),
-                          ),
-                        ],
-                      ),
-                  ],
-                ),
-              ),
+                );
+              },
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
             // Legenda
-            Wrap(
+            const Wrap(
               spacing: 12,
               runSpacing: 4,
-              children: const [
+              children: [
                 _LegendDot(color: AppColors.success, label: 'Normal'),
                 _LegendDot(color: AppColors.accentOrange, label: 'Kering'),
                 _LegendDot(color: AppColors.accentBlue, label: 'Basah'),
-                _LegendDot(color: AppColors.offline, label: 'Error/tdk ada'),
+                _LegendDot(color: AppColors.offline, label: 'Error/tidak ada'),
               ],
             ),
           ],

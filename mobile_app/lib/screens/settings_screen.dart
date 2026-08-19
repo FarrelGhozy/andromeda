@@ -238,7 +238,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               const Divider(),
               ListTile(
-                leading: Icon(Icons.code, color: AppColors.accentBlue),
+                leading: const Icon(Icons.code, color: AppColors.accentBlue),
                 title: const Text('Open Source'),
                 subtitle: const Text('github.com/FarrelGhozy/andromeda'),
                 contentPadding: EdgeInsets.zero,
@@ -246,7 +246,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               const Divider(),
               ListTile(
-                leading: Icon(Icons.share, color: AppColors.accentOrange),
+                leading: const Icon(Icons.share, color: AppColors.accentOrange),
                 title: const Text('Bagikan Aplikasi'),
                 subtitle: const Text('Sebarkan ke sesama petani'),
                 contentPadding: EdgeInsets.zero,

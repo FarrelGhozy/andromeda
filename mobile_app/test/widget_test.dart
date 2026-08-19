@@ -4,6 +4,7 @@ import 'package:andromeda/models/sensor_reading.dart';
 import 'package:andromeda/models/system_config.dart';
 import 'package:andromeda/models/pending_command.dart';
 import 'package:andromeda/models/enums.dart';
+import 'package:andromeda/models/weather_location.dart';
 
 void main() {
   group('Device', () {
@@ -34,6 +35,23 @@ void main() {
       expect(device.status, 'active');
       expect(device.sensorIndex, 0);
       expect(device.isActive, isTrue);
+    });
+
+    test('copyWith memperbarui nama tanpa mengubah identitas perangkat', () {
+      final device = Device(
+        id: 3,
+        deviceId: 'petak-03',
+        esp32Id: 'esp32-01',
+        name: 'Petak 3',
+        location: 'Lahan A',
+      );
+
+      final renamed = device.copyWith(name: 'Cabai Rawit');
+
+      expect(renamed.name, 'Cabai Rawit');
+      expect(renamed.deviceId, device.deviceId);
+      expect(renamed.esp32Id, device.esp32Id);
+      expect(renamed.location, device.location);
     });
   });
 
@@ -195,6 +213,57 @@ void main() {
       expect(ChartRange.day7.label, '7 Hari');
       expect(ChartRange.day30.label, '30 Hari');
       expect(ChartRange.day7.days, 7);
+    });
+  });
+
+  group('WeatherLocation', () {
+    test('geocoding memuat kabupaten dan provinsi untuk membedakan lokasi', () {
+      final location = WeatherLocation.fromGeocodingJson({
+        'name': 'Banyuwangi',
+        'admin2': 'Kabupaten Banyuwangi',
+        'admin1': 'Jawa Timur',
+        'country': 'Indonesia',
+        'latitude': -8.2325,
+        'longitude': 114.3576,
+      });
+
+      expect(location.name, 'Banyuwangi');
+      expect(
+        location.searchSubtitle,
+        'Kabupaten Banyuwangi, Jawa Timur, Indonesia',
+      );
+      expect(location.lat, -8.2325);
+      expect(location.lon, 114.3576);
+    });
+
+    test('nama tampilan menghapus bagian kosong dan duplikat', () {
+      final location = WeatherLocation(
+        name: 'Ponorogo',
+        admin2: 'Ponorogo',
+        admin1: 'Jawa Timur',
+        country: 'Indonesia',
+        lat: -7.87,
+        lon: 111.46,
+      );
+
+      expect(location.displayName, 'Ponorogo, Jawa Timur, Indonesia');
+      expect(location.searchSubtitle, 'Jawa Timur, Indonesia');
+    });
+
+    test('admin2 tetap tersimpan setelah serialisasi lokal', () {
+      final original = WeatherLocation(
+        name: 'Genteng',
+        admin2: 'Kabupaten Banyuwangi',
+        admin1: 'Jawa Timur',
+        country: 'Indonesia',
+        lat: -8.36,
+        lon: 114.14,
+      );
+
+      final restored = WeatherLocation.fromJson(original.toJson());
+
+      expect(restored.admin2, 'Kabupaten Banyuwangi');
+      expect(restored.displayName, original.displayName);
     });
   });
 }

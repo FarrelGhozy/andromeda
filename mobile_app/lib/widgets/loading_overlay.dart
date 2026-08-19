@@ -19,7 +19,7 @@ class ShimmerDeviceCard extends StatelessWidget {
               Container(
                 width: 72,
                 height: 72,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white,
                   shape: BoxShape.circle,
                 ),

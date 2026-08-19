@@ -67,5 +67,5 @@ class SystemConfig {
 
   @override
   String toString() =>
-      'SystemConfig($deviceId: ${mode} dry=$thresholdDry wet=$thresholdWet)';
+      'SystemConfig($deviceId: $mode dry=$thresholdDry wet=$thresholdWet)';
 }

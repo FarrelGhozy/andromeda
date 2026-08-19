@@ -11,14 +11,18 @@ class SupabaseService {
   Future<void> init() async {
     await Supabase.initialize(
       url: SupabaseConfig.url,
-      anonKey: SupabaseConfig.publishableKey,
+      publishableKey: SupabaseConfig.publishableKey,
     );
   }
 
   /// Cek koneksi Supabase
   Future<bool> checkConnection() async {
     try {
-      await client.from('devices').select().limit(1);
+      await client
+          .from('devices')
+          .select()
+          .limit(1)
+          .timeout(const Duration(seconds: 5));
       return true;
     } catch (_) {
       return false;

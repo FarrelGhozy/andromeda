@@ -11,49 +11,50 @@ import '../models/weather_data.dart';
 class WeatherService {
   static const String _geocodingBase =
       'https://geocoding-api.open-meteo.com/v1/search';
-  static const String _forecastBase =
-      'https://api.open-meteo.com/v1/forecast';
+  static const String _forecastBase = 'https://api.open-meteo.com/v1/forecast';
 
   /// Cari lokasi berdasarkan nama (geocoding GeoNames, bahasa Indonesia).
   Future<List<WeatherLocation>> searchLocation(String query) async {
-    final uri = Uri.parse(_geocodingBase).replace(queryParameters: {
-      'name': query,
-      'count': '8',
-      'language': 'id',
-      'format': 'json',
-    });
+    final uri = Uri.parse(_geocodingBase).replace(
+      queryParameters: {
+        'name': query,
+        'count': '8',
+        'language': 'id',
+        'format': 'json',
+      },
+    );
     final res = await http.get(uri).timeout(const Duration(seconds: 10));
     if (res.statusCode != 200) {
       throw Exception('Gagal mencari lokasi (HTTP ${res.statusCode})');
     }
     final data = jsonDecode(res.body) as Map<String, dynamic>;
     final results = (data['results'] as List?) ?? [];
-    return results.map((r) {
-      final m = r as Map<String, dynamic>;
-      return WeatherLocation(
-        name: m['name'] ?? '',
-        admin1: m['admin1'] as String?,
-        country: m['country'] ?? '',
-        lat: (m['latitude'] as num).toDouble(),
-        lon: (m['longitude'] as num).toDouble(),
-      );
-    }).toList();
+    return results
+        .map(
+          (result) => WeatherLocation.fromGeocodingJson(
+            Map<String, dynamic>.from(result as Map),
+          ),
+        )
+        .where((location) => location.name.isNotEmpty)
+        .toList();
   }
 
   /// Prakiraan cuaca 7 hari + kondisi saat ini.
   /// WAJIB `timezone=auto` — tanpa itu jam/tanggal bergeser dari WIB.
   Future<WeatherData> getForecast(double lat, double lon) async {
-    final uri = Uri.parse(_forecastBase).replace(queryParameters: {
-      'latitude': lat.toString(),
-      'longitude': lon.toString(),
-      'current':
-          'temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m',
-      'daily':
-          'weather_code,temperature_2m_max,temperature_2m_min,'
-          'precipitation_probability_max,precipitation_sum',
-      'timezone': 'auto',
-      'forecast_days': '7',
-    });
+    final uri = Uri.parse(_forecastBase).replace(
+      queryParameters: {
+        'latitude': lat.toString(),
+        'longitude': lon.toString(),
+        'current':
+            'temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m',
+        'daily':
+            'weather_code,temperature_2m_max,temperature_2m_min,'
+            'precipitation_probability_max,precipitation_sum',
+        'timezone': 'auto',
+        'forecast_days': '7',
+      },
+    );
     final res = await http.get(uri).timeout(const Duration(seconds: 12));
     if (res.statusCode != 200) {
       throw Exception('Gagal mengambil cuaca (HTTP ${res.statusCode})');
@@ -66,19 +67,22 @@ class WeatherService {
     final codes = (daily['weather_code'] as List).cast<num>();
     final tMax = (daily['temperature_2m_max'] as List).cast<num>();
     final tMin = (daily['temperature_2m_min'] as List).cast<num>();
-    final precipProb = (daily['precipitation_probability_max'] as List).cast<num>();
+    final precipProb =
+        (daily['precipitation_probability_max'] as List).cast<num>();
     final precip = (daily['precipitation_sum'] as List).cast<num>();
 
     final dailyList = <DailyWeather>[];
     for (var i = 0; i < times.length; i++) {
-      dailyList.add(DailyWeather(
-        date: DateTime.parse(times[i]),
-        weatherCode: codes[i].toInt(),
-        tempMax: tMax[i].toDouble(),
-        tempMin: tMin[i].toDouble(),
-        precipProbability: precipProb[i].toInt(),
-        precipitation: precip[i].toDouble(),
-      ));
+      dailyList.add(
+        DailyWeather(
+          date: DateTime.parse(times[i]),
+          weatherCode: codes[i].toInt(),
+          tempMax: tMax[i].toDouble(),
+          tempMin: tMin[i].toDouble(),
+          precipProbability: precipProb[i].toInt(),
+          precipitation: precip[i].toDouble(),
+        ),
+      );
     }
 
     return WeatherData(

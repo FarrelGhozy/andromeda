@@ -16,44 +16,79 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 76,
+        titleSpacing: 16,
         title: Row(
-          mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.water_drop_rounded, size: 24),
-            SizedBox(width: 8),
-            const Text('ANDROMEDA'),
+            Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary,
+                borderRadius: BorderRadius.circular(13),
+              ),
+              child: Icon(
+                Icons.water_drop_rounded,
+                size: 23,
+                color: theme.colorScheme.onPrimary,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'ANDROMEDA',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                Text(
+                  'Pusat kendali lahan',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings),
+            icon: const Icon(Icons.refresh_rounded),
+            onPressed: () {
+              HapticFeedback.lightImpact();
+              context.read<DevicesProvider>().refreshReadings();
+            },
+            tooltip: 'Perbarui data',
+          ),
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
             onPressed: () {
               HapticFeedback.lightImpact();
               Navigator.pushNamed(context, AppRoutes.settings);
             },
             tooltip: 'Pengaturan',
           ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              HapticFeedback.lightImpact();
-              context.read<DevicesProvider>().refreshReadings();
-            },
-            tooltip: 'Refresh',
-          ),
+          const SizedBox(width: 6),
         ],
       ),
       body: Consumer2<DevicesProvider, ConnectivityProvider>(
         builder: (context, provider, connectivity, _) {
           return Column(
             children: [
-              // Fase 0 — peringatan offline di homepage.
               if (connectivity.isOffline)
                 OfflineBanner(cachedAt: provider.cachedAt),
               Expanded(
-                child: _buildContent(context, provider),
+                child: _buildContent(
+                  context,
+                  provider,
+                  isOffline: connectivity.isOffline,
+                ),
               ),
             ],
           );
@@ -62,13 +97,18 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildContent(BuildContext context, DevicesProvider provider) {
+  Widget _buildContent(
+    BuildContext context,
+    DevicesProvider provider, {
+    required bool isOffline,
+  }) {
     if (provider.isLoading) {
-      return ListView.builder(
+      return ListView.separated(
         physics: const NeverScrollableScrollPhysics(),
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         itemCount: 3,
-        itemBuilder: (_, __) => const ShimmerDeviceCard(),
+        separatorBuilder: (_, _) => const SizedBox(height: 12),
+        itemBuilder: (_, _) => const ShimmerDeviceCard(),
       );
     }
 
@@ -84,75 +124,76 @@ class HomeScreen extends StatelessWidget {
       return _buildEmptyState(context, provider);
     }
 
+    final theme = Theme.of(context);
     return RefreshIndicator(
       onRefresh: provider.refreshReadings,
-      child: ListView.builder(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        // index 0 = menu fitur, index 1 = rekapan, sisanya daftar lahan.
-        itemCount: esp32Ids.length + 2,
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return const Padding(
-              padding: EdgeInsets.fromLTRB(16, 4, 16, 8),
-              child: Column(
-                children: [
-                  _FeatureMenuCard(
-                    icon: Icons.wb_sunny,
-                    color: AppColors.accentOrange,
-                    title: 'Cuaca',
-                    subtitle: 'Prakiraan 7 hari & rekomendasi irigasi untuk lahan Anda',
-                    route: AppRoutes.weather,
-                  ),
-                  SizedBox(height: 8),
-                  _FeatureMenuCard(
-                    icon: Icons.menu_book_outlined,
-                    color: AppColors.accentBlue,
-                    title: 'Jurnal & Pengetahuan',
-                    subtitle: 'Catatan perawatan tanaman & pustaka tips petani',
-                    route: AppRoutes.journal,
-                  ),
-                ],
-              ),
-            );
-          }
-          if (index == 1) {
-            // Rekapan semua sensor (Fase 3) — ringkasan + grafik batang.
-            return const Padding(
-              padding: EdgeInsets.fromLTRB(16, 4, 16, 8),
-              child: Column(
-                children: [
-                  SummarySection(),
-                  SizedBox(height: 8),
-                  SummaryChart(),
-                ],
-              ),
-            );
-          }
-          final esp32Id = esp32Ids[index - 2];
-          final devices = provider.devicesForEsp32(esp32Id);
-          final onlineCount = provider.onlineCountForEsp32(esp32Id);
-          final totalCount = devices.length;
-          final location = devices.isNotEmpty ? devices.first.location : '';
-
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            child: _Esp32Card(
-              esp32Id: esp32Id,
-              location: location,
-              onlineCount: onlineCount,
-              totalCount: totalCount,
-              showSavedBadge: context.watch<ConnectivityProvider>().isOffline,
-              onTap: () {
-                HapticFeedback.lightImpact();
-                Navigator.pushNamed(
-                  context,
-                  AppRoutes.esp32Detail,
-                  arguments: esp32Id,
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+        children: [
+          _SectionHeader(
+            title: 'Kondisi lahan',
+            subtitle:
+                isOffline
+                    ? 'Menampilkan data terakhir yang tersimpan'
+                    : 'Status seluruh petak saat ini',
+          ),
+          const SizedBox(height: 10),
+          const SummarySection(showTitle: false),
+          const SizedBox(height: 24),
+          const _SectionHeader(
+            title: 'Akses cepat',
+            subtitle: 'Informasi pendukung kegiatan di lahan',
+          ),
+          const SizedBox(height: 10),
+          const _QuickActions(),
+          const SizedBox(height: 24),
+          _SectionHeader(
+            title: 'Perangkat lahan',
+            subtitle: '${esp32Ids.length} unit pengendali terdaftar',
+          ),
+          const SizedBox(height: 10),
+          for (var index = 0; index < esp32Ids.length; index++) ...[
+            Builder(
+              builder: (context) {
+                final esp32Id = esp32Ids[index];
+                final devices = provider.devicesForEsp32(esp32Id);
+                final onlineCount = provider.onlineCountForEsp32(esp32Id);
+                final totalCount = devices.length;
+                final location =
+                    devices.isNotEmpty ? devices.first.location.trim() : '';
+                return _Esp32Card(
+                  esp32Id: esp32Id,
+                  location: location.isEmpty ? 'Lokasi belum diatur' : location,
+                  onlineCount: onlineCount,
+                  totalCount: totalCount,
+                  showSavedBadge: isOffline,
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.esp32Detail,
+                      arguments: esp32Id,
+                    );
+                  },
                 );
               },
             ),
-          );
-        },
+            if (index != esp32Ids.length - 1) const SizedBox(height: 10),
+          ],
+          const SizedBox(height: 24),
+          _SectionHeader(
+            title: 'Analisis kelembaban',
+            subtitle: 'Bandingkan kondisi antarpetak',
+            trailing: Icon(
+              Icons.bar_chart_rounded,
+              color: theme.colorScheme.primary,
+              size: 22,
+            ),
+          ),
+          const SizedBox(height: 10),
+          const SummaryChart(),
+        ],
       ),
     );
   }
@@ -160,36 +201,43 @@ class HomeScreen extends StatelessWidget {
   Widget _buildEmptyState(BuildContext context, DevicesProvider provider) {
     final theme = Theme.of(context);
     return Center(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.sensors_off,
-              size: 80,
-              // Fix #27: warna adaptif terhadap tema.
-              color: theme.colorScheme.onSurfaceVariant,
+            Container(
+              width: 96,
+              height: 96,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primaryContainer,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.sensors_off_rounded,
+                size: 46,
+                color: theme.colorScheme.onPrimaryContainer,
+              ),
             ),
-            const SizedBox(height: 16),
-            Text('Belum ada ESP32 terdaftar',
-                style: theme.textTheme.titleMedium),
+            const SizedBox(height: 20),
+            Text('Belum ada perangkat', style: theme.textTheme.titleLarge),
             const SizedBox(height: 8),
             Text(
-              'Pastikan ESP32 sudah terhubung\ndan terdaftar di database',
+              'Pastikan ESP32 sudah menyala dan terdaftar di sistem, lalu '
+              'coba perbarui data.',
               textAlign: TextAlign.center,
-              style: theme.textTheme.bodySmall?.copyWith(
+              style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: 24),
-            OutlinedButton.icon(
+            FilledButton.icon(
               onPressed: () {
                 HapticFeedback.lightImpact();
                 provider.refreshReadings();
               },
-              icon: const Icon(Icons.refresh),
-              label: const Text('Refresh'),
+              icon: const Icon(Icons.refresh_rounded),
+              label: const Text('Perbarui Data'),
             ),
           ],
         ),
@@ -198,16 +246,91 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-/// Kartu menu fitur — entry point halaman Cuaca (Fase 1) & Jurnal (Fase 2).
-/// Fase 3 akan menambah menu Rekapan di sini.
-class _FeatureMenuCard extends StatelessWidget {
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final Widget? trailing;
+
+  const _SectionHeader({
+    required this.title,
+    required this.subtitle,
+    this.trailing,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: theme.textTheme.titleMedium),
+              const SizedBox(height: 2),
+              Text(
+                subtitle,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (trailing != null) trailing!,
+      ],
+    );
+  }
+}
+
+class _QuickActions extends StatelessWidget {
+  const _QuickActions();
+
+  @override
+  Widget build(BuildContext context) {
+    const weather = _QuickActionCard(
+      icon: Icons.wb_cloudy_rounded,
+      color: AppColors.accentOrange,
+      title: 'Cuaca',
+      subtitle: 'Prakiraan 7 hari',
+      route: AppRoutes.weather,
+    );
+    const journal = _QuickActionCard(
+      icon: Icons.menu_book_rounded,
+      color: AppColors.accentBlue,
+      title: 'Jurnal',
+      subtitle: 'Catat kegiatan',
+      route: AppRoutes.journal,
+    );
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 330) {
+          return const Column(
+            children: [weather, SizedBox(height: 10), journal],
+          );
+        }
+        return const Row(
+          children: [
+            Expanded(child: weather),
+            SizedBox(width: 10),
+            Expanded(child: journal),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _QuickActionCard extends StatelessWidget {
   final IconData icon;
   final Color color;
   final String title;
   final String subtitle;
   final String route;
 
-  const _FeatureMenuCard({
+  const _QuickActionCard({
     required this.icon,
     required this.color,
     required this.title,
@@ -219,34 +342,37 @@ class _FeatureMenuCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Card(
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () {
           HapticFeedback.lightImpact();
           Navigator.pushNamed(context, route);
         },
-        borderRadius: BorderRadius.circular(16),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(14),
           child: Row(
             children: [
               Container(
-                width: 48,
-                height: 48,
+                width: 42,
+                height: 42,
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(13),
                 ),
-                child: Icon(icon, color: color, size: 28),
+                child: Icon(icon, color: color, size: 23),
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: 11),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(title, style: theme.textTheme.titleSmall),
                     const SizedBox(height: 2),
                     Text(
                       subtitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
                       ),
@@ -254,8 +380,6 @@ class _FeatureMenuCard extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right,
-                  color: theme.colorScheme.onSurfaceVariant),
             ],
           ),
         ),
@@ -284,89 +408,131 @@ class _Esp32Card extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Card(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
+    final isHealthy = totalCount > 0 && onlineCount == totalCount;
+    return Semantics(
+      button: true,
+      label: '$esp32Id, $location, $onlineCount dari $totalCount petak online',
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  width: 52,
+                  height: 52,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Icon(
+                    Icons.developer_board_rounded,
+                    color: theme.colorScheme.onPrimaryContainer,
+                    size: 28,
+                  ),
                 ),
-                child: Icon(
-                  Icons.memory,
-                  color: theme.colorScheme.primary,
-                  size: 32,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(esp32Id, style: theme.textTheme.titleSmall),
-                    const SizedBox(height: 2),
-                    Text(
-                      location,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        _miniBadge(
-                          '$onlineCount/$totalCount Online',
-                          onlineCount > 0
-                              ? AppColors.success
-                              : AppColors.offline,
-                        ),
-                        const SizedBox(width: 8),
-                        _miniBadge(
-                          '$totalCount Petak',
-                          AppColors.accentBlue,
-                        ),
-                        if (showSavedBadge) ...[
-                          const SizedBox(width: 8),
-                          _miniBadge(
-                            'Data tersimpan',
-                            AppColors.warning,
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              esp32Id,
+                              style: theme.textTheme.titleSmall,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color:
+                                  isHealthy
+                                      ? AppColors.success
+                                      : (onlineCount > 0
+                                          ? AppColors.warning
+                                          : AppColors.offline),
+                              shape: BoxShape.circle,
+                            ),
                           ),
                         ],
-                      ],
-                    ),
-                  ],
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        location,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 6,
+                        children: [
+                          _MiniBadge(
+                            text: '$onlineCount/$totalCount online',
+                            color:
+                                onlineCount > 0
+                                    ? AppColors.success
+                                    : AppColors.offline,
+                          ),
+                          _MiniBadge(
+                            text: '$totalCount petak',
+                            color: AppColors.accentBlue,
+                          ),
+                          if (showSavedBadge)
+                            const _MiniBadge(
+                              text: 'Data tersimpan',
+                              color: AppColors.warning,
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Icon(Icons.chevron_right,
-                  color: theme.colorScheme.onSurfaceVariant),
-            ],
+                const SizedBox(width: 8),
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 16,
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _miniBadge(String text, Color color) {
+class _MiniBadge extends StatelessWidget {
+  final String text;
+  final Color color;
+
+  const _MiniBadge({required this.text, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Text(
         text,
         style: TextStyle(
-          fontSize: 11,
+          fontSize: 10.5,
           color: color,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );

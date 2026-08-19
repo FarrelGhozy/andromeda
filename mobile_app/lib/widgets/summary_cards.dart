@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../config/theme_config.dart';
 import '../providers/devices_provider.dart';
-import '../models/device.dart';
 
 /// Statistik ringkasan semua sensor — dihitung dari sumber tunggal
 /// `DevicesProvider` (tidak ada query tambahan ke server).
@@ -36,16 +35,19 @@ class SummaryStats {
 
     for (final d in devices) {
       final r = p.latestFor(d.deviceId);
-      final fresh = r != null &&
+      final fresh =
+          r != null &&
           DateTime.now().difference(r.createdAt) <=
               DevicesProvider.onlineWindow;
       if (r == null) {
-        petaks.add(PetakMoisture(
-          label: p.displayNameFor(d.deviceId),
-          moisture: 0,
-          fault: false,
-          fresh: false,
-        ));
+        petaks.add(
+          PetakMoisture(
+            label: p.displayNameFor(d.deviceId),
+            moisture: 0,
+            fault: false,
+            fresh: false,
+          ),
+        );
         continue;
       }
       final isFault = r.isSensorFault;
@@ -55,12 +57,14 @@ class SummaryStats {
         n++;
       }
       if (fresh && r.isValveOpen) valveOpen++;
-      petaks.add(PetakMoisture(
-        label: p.displayNameFor(d.deviceId),
-        moisture: r.moisturePercent,
-        fault: isFault,
-        fresh: fresh,
-      ));
+      petaks.add(
+        PetakMoisture(
+          label: p.displayNameFor(d.deviceId),
+          moisture: r.moisturePercent,
+          fault: isFault,
+          fresh: fresh,
+        ),
+      );
     }
 
     return SummaryStats(
@@ -92,7 +96,9 @@ class PetakMoisture {
 /// Kartu ringkasan + grafik rekapan semua sensor — dipasang di halaman
 /// utama (Fase 3).
 class SummarySection extends StatelessWidget {
-  const SummarySection({super.key});
+  final bool showTitle;
+
+  const SummarySection({super.key, this.showTitle = true});
 
   @override
   Widget build(BuildContext context) {
@@ -105,13 +111,18 @@ class SummarySection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-          child: Text('Rekapan Semua Sensor', style: theme.textTheme.titleMedium),
-        ),
+        if (showTitle)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+            child: Text(
+              'Rekapan semua sensor',
+              style: theme.textTheme.titleMedium,
+            ),
+          ),
         Card(
+          color: theme.colorScheme.primaryContainer.withValues(alpha: 0.65),
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
             child: Column(
               children: [
                 Row(
@@ -122,25 +133,43 @@ class SummarySection extends StatelessWidget {
                       value: '${stats.totalPetak}',
                       label: 'Petak',
                     ),
+                    SizedBox(
+                      height: 48,
+                      child: VerticalDivider(
+                        color: theme.colorScheme.outlineVariant,
+                      ),
+                    ),
                     _StatTile(
                       icon: Icons.wifi_tethering,
                       color: AppColors.success,
                       value: '${stats.onlinePetak}/${stats.totalPetak}',
                       label: 'Online',
                     ),
+                    SizedBox(
+                      height: 48,
+                      child: VerticalDivider(
+                        color: theme.colorScheme.outlineVariant,
+                      ),
+                    ),
                     _StatTile(
                       icon: Icons.water_drop_outlined,
                       color: AppColors.primaryGreen,
-                      value: stats.avgMoisture != null
-                          ? '${stats.avgMoisture!.toStringAsFixed(0)}%'
-                          : '—',
+                      value:
+                          stats.avgMoisture != null
+                              ? '${stats.avgMoisture!.toStringAsFixed(0)}%'
+                              : '—',
                       label: 'Rata-rata',
                     ),
                   ],
                 ),
                 if (stats.faultCount > 0 || stats.valveOpenCount > 0) ...[
+                  const SizedBox(height: 14),
+                  Divider(height: 1, color: theme.colorScheme.outlineVariant),
                   const SizedBox(height: 12),
-                  Row(
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 8,
+                    runSpacing: 8,
                     children: [
                       if (stats.faultCount > 0)
                         _miniChip(
@@ -166,24 +195,26 @@ class SummarySection extends StatelessWidget {
   }
 
   Widget _miniChip(IconData icon, String text, Color color) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 8),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: color.withValues(alpha: 0.3)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 14, color: color),
-            const SizedBox(width: 4),
-            Text(text,
-                style: TextStyle(fontSize: 12, color: color, fontWeight: FontWeight.w600)),
-          ],
-        ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: color),
+          const SizedBox(width: 4),
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 12,
+              color: color,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -210,14 +241,21 @@ class _StatTile extends StatelessWidget {
         children: [
           Icon(icon, color: color, size: 22),
           const SizedBox(height: 4),
-          Text(value,
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              )),
-          Text(label,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              )),
+          Text(
+            value,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: theme.colorScheme.onPrimaryContainer,
+            ),
+          ),
+          Text(
+            label,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onPrimaryContainer.withValues(
+                alpha: 0.72,
+              ),
+            ),
+          ),
         ],
       ),
     );
