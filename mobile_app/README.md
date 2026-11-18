@@ -35,6 +35,13 @@ flutter run
 Setiap kali mengubah `.env` di root, ulangi langkah sync (no. 2).
 `mobile_app/.env` di-ignore git — jangan commit credential asli.
 
+## Mode Mock
+
+Tanpa Supabase, tanpa internet — 6 petak contoh + simulasi ESP32.
+Di `.env` root: `APP_DATA_SOURCE=mock`, lalu `cp ../.env .env` + run.
+Banner **"MODE MOCK"** menandai data contoh. Detail: [`SETUP.md`](../SETUP.md) §3.3.
+Cuaca & jurnal tidak ikut di-mock (cuaca real Open-Meteo, jurnal lokal).
+
 ## Perintah Umum
 
 ```bash
@@ -52,9 +59,10 @@ flutter build appbundle --release # AAB untuk Play Store
 lib/
 ├── main.dart          ← entry point (load .env, init Supabase, providers)
 ├── routes.dart        ← definisi rute
-├── config/            ← SupabaseConfig (baca dotenv), theme
+├── config/            ← AppConfig (sumber data), SupabaseConfig, theme
 ├── models/            ← model data (device, sensor, cuaca, jurnal)
-├── services/          ← SupabaseService, repository, cache, cuaca, local store
+├── services/          ← SupabaseService, repository (interface +
+│                         implementasi Supabase & mock), cache, cuaca
 ├── providers/         ← state management (devices, dashboard, cuaca, jurnal, ...)
 ├── screens/           ← halaman UI
 └── widgets/           ← komponen UI reusable

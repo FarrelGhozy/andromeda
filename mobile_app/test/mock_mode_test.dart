@@ -1,9 +1,11 @@
+import 'package:andromeda/config/app_config.dart';
 import 'package:andromeda/providers/devices_provider.dart';
 import 'package:andromeda/services/mock/mock_config_repository.dart';
 import 'package:andromeda/services/mock/mock_database.dart';
 import 'package:andromeda/services/mock/mock_data.dart';
 import 'package:andromeda/services/mock/mock_device_repository.dart';
 import 'package:andromeda/services/mock/mock_sensor_repository.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Delay simulasi ESP32 dipendekkan agar test cepat.
@@ -13,6 +15,29 @@ MockDatabase freshDb() => MockDatabase.seed(
     );
 
 void main() {
+  group('AppConfig (flag APP_DATA_SOURCE)', () {
+    test('supabase eksplisit → mode real', () {
+      dotenv.testLoad(fileInput: 'APP_DATA_SOURCE=supabase');
+      expect(AppConfig.isMockMode, isFalse);
+    });
+
+    test('mock → mode mock', () {
+      dotenv.testLoad(fileInput: 'APP_DATA_SOURCE=mock');
+      expect(AppConfig.isMockMode, isTrue);
+    });
+
+    test('toleran kapital & spasi', () {
+      dotenv.testLoad(fileInput: 'APP_DATA_SOURCE= Mock ');
+      expect(AppConfig.isMockMode, isTrue);
+    });
+
+    test('nilai asing → fallback aman ke mode real', () {
+      dotenv.testLoad(fileInput: 'APP_DATA_SOURCE=ngawur');
+      expect(AppConfig.isMockMode, isFalse);
+      expect(AppConfig.dataSource, AppDataSource.supabase);
+    });
+  });
+
   group('MockSeed', () {
     test('6 petak di 2 ESP32', () {
       final devices = MockSeed.devices(DateTime.now());

@@ -89,7 +89,34 @@ tulis credential langsung di kode.
 > `.env` yang berisi credential asli. Kalau aplikasi gagal start dengan pesan
 > `Supabase belum dikonfigurasi`, berarti langkah sync di atas belum dilakukan.
 
-### 3.3 Run App
+### 3.3 Mode Mock (data contoh, tanpa Supabase)
+
+Untuk development, demo, atau screenshot — tanpa butuh project Supabase
+dan tanpa internet:
+
+1. Di `.env` (root), set:
+
+   ```bash
+   APP_DATA_SOURCE=mock
+   ```
+
+2. Sync lalu jalankan:
+
+   ```bash
+   cp .env mobile_app/.env
+   cd mobile_app
+   flutter run
+   ```
+
+Mode mock menampilkan 6 petak contoh dengan data live simulasi (grafik,
+riwayat 7 hari, config). Banner oranye **"MODE MOCK"** selalu tampil di
+home sebagai penanda. Semua tombol tetap memberi feedback SnackBar normal
+(buka/tutup valve, rename, simpan threshold, batal command), tapi tidak
+ada efek ke dunia nyata — perintah valve disimulasikan ESP32
+(pending → executed ±2 detik). Cuaca tetap data real (Open-Meteo, gratis).
+Kembalikan ke `APP_DATA_SOURCE=supabase` untuk data kebun asli.
+
+### 3.4 Run App
 
 ```bash
 cd mobile_app
