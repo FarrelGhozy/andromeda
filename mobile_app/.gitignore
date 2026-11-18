@@ -43,3 +43,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Environment variables — copy lokal hasil sync dari root .env
+# (`cp .env mobile_app/.env`), jangan commit credential asli
+.env

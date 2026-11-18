@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'config/supabase_config.dart';
 import 'config/theme_config.dart';
 import 'services/supabase_service.dart';
 import 'services/device_repository.dart';
@@ -18,6 +20,16 @@ import 'routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await dotenv.load(fileName: '.env');
+
+  if (!SupabaseConfig.isConfigured) {
+    throw StateError(
+      'Supabase belum dikonfigurasi. Copy .env.example menjadi .env di root '
+      'projek, isi SUPABASE_URL dan SUPABASE_ANON_KEY, lalu sync dengan '
+      '`cp .env mobile_app/.env`.',
+    );
+  }
 
   final supabase = SupabaseService();
   await supabase.init();

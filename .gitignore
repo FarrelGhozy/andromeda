@@ -30,7 +30,11 @@ Thumbs.db
 **/config/wifi.h
 **/config/apikeys.h
 *.env
+.env
 .env.*
+# Tapi contoh env boleh di-commit
+!.env.example
+!*.env.example
 
 # LaTeX build artifacts
 docs/latex/*.aux
