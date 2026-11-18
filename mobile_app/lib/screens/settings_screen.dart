@@ -7,6 +7,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import '../config/app_config.dart';
+import '../providers/devices_provider.dart';
 import '../services/supabase_service.dart';
 import '../providers/theme_provider.dart';
 import '../config/theme_config.dart';
@@ -74,32 +76,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
       const SnackBar(content: Text('Menyiapkan ekspor data…')),
     );
     try {
-      final client = SupabaseService().client;
-      final devices = await client.from('devices').select(
-            'device_id, name, location',
-          ).order('id');
-      final readings = await client.rpc('get_latest_readings');
+      // Sumber data dari provider — jalan identik di mode Supabase
+      // maupun mode mock (tanpa query langsung ke server).
+      final devicesProvider = context.read<DevicesProvider>();
+      final devices = devicesProvider.devices;
 
       final rows = <List<String>>[
         ['device_id', 'name', 'location', 'moisture', 'moisture_percent', 'valve_status', 'created_at'],
       ];
-      final readingList = (readings as List).cast<Map<String, dynamic>>();
       for (final d in devices) {
-        final rid = d['device_id'] ?? '';
-        final r = readingList
-            .where((e) => e['device_id'] == rid)
-            .toList()
-            .isEmpty
-            ? <String, dynamic>{}
-            : readingList.firstWhere((e) => e['device_id'] == rid);
+        final r = devicesProvider.latestFor(d.deviceId);
         rows.add([
-          rid,
-          '${d['name'] ?? ''}',
-          '${d['location'] ?? ''}',
-          '${r['moisture'] ?? ''}',
-          '${r['moisture_percent'] ?? ''}',
-          '${r['valve_status'] ?? ''}',
-          '${r['created_at'] ?? ''}',
+          d.deviceId,
+          d.name,
+          d.location,
+          '${r?.moisture ?? ''}',
+          '${r?.moisturePercent ?? ''}',
+          r?.valveStatus ?? '',
+          r?.createdAt.toIso8601String() ?? '',
         ]);
       }
 
@@ -141,7 +135,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
         padding: const EdgeInsets.all(16),
         children: [
           _buildCard(
-            title: 'Status Koneksi',
+            title: AppConfig.isMockMode
+                ? 'Status Koneksi (Mock)'
+                : 'Status Koneksi',
             children: [
               FutureBuilder<bool>(
                 future: SupabaseService().checkConnection(),

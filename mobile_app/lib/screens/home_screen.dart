@@ -6,6 +6,7 @@ import '../providers/devices_provider.dart';
 import '../providers/connectivity_provider.dart';
 import '../widgets/error_banner.dart';
 import '../widgets/loading_overlay.dart';
+import '../widgets/mock_banner.dart';
 import '../widgets/offline_banner.dart';
 import '../widgets/summary_cards.dart';
 import '../widgets/summary_chart.dart';
@@ -81,6 +82,7 @@ class HomeScreen extends StatelessWidget {
         builder: (context, provider, connectivity, _) {
           return Column(
             children: [
+              const MockBanner(),
               if (connectivity.isOffline)
                 OfflineBanner(cachedAt: provider.cachedAt),
               Expanded(

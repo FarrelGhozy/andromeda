@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
+import '../config/app_config.dart';
 import '../services/supabase_service.dart';
 import '../providers/devices_provider.dart';
 import '../providers/connectivity_provider.dart';
@@ -47,7 +48,9 @@ class _SplashScreenState extends State<SplashScreen> {
     // homepage langsung akurat (Fase 0 — offline mode).
     context.read<ConnectivityProvider>().applyServerReachable(connected);
 
-    if (connected) {
+    if (AppConfig.isMockMode) {
+      setState(() => _statusText = 'Mode mock — memuat data contoh...');
+    } else if (connected) {
       setState(() => _statusText = 'Memuat data...');
     } else {
       // Offline BUKAN penghalang — tetap masuk; provider akan memulihkan
