@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'config/app_config.dart';
 import 'config/supabase_config.dart';
 import 'config/theme_config.dart';
 import 'services/supabase_service.dart';
@@ -10,6 +11,10 @@ import 'services/config_repository.dart';
 import 'services/local_store.dart';
 import 'services/cache_repository.dart';
 import 'services/weather_service.dart';
+import 'services/mock/mock_config_repository.dart';
+import 'services/mock/mock_database.dart';
+import 'services/mock/mock_device_repository.dart';
+import 'services/mock/mock_sensor_repository.dart';
 import 'providers/devices_provider.dart';
 import 'providers/dashboard_provider.dart';
 import 'providers/theme_provider.dart';
@@ -23,21 +28,34 @@ void main() async {
 
   await dotenv.load(fileName: '.env');
 
-  if (!SupabaseConfig.isConfigured) {
-    throw StateError(
-      'Supabase belum dikonfigurasi. Copy .env.example menjadi .env di root '
-      'projek, isi SUPABASE_URL dan SUPABASE_ANON_KEY, lalu sync dengan '
-      '`cp .env mobile_app/.env`.',
-    );
+  final DeviceRepository deviceRepo;
+  final SensorRepository sensorRepo;
+  final ConfigRepository configRepo;
+
+  if (AppConfig.isMockMode) {
+    // Mode mock: tanpa Supabase, tanpa internet. Satu database
+    // in-memory dipakai bareng ketiga repository mock.
+    final mockDb = MockDatabase.seed();
+    deviceRepo = MockDeviceRepository(mockDb);
+    sensorRepo = MockSensorRepository(mockDb);
+    configRepo = MockConfigRepository(mockDb);
+  } else {
+    if (!SupabaseConfig.isConfigured) {
+      throw StateError(
+        'Supabase belum dikonfigurasi. Copy .env.example menjadi .env di root '
+        'projek, isi SUPABASE_URL dan SUPABASE_ANON_KEY, lalu sync dengan '
+        '`cp .env mobile_app/.env`.',
+      );
+    }
+    final supabase = SupabaseService();
+    await supabase.init();
+
+    final client = supabase.client;
+    deviceRepo = SupabaseDeviceRepository(client);
+    sensorRepo = SupabaseSensorRepository(client);
+    configRepo = SupabaseConfigRepository(client);
   }
 
-  final supabase = SupabaseService();
-  await supabase.init();
-
-  final client = supabase.client;
-  final deviceRepo = DeviceRepository(client);
-  final sensorRepo = SensorRepository(client);
-  final configRepo = ConfigRepository(client);
   final localStore = LocalStore();
   final cacheRepo = CacheRepository(localStore);
 

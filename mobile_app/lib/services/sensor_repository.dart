@@ -2,12 +2,56 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/sensor_reading.dart';
 import '../models/pending_command.dart';
 
-class SensorRepository {
+/// Sumber data sensor + perintah valve.
+///
+/// Implementasi ada dua:
+/// - [SupabaseSensorRepository] → data live dari Supabase.
+/// - Mock (lihat `services/mock/`) → data contoh lokal (mode mock).
+abstract interface class SensorRepository {
+  /// Ambil reading terbaru 1 petak sekali (fallback realtime).
+  Future<SensorReading?> getLatestReading(String deviceId);
+
+  /// Stream data sensor terbaru untuk 1 petak
+  Stream<SensorReading?> getLatestSensorStream(String deviceId);
+
+  /// Stream data sensor historis (untuk chart)
+  Stream<List<SensorReading>> getSensorHistoryStream(String deviceId,
+      {int limit = 100});
+
+  /// Ambil data historis untuk chart
+  Future<List<SensorReading>> getHistory({
+    required String deviceId,
+    required DateTime since,
+    required DateTime until,
+  });
+
+  /// Kirim perintah valve
+  Future<void> sendCommand({
+    required String deviceId,
+    required String command,
+    int duration = 30,
+    String source = 'android',
+  });
+
+  /// Stream command TERBARU untuk 1 petak (fix #18: pantau eksekusi
+  /// ESP32 → status pending → executed/expired/cancelled).
+  Stream<PendingCommand?> getLatestCommandStream(String deviceId);
+
+  /// Ubah status command (expired / cancelled) dari app (fix #20).
+  Future<void> updateCommandStatus(int commandId, String status);
+
+  /// Tandai semua command pending yang basi (> olderThan) sebagai expired
+  /// (fix #20 — command basi tidak boleh "menyalakan" valve di kemudian
+  /// hari saat ESP32 tiba-tiba online).
+  Future<void> expireStaleCommands(String deviceId, DateTime olderThan);
+}
+
+class SupabaseSensorRepository implements SensorRepository {
   final SupabaseClient _client;
 
-  SensorRepository(this._client);
+  SupabaseSensorRepository(this._client);
 
-  /// Ambil reading terbaru 1 petak sekali (fallback realtime).
+  @override
   Future<SensorReading?> getLatestReading(String deviceId) async {
     final response = await _client
         .from('sensor_readings')
@@ -19,7 +63,7 @@ class SensorRepository {
     return list.isNotEmpty ? SensorReading.fromJson(list.first) : null;
   }
 
-  /// Stream data sensor terbaru untuk 1 petak
+  @override
   Stream<SensorReading?> getLatestSensorStream(String deviceId) {
     return _client
         .from('sensor_readings')
@@ -32,7 +76,7 @@ class SensorRepository {
             : null);
   }
 
-  /// Stream data sensor historis (untuk chart)
+  @override
   Stream<List<SensorReading>> getSensorHistoryStream(String deviceId,
       {int limit = 100}) {
     return _client
@@ -45,7 +89,7 @@ class SensorRepository {
             list.map((m) => SensorReading.fromJson(m)).toList());
   }
 
-  /// Ambil data historis untuk chart
+  @override
   Future<List<SensorReading>> getHistory({
     required String deviceId,
     required DateTime since,
@@ -66,7 +110,7 @@ class SensorRepository {
         .toList();
   }
 
-  /// Kirim perintah valve
+  @override
   Future<void> sendCommand({
     required String deviceId,
     required String command,
@@ -82,8 +126,7 @@ class SensorRepository {
     });
   }
 
-  /// Stream command TERBARU untuk 1 petak (fix #18: pantau eksekusi
-  /// ESP32 → status pending → executed/expired/cancelled).
+  @override
   Stream<PendingCommand?> getLatestCommandStream(String deviceId) {
     return _client
         .from('pending_commands')
@@ -96,7 +139,7 @@ class SensorRepository {
             : null);
   }
 
-  /// Ubah status command (expired / cancelled) dari app (fix #20).
+  @override
   Future<void> updateCommandStatus(int commandId, String status) async {
     await _client
         .from('pending_commands')
@@ -104,10 +147,9 @@ class SensorRepository {
         .eq('id', commandId);
   }
 
-  /// Tandai semua command pending yang basi (> olderThan) sebagai expired
-  /// (fix #20 — command basi tidak boleh "menyalakan" valve di kemudian
-  /// hari saat ESP32 tiba-tiba online).
-  Future<void> expireStaleCommands(String deviceId, DateTime olderThan) async {
+  @override
+  Future<void> expireStaleCommands(
+      String deviceId, DateTime olderThan) async {
     await _client
         .from('pending_commands')
         .update({'status': 'expired'})

@@ -1,12 +1,28 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/system_config.dart';
 
-class ConfigRepository {
+/// Sumber konfigurasi petak.
+///
+/// Implementasi ada dua:
+/// - [SupabaseConfigRepository] → data live dari Supabase.
+/// - Mock (lihat `services/mock/`) → data contoh lokal (mode mock).
+abstract interface class ConfigRepository {
+  /// Stream konfigurasi 1 petak (realtime)
+  Stream<SystemConfig?> getConfigStream(String deviceId);
+
+  /// Ambil config sekali
+  Future<SystemConfig?> getConfig(String deviceId);
+
+  /// Update config
+  Future<void> updateConfig(String deviceId, SystemConfig config);
+}
+
+class SupabaseConfigRepository implements ConfigRepository {
   final SupabaseClient _client;
 
-  ConfigRepository(this._client);
+  SupabaseConfigRepository(this._client);
 
-  /// Stream konfigurasi 1 petak (realtime)
+  @override
   Stream<SystemConfig?> getConfigStream(String deviceId) {
     return _client
         .from('system_config')
@@ -18,7 +34,7 @@ class ConfigRepository {
             : null);
   }
 
-  /// Ambil config sekali
+  @override
   Future<SystemConfig?> getConfig(String deviceId) async {
     try {
       final response = await _client
@@ -32,7 +48,7 @@ class ConfigRepository {
     }
   }
 
-  /// Update config
+  @override
   Future<void> updateConfig(String deviceId, SystemConfig config) async {
     await _client.from('system_config').update(config.toJson()).eq(
         'device_id', deviceId);

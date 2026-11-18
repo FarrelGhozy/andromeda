@@ -3,12 +3,42 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/device.dart';
 import '../models/sensor_reading.dart';
 
-class DeviceRepository {
+/// Sumber data perangkat + reading terbaru.
+///
+/// Implementasi ada dua:
+/// - [SupabaseDeviceRepository] → data live dari Supabase.
+/// - Mock (lihat `services/mock/`) → data contoh lokal (mode mock).
+abstract interface class DeviceRepository {
+  /// Stream daftar semua device (realtime) — 6 petak tampil semua.
+  Stream<List<Device>> getDevicesStream();
+
+  /// Ambil daftar semua device sekali (tanpa realtime)
+  Future<List<Device>> getDevices();
+
+  /// Ganti nama petak (custom nama sesuai tanaman di lahan).
+  Future<void> renameDevice(String deviceId, String newName);
+
+  /// Ambil 1 device
+  Future<Device?> getDevice(String deviceId);
+
+  /// Ambil data terbaru untuk semua petak.
+  ///
+  /// TIDAK menelan error: saat offline/gagal, exception dilempar ke
+  /// pemanggil (DevicesProvider) agar snapshot cache bisa dipulihkan —
+  /// map kosong palsu akan membuat app mengira data "segar" padahal tidak.
+  Future<Map<String, SensorReading?>> getLatestReadings();
+
+  /// Stream realtime: tiap INSERT/UPDATE pada sensor_readings.
+  /// Dipakai agar list petak & detail selalu sinkron dengan data terbaru.
+  Stream<SensorReading> readingsLiveStream();
+}
+
+class SupabaseDeviceRepository implements DeviceRepository {
   final SupabaseClient _client;
 
-  DeviceRepository(this._client);
+  SupabaseDeviceRepository(this._client);
 
-  /// Stream daftar semua device (realtime) — 6 petak tampil semua.
+  @override
   Stream<List<Device>> getDevicesStream() {
     return _client
         .from('devices')
@@ -17,14 +47,13 @@ class DeviceRepository {
         .map((maps) => maps.map((m) => Device.fromJson(m)).toList());
   }
 
-  /// Ambil daftar semua device sekali (tanpa realtime)
+  @override
   Future<List<Device>> getDevices() async {
     final response = await _client.from('devices').select().order('id');
     return (response as List).map((m) => Device.fromJson(m)).toList();
   }
 
-  /// Ganti nama petak (custom nama sesuai tanaman di lahan).
-  /// Realtime stream devices otomatis menyebarkan perubahan ke semua layar.
+  @override
   Future<void> renameDevice(String deviceId, String newName) async {
     await _client
         .from('devices')
@@ -32,7 +61,7 @@ class DeviceRepository {
         .eq('device_id', deviceId);
   }
 
-  /// Ambil 1 device
+  @override
   Future<Device?> getDevice(String deviceId) async {
     try {
       final response = await _client
@@ -46,10 +75,7 @@ class DeviceRepository {
     }
   }
 
-  /// Ambil data terbaru untuk semua petak (via RPC).
-  /// TIDAK menelan error: saat offline/gagal, exception dilempar ke
-  /// pemanggil (DevicesProvider) agar cache snapshot bisa dipulihkan —
-  /// map kosong palsu akan membuat app mengira data "segar" padahal tidak.
+  @override
   Future<Map<String, SensorReading?>> getLatestReadings() async {
     final response = await _client.rpc('get_latest_readings');
     final list = response as List;
@@ -59,8 +85,7 @@ class DeviceRepository {
     };
   }
 
-  /// Stream realtime: tiap INSERT/UPDATE pada sensor_readings.
-  /// Dipakai agar list petak & detail selalu sinkron dengan data terbaru.
+  @override
   Stream<SensorReading> readingsLiveStream() {
     final controller = StreamController<SensorReading>.broadcast();
     final channel = _client.channel('sensor_readings_live');

@@ -1,3 +1,4 @@
+import '../config/app_config.dart';
 import '../models/device.dart';
 import '../models/sensor_reading.dart';
 import 'local_store.dart';
@@ -28,10 +29,14 @@ class CacheRepository {
   /// Simpan snapshot. GUARD: devices kosong TIDAK pernah ditulis —
   /// realtime Supabase saat offline bisa emit `[]` dan snapshot kosong
   /// akan menimpa data baik yang sudah tersimpan.
+  ///
+  /// Mode mock tidak menyentuh cache sama sekali supaya snapshot data
+  /// contoh tidak mencemari data asli saat kembali ke mode Supabase.
   Future<void> saveSnapshot({
     required List<Device> devices,
     required Map<String, SensorReading?> readings,
   }) async {
+    if (AppConfig.isMockMode) return;
     if (devices.isEmpty) return;
 
     final deviceMaps = devices
@@ -62,7 +67,9 @@ class CacheRepository {
   }
 
   /// Muat snapshot terakhir; `null` jika belum pernah tersimpan.
+  /// Mode mock selalu `null` (tidak memakai cache — lihat saveSnapshot).
   Future<CachedSnapshot?> loadSnapshot() async {
+    if (AppConfig.isMockMode) return null;
     final devicesRaw = await _store.getJson(LocalStore.cacheDevicesKey);
     final readingsRaw = await _store.getJson(LocalStore.cacheReadingsKey);
     final savedAtRaw = await _store.getJson(LocalStore.cacheSavedAtKey);

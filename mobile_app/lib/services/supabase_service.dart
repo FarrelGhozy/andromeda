@@ -1,4 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../config/app_config.dart';
 import '../config/supabase_config.dart';
 
 class SupabaseService {
@@ -15,8 +16,9 @@ class SupabaseService {
     );
   }
 
-  /// Cek koneksi Supabase
+  /// Cek koneksi Supabase. Mode mock selalu "terhubung" (tanpa jaringan).
   Future<bool> checkConnection() async {
+    if (AppConfig.isMockMode) return true;
     try {
       await client
           .from('devices')
