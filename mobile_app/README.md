@@ -1,17 +1,69 @@
-# andromeda
+# ANDROMEDA — Aplikasi Mobile (Flutter)
 
-ANDROMEDA - IoT Drip Irrigation Control
+Aplikasi Android untuk **ANDROMEDA**, sistem irigasi tetes otomatis berbasis
+IoT: pantau kelembaban tanah, kontrol solenoid valve, atur threshold otomatis,
+lihat grafik historis, prakiraan cuaca, dan jurnal petani — dengan mode offline.
 
-## Getting Started
+> Dokumentasi setup end-to-end (Supabase + firmware + aplikasi):
+> [`SETUP.md`](../SETUP.md). Panduan rilis: [`release_guide.md`](../release_guide.md).
 
-This project is a starting point for a Flutter application.
+---
 
-A few resources to get you started if this is your first Flutter project:
+## Prasyarat
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+- Flutter SDK (lihat `pubspec.yaml` untuk versi Dart minimum).
+- Project Supabase aktif dengan schema dari `../database/schema.sql`.
+- File `.env` di **root repo** (sumber credential) — lihat `.env.example`.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Setup Environment
+
+Credential Supabase dibaca dari `.env` via `flutter_dotenv`:
+
+```bash
+# 1. Dari root repo: copy template dan isi SUPABASE_URL + SUPABASE_ANON_KEY
+cp ../.env.example ../.env
+
+# 2. Sync ke folder ini (wajib sebelum run/build — Flutter membaca
+#    .env sebagai asset dari dalam mobile_app/)
+cp ../.env .env
+
+# 3. Install dependency dan jalankan
+flutter pub get
+flutter run
+```
+
+Setiap kali mengubah `.env` di root, ulangi langkah sync (no. 2).
+`mobile_app/.env` di-ignore git — jangan commit credential asli.
+
+## Perintah Umum
+
+```bash
+flutter pub get          # install dependency
+flutter analyze          # static analysis (harus bersih)
+flutter test             # unit & widget test
+flutter run              # debug di emulator/HP
+flutter build apk --release       # APK rilis
+flutter build appbundle --release # AAB untuk Play Store
+```
+
+## Struktur Kode
+
+```
+lib/
+├── main.dart          ← entry point (load .env, init Supabase, providers)
+├── routes.dart        ← definisi rute
+├── config/            ← SupabaseConfig (baca dotenv), theme
+├── models/            ← model data (device, sensor, cuaca, jurnal)
+├── services/          ← SupabaseService, repository, cache, cuaca, local store
+├── providers/         ← state management (devices, dashboard, cuaca, jurnal, ...)
+├── screens/           ← halaman UI
+└── widgets/           ← komponen UI reusable
+```
+
+## Troubleshooting
+
+| Gejala | Penyebab & Solusi |
+|--------|-------------------|
+| `Supabase belum dikonfigurasi` saat start | `.env` belum di-sync: `cp ../.env .env`, lalu run ulang |
+| Data tidak realtime | Cek koneksi + pastikan Realtime aktif di dashboard Supabase |
+| `flutter analyze` gagal | Jalankan `flutter pub get` dulu, perbaiki warning/error yang dilaporkan |

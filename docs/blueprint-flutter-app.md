@@ -2097,6 +2097,11 @@ class SettingsScreen extends StatelessWidget {
 
 ## Integrasi Supabase
 
+> **Catatan implementasi:** URL dan key tidak lagi di-hardcode di
+> `supabase_config.dart`, melainkan dibaca dari file `.env` di root projek
+> via `flutter_dotenv` (lihat `SETUP.md` §3). Potongan kode di bawah adalah
+> rancangan awal dan dipertahankan sebagai referensi arsitektur.
+
 ### Inisialisasi
 
 ```dart

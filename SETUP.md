@@ -58,18 +58,38 @@ Ulangi untuk masing-masing petak (ganti include, flash ulang).
 
 ## 3. Setup Aplikasi Flutter
 
-### 3.1 Update Supabase Config
+### 3.1 Prasyarat
 
-Buka `mobile_app/lib/main.dart`, ganti:
+- Flutter SDK terinstal (`flutter --version`).
+- Project Supabase sudah jadi dan `database/schema.sql` sudah dijalankan (lihat §1).
 
-```dart
-await Supabase.initialize(
-  url: 'https://your-project.supabase.co',
-  publishableKey: 'your-anon-key',
-);
-```
+### 3.2 Konfigurasi Environment
 
-### 3.2 Run App
+Credential Supabase dibaca dari file `.env` (paket `flutter_dotenv`) — jangan
+tulis credential langsung di kode.
+
+1. Di **root projek**, copy template lalu isi:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Isi `SUPABASE_URL` dan `SUPABASE_ANON_KEY` dari dashboard Supabase
+   (**Project Settings → API** → `Project URL` + `anon public` key).
+
+3. Sync ke folder aplikasi (wajib — Flutter hanya bisa membaca `.env`
+   sebagai asset dari dalam `mobile_app/`):
+
+   ```bash
+   cp .env mobile_app/.env
+   ```
+
+> `mobile_app/.env` hanyalah salinan lokal hasil sync dan di-ignore oleh git.
+> Sumber utamanya tetap `.env` di root projek. Jangan pernah commit file
+> `.env` yang berisi credential asli. Kalau aplikasi gagal start dengan pesan
+> `Supabase belum dikonfigurasi`, berarti langkah sync di atas belum dilakukan.
+
+### 3.3 Run App
 
 ```bash
 cd mobile_app

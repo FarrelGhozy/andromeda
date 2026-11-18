@@ -74,6 +74,9 @@ Solar Panel 300Wp → Aki 100Ah → Router 4G LTE ──► ESP32 ──► Sole
 
 ```
 andromeda/
+├── .env              ← credential lokal (di-ignore git, jangan commit)
+├── .env.example      ← template environment (copy jadi .env)
+├── SETUP.md          ← panduan setup Supabase + firmware + aplikasi
 ├── database/       ← PostgreSQL schema + RLS + seed (schema.sql)
 ├── hardware/
 │   ├── firmware/   ← PlatformIO project ESP32 (C/C++)
@@ -82,6 +85,10 @@ andromeda/
 ├── mobile_app/     ← Flutter app (Android)
 └── docs/           ← Blueprint, arsitektur, rancangan, proposal
 ```
+
+> **Setup environment:** copy `.env.example` menjadi `.env` di root, isi
+> credential Supabase, lalu sync ke aplikasi dengan `cp .env mobile_app/.env`.
+> Detail lengkap di [SETUP.md](SETUP.md).
 
 ---
 
