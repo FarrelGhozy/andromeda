@@ -1,14 +1,42 @@
 -- ============================================================
 -- RESET DATABASE ANDROMEDA (⚠️ MENGHAPUS SEMUA DATA)
 --
--- CARA PAKAI (Supabase Dashboard → SQL Editor):
+-- CARA PAKAI (Supabase Dashboard → SQL Editor, sebagai postgres):
 --   1. Jalankan file ini (drop semua tabel & fungsi).
 --   2. Lalu jalankan schema.sql (buat ulang + seed dengan fix).
+--
+-- CATATAN:
+--   - DROP TABLE CASCADE otomatis menghapus policy RLS, index,
+--     dan keanggotaan supabase_realtime → publikasi sendiri
+--     sengaja TIDAK di-drop.
+--   - GRANT + DEFAULT PRIVILEGES sengaja TIDAK dicabut agar
+--     schema.sql berikutnya langsung bisa dipakai anon key.
 --
 -- ⚠️ PERINGATAN: semua riwayat sensor_readings, pending_commands,
 --    system_config, dan devices AKAN TERHAPUS. Pastikan data lama
 --    tidak dibutuhkan lagi (ESP32 akan mengisi ulang setiap 5 dtk).
 -- ============================================================
+
+-- Lepas tabel dari publikasi realtime dulu (idempoten, aman bila
+-- tabel/publikasi sudah tidak ada) agar RESET bersih di cloud
+-- maupun self-hosted.
+DO $$
+DECLARE
+  t TEXT;
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'supabase_realtime') THEN
+    FOREACH t IN ARRAY ARRAY['devices','sensor_readings','system_config','pending_commands']
+    LOOP
+      IF EXISTS (
+        SELECT 1 FROM pg_publication_tables
+        WHERE pubname = 'supabase_realtime' AND tablename = t
+      ) THEN
+        EXECUTE format('ALTER PUBLICATION supabase_realtime DROP TABLE %I', t);
+      END IF;
+    END LOOP;
+  END IF;
+END
+$$;
 
 DROP TRIGGER IF EXISTS trg_touch_device_last_seen ON sensor_readings;
 DROP TRIGGER IF EXISTS trigger_system_config_updated_at ON system_config;

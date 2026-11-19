@@ -8,7 +8,8 @@
 --
 -- CARA PAKAI:
 --   A. Project BARU (disarankan):
---      Jalankan seluruh file ini di Supabase Dashboard → SQL Editor.
+--      Jalankan seluruh file ini di Supabase Dashboard → SQL Editor
+--      sebagai postgres / pemilik database.
 --      Sudah idempoten → aman dijalankan ulang.
 --   B. Project SUDAH ADA:
 --      JANGAN jalankan file ini (tabel sudah ada). Gunakan file
@@ -89,12 +90,16 @@ CREATE TABLE IF NOT EXISTS system_config (
 -- 5. TRIGGER: auto-update updated_at (system_config)
 -- ============================================================
 CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
   NEW.updated_at = NOW();
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 DROP TRIGGER IF EXISTS trigger_system_config_updated_at ON system_config;
 CREATE TRIGGER trigger_system_config_updated_at
@@ -132,8 +137,10 @@ FROM devices
 ON CONFLICT (device_id) DO NOTHING;
 
 -- ============================================================
--- 8. RLS: akses publik anon (app pakai anon key, tanpa login)
+-- 8. RLS: akses publik (app pakai anon key, tanpa login)
 --    Idempoten: DROP POLICY IF EXISTS + CREATE.
+--    Policy untuk anon + authenticated agar tetap jalan kalau
+--    nanti app pakai login (keduanya publik penuh).
 -- ============================================================
 ALTER TABLE devices ENABLE ROW LEVEL SECURITY;
 ALTER TABLE sensor_readings ENABLE ROW LEVEL SECURITY;
@@ -141,21 +148,29 @@ ALTER TABLE pending_commands ENABLE ROW LEVEL SECURITY;
 ALTER TABLE system_config ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "public_devices" ON devices;
-CREATE POLICY "public_devices" ON devices FOR ALL TO anon USING (true) WITH CHECK (true);
+CREATE POLICY "public_devices" ON devices FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
 
 DROP POLICY IF EXISTS "public_sensor_readings" ON sensor_readings;
-CREATE POLICY "public_sensor_readings" ON sensor_readings FOR ALL TO anon USING (true) WITH CHECK (true);
+CREATE POLICY "public_sensor_readings" ON sensor_readings FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
 
 DROP POLICY IF EXISTS "public_pending_commands" ON pending_commands;
-CREATE POLICY "public_pending_commands" ON pending_commands FOR ALL TO anon USING (true) WITH CHECK (true);
+CREATE POLICY "public_pending_commands" ON pending_commands FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
 
 DROP POLICY IF EXISTS "public_system_config" ON system_config;
-CREATE POLICY "public_system_config" ON system_config FOR ALL TO anon USING (true) WITH CHECK (true);
+CREATE POLICY "public_system_config" ON system_config FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
 
 -- ============================================================
 -- 9. REALTIME PUBLICATION (wajib: app stream devices/readings/config/commands)
 --    Idempoten: hanya menambah tabel yang belum ter-publish.
+--    REPLICA IDENTITY FULL: agar payload realtime UPDATE berisi
+--    newRecord lengkap (dipakai readingsLiveStream untuk event
+--    INSERT + UPDATE). Aman dijalankan ulang.
 -- ============================================================
+ALTER TABLE devices REPLICA IDENTITY FULL;
+ALTER TABLE sensor_readings REPLICA IDENTITY FULL;
+ALTER TABLE system_config REPLICA IDENTITY FULL;
+ALTER TABLE pending_commands REPLICA IDENTITY FULL;
+
 DO $$
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'supabase_realtime') THEN
@@ -182,15 +197,20 @@ $$;
 
 -- ============================================================
 -- 10. FUNGSI: execute_command — dipanggil ESP32 setelah eksekusi
+--     (saat ini firmware/bot pakai PATCH langsung, RPC ini cadangan)
 -- ============================================================
 CREATE OR REPLACE FUNCTION execute_command(cmd_id BIGINT)
-RETURNS VOID AS $$
+RETURNS VOID
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
   UPDATE pending_commands
   SET status = 'executed', executed_at = NOW()
   WHERE id = cmd_id;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 -- ============================================================
 -- 11. FUNGSI: get_latest_readings — reading terbaru tiap device
@@ -203,7 +223,11 @@ RETURNS TABLE (
   moisture_percent REAL,
   valve_status TEXT,
   created_at TIMESTAMPTZ
-) LANGUAGE sql AS $$
+)
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+AS $$
   SELECT DISTINCT ON (sr.device_id)
     sr.device_id,
     sr.moisture,
@@ -221,7 +245,11 @@ $$;
 --     sensor (inactive) tidak boleh tampak "Online" di app.
 -- ============================================================
 CREATE OR REPLACE FUNCTION heartbeat(_esp32_id TEXT)
-RETURNS VOID LANGUAGE sql AS $$
+RETURNS VOID
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+AS $$
   UPDATE devices
   SET last_seen = NOW()
   WHERE esp32_id = _esp32_id
@@ -234,15 +262,48 @@ $$;
 --     heartbeat.
 -- ============================================================
 CREATE OR REPLACE FUNCTION touch_device_last_seen()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
   UPDATE devices SET last_seen = NOW()
   WHERE device_id = NEW.device_id;
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 DROP TRIGGER IF EXISTS trg_touch_device_last_seen ON sensor_readings;
 CREATE TRIGGER trg_touch_device_last_seen
 AFTER INSERT ON sensor_readings
 FOR EACH ROW EXECUTE FUNCTION touch_device_last_seen();
+
+-- ============================================================
+-- 14. GRANTS: wajib untuk project BARU / self-hosted
+--     Tanpa ini PostgREST mengembalikan 403 walau RLS sudah
+--     mengizinkan:
+--       POST /rpc/heartbeat          → firmware + bot_mock
+--       POST /rpc/get_latest_readings → app (Home + ekspor CSV)
+--       POST /rpc/execute_command    → cadangan (firmware
+--         saat ini pakai PATCH langsung)
+--     GRANT tabel + sequence: untuk Postgres polos / image
+--     self-host yang tidak membawa default grant Supabase cloud.
+--     Idempoten: GRANT aman dijalankan ulang.
+--     Jalankan file ini sebagai postgres / pemilik database.
+-- ============================================================
+GRANT USAGE ON SCHEMA public TO anon, authenticated;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO anon, authenticated;
+
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated;
+
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public
+  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO anon, authenticated;
+
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public
+  GRANT USAGE, SELECT ON SEQUENCES TO anon, authenticated;
+
+GRANT EXECUTE ON FUNCTION public.heartbeat(TEXT) TO anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.get_latest_readings() TO anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.execute_command(BIGINT) TO anon, authenticated;
