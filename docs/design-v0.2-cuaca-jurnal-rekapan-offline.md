@@ -111,10 +111,18 @@ class WeatherData {
 > tulisan akademik). Keduanya tersimpan/terbaca 100% offline.
 
 #### A. Catatan Kegiatan (log harian)
-**Alur:**
-1. `JournalScreen` → tab **"Catatan Saya"**: daftar entri dikelompokkan per tanggal (terbaru di atas), FAB "Tambah Catatan".
-2. `JournalEditScreen` → form: tanggal (default hari ini), kategori (dropdown), judul, isi (multiline). Simpan/Hapus.
-3. Data disimpan via `LocalStore` sebagai JSON list di SharedPreferences (`journal_entries` key) — cukup untuk ratusan entri teks, tanpa dependency baru.
+**Alur CRUD & UI:**
+1. `JournalScreen` → tab **"Catatan Saya"**:
+   - Filter chips kategori di bagian atas (`Semua`, `💧 Penyiraman`, `🌱 Pemupukan`, `🐛 Hama & Penyakit`, `🌾 Panen`, `📝 Lainnya`).
+   - Daftar entri terurut stabil: tanggal descending, lalu `createdAt` descending.
+   - Setiap kartu memiliki menu aksi titik tiga (`PopupMenuButton`) untuk **Edit** & **Hapus** langsung dengan konfirmasi dialog, atau ketuk kartu untuk membuka form edit.
+   - FAB "Tambah Catatan" untuk membuat entri baru.
+2. `JournalEditScreen` → form:
+   - Menerima `entry` via konstruktor `JournalEditScreen(entry: entry)` dari `routes.dart` (mewariskan `settings: settings`).
+   - Mode Tambah: form kosong, judul "Tambah Catatan", tombol Simpan Catatan.
+   - Mode Edit: form terisi data entri, judul "Edit Catatan", ikon Hapus di AppBar, tombol Simpan Perubahan. Waktu `createdAt` asli dipertahankan saat update.
+   - Feedback SnackBar sukses pada operasi Simpan, Update, dan Hapus.
+3. Data disimpan via `LocalStore` sebagai JSON list di SharedPreferences (`journal_entries` key) — aman dengan defensive parsing (`JournalEntry.fromJson` toleran terhadap null dan tipe non-string).
 
 **Model:**
 ```dart

@@ -9,6 +9,7 @@ import 'screens/journal_screen.dart';
 import 'screens/journal_edit_screen.dart';
 import 'screens/journal_article_screen.dart';
 import 'models/journal_article.dart';
+import 'models/journal_entry.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -24,34 +25,59 @@ class AppRoutes {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case AppRoutes.splash:
-        return MaterialPageRoute(builder: (_) => const SplashScreen());
-      case AppRoutes.home:
-        return MaterialPageRoute(builder: (_) => const HomeScreen());
-      case AppRoutes.dashboard:
-        final deviceId = settings.arguments as String;
         return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const SplashScreen(),
+        );
+      case AppRoutes.home:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const HomeScreen(),
+        );
+      case AppRoutes.dashboard:
+        final deviceId = settings.arguments as String? ?? '';
+        return MaterialPageRoute(
+          settings: settings,
           builder: (_) => DashboardScreen(deviceId: deviceId),
         );
       case AppRoutes.esp32Detail:
-        final esp32Id = settings.arguments as String;
+        final esp32Id = settings.arguments as String? ?? '';
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => Esp32Screen(esp32Id: esp32Id),
         );
       case AppRoutes.settings:
-        return MaterialPageRoute(builder: (_) => const SettingsScreen());
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const SettingsScreen(),
+        );
       case AppRoutes.weather:
-        return MaterialPageRoute(builder: (_) => const WeatherScreen());
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const WeatherScreen(),
+        );
       case AppRoutes.journal:
-        return MaterialPageRoute(builder: (_) => const JournalScreen());
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const JournalScreen(),
+        );
       case AppRoutes.journalEdit:
-        return MaterialPageRoute(builder: (_) => const JournalEditScreen());
+        final entry = settings.arguments as JournalEntry?;
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => JournalEditScreen(entry: entry),
+        );
       case AppRoutes.journalArticle:
         final article = settings.arguments as JournalArticle;
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => JournalArticleScreen(article: article),
         );
       default:
-        return MaterialPageRoute(builder: (_) => const SplashScreen());
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const SplashScreen(),
+        );
     }
   }
 }

@@ -7,7 +7,8 @@ import '../providers/journal_provider.dart';
 /// Form tambah/edit catatan jurnal.
 /// Dipanggil tanpa argumen (tambah baru) atau dengan `JournalEntry` (edit).
 class JournalEditScreen extends StatefulWidget {
-  const JournalEditScreen({super.key});
+  final JournalEntry? entry;
+  const JournalEditScreen({super.key, this.entry});
 
   @override
   State<JournalEditScreen> createState() => _JournalEditScreenState();
@@ -19,6 +20,7 @@ class _JournalEditScreenState extends State<JournalEditScreen> {
   DateTime _date = DateTime.now();
   String _category = 'penyiraman';
   String? _editId; // null = tambah baru
+  DateTime? _createdAt;
   bool _argsLoaded = false;
   bool _saving = false;
   bool _deleting = false;
@@ -26,22 +28,32 @@ class _JournalEditScreenState extends State<JournalEditScreen> {
   @override
   void initState() {
     super.initState();
+    if (widget.entry != null) {
+      _loadFromEntry(widget.entry!);
+    }
+  }
+
+  void _loadFromEntry(JournalEntry entry) {
+    _editId = entry.id;
+    _date = entry.date;
+    _category = JournalProvider.categories.any((c) => c.value == entry.category)
+        ? entry.category
+        : 'lainnya';
+    _titleController.text = entry.title;
+    _contentController.text = entry.content;
+    _createdAt = entry.createdAt;
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // ModalRoute.of() membutuhkan inherited widget — aman di sini,
-    // bukan di initState (Flutter runtime error jika dipanggil di initState).
     if (_argsLoaded) return;
     _argsLoaded = true;
-    final args = ModalRoute.of(context)?.settings.arguments;
-    if (args is JournalEntry) {
-      _editId = args.id;
-      _date = args.date;
-      _category = args.category;
-      _titleController.text = args.title;
-      _contentController.text = args.content;
+    if (_editId == null) {
+      final args = widget.entry ?? ModalRoute.of(context)?.settings.arguments;
+      if (args is JournalEntry) {
+        _loadFromEntry(args);
+      }
     }
   }
 
@@ -68,20 +80,29 @@ class _JournalEditScreenState extends State<JournalEditScreen> {
     }
     setState(() => _saving = true);
     final provider = context.read<JournalProvider>();
+    final isEditing = _editId != null;
     final entry = JournalEntry(
       id: _editId,
       date: _date,
       category: _category,
       title: title,
       content: content,
+      createdAt: _createdAt ?? DateTime.now(),
     );
     try {
-      if (_editId == null) {
-        await provider.addEntry(entry);
-      } else {
+      if (isEditing) {
         await provider.updateEntry(entry);
+      } else {
+        await provider.addEntry(entry);
       }
       if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(isEditing
+            ? 'Catatan berhasil diperbarui'
+            : 'Catatan berhasil disimpan'),
+        backgroundColor: AppColors.success,
+        duration: const Duration(seconds: 2),
+      ));
       Navigator.pop(context);
     } catch (_) {
       if (!mounted) return;
@@ -117,7 +138,13 @@ class _JournalEditScreenState extends State<JournalEditScreen> {
     setState(() => _deleting = true);
     try {
       await provider.deleteEntry(_editId!);
-      if (mounted) Navigator.pop(context);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Catatan berhasil dihapus'),
+        backgroundColor: AppColors.success,
+        duration: Duration(seconds: 2),
+      ));
+      Navigator.pop(context);
     } catch (_) {
       if (!mounted) return;
       setState(() => _deleting = false);
@@ -221,7 +248,9 @@ class _JournalEditScreenState extends State<JournalEditScreen> {
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
                 : const Icon(Icons.save_outlined),
-            label: Text(_saving ? 'Menyimpan…' : 'Simpan Catatan'),
+            label: Text(_saving
+                ? 'Menyimpan…'
+                : (_editId == null ? 'Simpan Catatan' : 'Simpan Perubahan')),
           ),
         ],
       ),

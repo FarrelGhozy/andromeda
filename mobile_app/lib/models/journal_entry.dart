@@ -18,13 +18,34 @@ class JournalEntry {
   })  : id = id ?? DateTime.now().microsecondsSinceEpoch.toString(),
         createdAt = createdAt ?? DateTime.now();
 
+  JournalEntry copyWith({
+    String? id,
+    DateTime? date,
+    String? category,
+    String? title,
+    String? content,
+    DateTime? createdAt,
+  }) =>
+      JournalEntry(
+        id: id ?? this.id,
+        date: date ?? this.date,
+        category: category ?? this.category,
+        title: title ?? this.title,
+        content: content ?? this.content,
+        createdAt: createdAt ?? this.createdAt,
+      );
+
   factory JournalEntry.fromJson(Map<String, dynamic> json) => JournalEntry(
-        id: json['id'],
-        date: DateTime.parse(json['date']),
-        category: json['category'] ?? 'lainnya',
-        title: json['title'] ?? '',
-        content: json['content'] ?? '',
-        createdAt: DateTime.parse(json['created_at']),
+        id: json['id']?.toString(),
+        date: json['date'] != null
+            ? (DateTime.tryParse(json['date'].toString()) ?? DateTime.now())
+            : DateTime.now(),
+        category: json['category']?.toString() ?? 'lainnya',
+        title: json['title']?.toString() ?? '',
+        content: json['content']?.toString() ?? '',
+        createdAt: json['created_at'] != null
+            ? (DateTime.tryParse(json['created_at'].toString()) ?? DateTime.now())
+            : DateTime.now(),
       );
 
   Map<String, dynamic> toJson() => {

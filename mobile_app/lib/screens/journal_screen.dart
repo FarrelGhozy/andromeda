@@ -54,15 +54,22 @@ class JournalScreen extends StatelessWidget {
 }
 
 /// Tab Catatan Saya — daftar entri dikelompokkan per tanggal.
-class _EntriesTab extends StatelessWidget {
+class _EntriesTab extends StatefulWidget {
   const _EntriesTab();
+
+  @override
+  State<_EntriesTab> createState() => _EntriesTabState();
+}
+
+class _EntriesTabState extends State<_EntriesTab> {
+  String? _selectedCategory; // null = semua
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final entries = context.watch<JournalProvider>().entries;
+    final allEntries = context.watch<JournalProvider>().entries;
 
-    if (entries.isEmpty) {
+    if (allEntries.isEmpty) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(32),
@@ -87,6 +94,10 @@ class _EntriesTab extends StatelessWidget {
       );
     }
 
+    final entries = _selectedCategory == null
+        ? allEntries
+        : allEntries.where((e) => e.category == _selectedCategory).toList();
+
     // Kelompokkan per tanggal (desc).
     final grouped = <DateTime, List<JournalEntry>>{};
     for (final e in entries) {
@@ -95,22 +106,76 @@ class _EntriesTab extends StatelessWidget {
     }
     final days = grouped.keys.toList()..sort((a, b) => b.compareTo(a));
 
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(12, 12, 12, 88),
+    return Column(
       children: [
-        for (final day in days) ...[
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 12, 8, 4),
-            child: Text(
-              _formatDay(day),
-              style: theme.textTheme.labelLarge?.copyWith(
-                color: theme.colorScheme.primary,
-                fontWeight: FontWeight.bold,
+        // Filter chip horizontal
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.fromLTRB(12, 10, 12, 6),
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 6),
+                child: FilterChip(
+                  label: const Text('Semua'),
+                  selected: _selectedCategory == null,
+                  onSelected: (_) => setState(() => _selectedCategory = null),
+                ),
               ),
-            ),
+              for (final cat in JournalProvider.categories)
+                Padding(
+                  padding: const EdgeInsets.only(right: 6),
+                  child: FilterChip(
+                    label: Text(cat.label),
+                    selected: _selectedCategory == cat.value,
+                    onSelected: (_) => setState(() {
+                      _selectedCategory =
+                          _selectedCategory == cat.value ? null : cat.value;
+                    }),
+                  ),
+                ),
+            ],
           ),
-          for (final entry in grouped[day]!) _EntryCard(entry: entry),
-        ],
+        ),
+        Expanded(
+          child: entries.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.filter_alt_off_outlined,
+                          size: 48, color: theme.colorScheme.onSurfaceVariant),
+                      const SizedBox(height: 8),
+                      Text('Tidak ada catatan di kategori ini',
+                          style: theme.textTheme.bodyMedium),
+                      const SizedBox(height: 8),
+                      TextButton(
+                        onPressed: () => setState(() => _selectedCategory = null),
+                        child: const Text('Tampilkan Semua'),
+                      ),
+                    ],
+                  ),
+                )
+              : ListView(
+                  padding: const EdgeInsets.fromLTRB(12, 4, 12, 88),
+                  children: [
+                    for (final day in days) ...[
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 12, 8, 4),
+                        child: Text(
+                          _formatDay(day),
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: theme.colorScheme.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      for (final entry in grouped[day]!)
+                        _EntryCard(entry: entry),
+                    ],
+                  ],
+                ),
+        ),
       ],
     );
   }
@@ -131,6 +196,37 @@ class _EntryCard extends StatelessWidget {
   final JournalEntry entry;
 
   const _EntryCard({required this.entry});
+
+  Future<void> _delete(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Hapus catatan?'),
+        content: const Text('Catatan ini akan dihapus permanen dari HP.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Batal'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Hapus', style: TextStyle(color: AppColors.danger)),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) return;
+    final provider = context.read<JournalProvider>();
+    await provider.deleteEntry(entry.id);
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(const SnackBar(
+        content: Text('Catatan berhasil dihapus'),
+        backgroundColor: AppColors.success,
+        duration: Duration(seconds: 2),
+      ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -166,8 +262,46 @@ class _EntryCard extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-                  Icon(Icons.chevron_right, size: 18,
-                      color: theme.colorScheme.onSurfaceVariant),
+                  PopupMenuButton<String>(
+                    icon: Icon(Icons.more_vert, size: 20,
+                        color: theme.colorScheme.onSurfaceVariant),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    onSelected: (action) {
+                      if (action == 'edit') {
+                        HapticFeedback.lightImpact();
+                        Navigator.pushNamed(context, AppRoutes.journalEdit,
+                            arguments: entry);
+                      } else if (action == 'delete') {
+                        HapticFeedback.lightImpact();
+                        _delete(context);
+                      }
+                    },
+                    itemBuilder: (ctx) => [
+                      const PopupMenuItem(
+                        value: 'edit',
+                        child: Row(
+                          children: [
+                            Icon(Icons.edit_outlined, size: 18),
+                            SizedBox(width: 8),
+                            Text('Edit Catatan'),
+                          ],
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 'delete',
+                        child: Row(
+                          children: [
+                            Icon(Icons.delete_outline,
+                                size: 18, color: AppColors.danger),
+                            SizedBox(width: 8),
+                            Text('Hapus Catatan',
+                                style: TextStyle(color: AppColors.danger)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
               const SizedBox(height: 6),

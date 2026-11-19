@@ -17,7 +17,11 @@ class JournalProvider extends ChangeNotifier {
 
   List<JournalEntry> get entries {
     final sorted = List<JournalEntry>.of(_entries);
-    sorted.sort((a, b) => b.date.compareTo(a.date));
+    sorted.sort((a, b) {
+      final cmp = b.date.compareTo(a.date);
+      if (cmp != 0) return cmp;
+      return b.createdAt.compareTo(a.createdAt);
+    });
     return sorted;
   }
   List<JournalArticle> get articles => _articles;
@@ -26,7 +30,7 @@ class JournalProvider extends ChangeNotifier {
   JournalProvider(this._store);
 
   /// Muat catatan dari SharedPreferences + artikel dari asset.
-  Future<void> init() async {
+  Future<void> init({bool loadArticles = true}) async {
     // Catatan lokal
     final raw = await _store.getJson(LocalStore.journalEntriesKey);
     if (raw is List) {
@@ -35,15 +39,17 @@ class JournalProvider extends ChangeNotifier {
           .toList();
     }
     // Artikel bundled (asset)
-    try {
-      final jsonText =
-          await rootBundle.loadString('assets/data/tips_petani.json');
-      final list = jsonDecode(jsonText) as List;
-      _articles = list
-          .map((a) => JournalArticle.fromJson(Map<String, dynamic>.from(a)))
-          .toList();
-    } catch (_) {
-      _articles = [];
+    if (loadArticles) {
+      try {
+        final jsonText =
+            await rootBundle.loadString('assets/data/tips_petani.json');
+        final list = jsonDecode(jsonText) as List;
+        _articles = list
+            .map((a) => JournalArticle.fromJson(Map<String, dynamic>.from(a)))
+            .toList();
+      } catch (_) {
+        _articles = [];
+      }
     }
     _loaded = true;
     notifyListeners();
