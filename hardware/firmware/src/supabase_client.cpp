@@ -127,12 +127,35 @@ PendingCommand getPendingCommand(const char* deviceId) {
 }
 
 void markCommandExecuted(long commandId) {
+  // Prioritas: RPC execute_command mengisi status='executed' sekaligus
+  // executed_at=NOW() memakai jam server Postgres (ESP32 tanpa NTP).
+  HTTPClient rpcHttp;
+  String rpcUrl = baseUrl + "/rpc/execute_command";
+  rpcHttp.begin(rpcUrl);
+  rpcHttp.setTimeout(5000);
+  addHeaders(rpcHttp);
+
+  StaticJsonDocument<128> rpcDoc;
+  rpcDoc["cmd_id"] = commandId;
+
+  String rpcPayload;
+  serializeJson(rpcDoc, rpcPayload);
+
+  int rpcCode = rpcHttp.POST(rpcPayload);
+  Serial.print("RPC execute_command status: ");
+  Serial.println(rpcCode);
+  rpcHttp.end();
+
+  if (rpcCode >= 200 && rpcCode < 300) {
+    return;
+  }
+
+  // Fallback untuk instance Supabase lama yang belum memiliki grant RPC.
   HTTPClient http;
   String url = baseUrl + "/pending_commands?id=eq." + String(commandId);
   http.begin(url);
   http.setTimeout(5000);
   addHeaders(http);
-  http.addHeader("Prefer", "return=minimal");
 
   StaticJsonDocument<128> doc;
   doc["status"] = "executed";
@@ -141,7 +164,7 @@ void markCommandExecuted(long commandId) {
   serializeJson(doc, payload);
 
   int code = http.PATCH(payload);
-  Serial.print("PATCH command status: ");
+  Serial.print("PATCH command status (fallback): ");
   Serial.println(code);
 
   http.end();

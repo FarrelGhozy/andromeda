@@ -10,20 +10,82 @@ unsigned long lastCommandCheck = 0;
 unsigned long lastWiFiCheck = 0;
 unsigned long lastValvePush = 0;
 unsigned long lastHeartbeat = 0;
+unsigned long lastConfigRefresh = 0;
 int currentReadIntervalSec = DEFAULT_READ_INTERVAL_SEC;
 SystemConfig cachedConfigs[NUM_PETAK];
 bool prevValveStates[NUM_PETAK] = {false};
 
+static void syncPrevValveStates() {
+  for (int i = 0; i < NUM_PETAK; i++) {
+    prevValveStates[i] = getValveState(i);
+  }
+}
+
 static void refreshAllConfigs() {
+  int minInterval = 0;
   for (int i = 0; i < NUM_PETAK; i++) {
     SystemConfig cfg = getSystemConfig(PETAK_IDS[i]);
     if (cfg.valid) {
       cachedConfigs[i] = cfg;
-      if (cfg.readIntervalSec > 0) {
-        currentReadIntervalSec = cfg.readIntervalSec;
+      if (cfg.readIntervalSec >= MIN_READ_INTERVAL_SEC) {
+        if (minInterval == 0 || cfg.readIntervalSec < minInterval) {
+          minInterval = cfg.readIntervalSec;
+        }
       }
     }
   }
+  if (minInterval >= MIN_READ_INTERVAL_SEC) {
+    currentReadIntervalSec = minInterval;
+  }
+}
+
+static void runSensorPushCycle() {
+  Serial.println("=== Sensor push cycle ===");
+
+  AllReadings readings = readAllSensors(SENSOR_PINS);
+  int minInterval = 0;
+
+  for (int i = 0; i < NUM_PETAK; i++) {
+    SystemConfig cfg = getSystemConfig(PETAK_IDS[i]);
+    if (cfg.valid) {
+      cachedConfigs[i] = cfg;
+      if (cfg.readIntervalSec >= MIN_READ_INTERVAL_SEC) {
+        if (minInterval == 0 || cfg.readIntervalSec < minInterval) {
+          minInterval = cfg.readIntervalSec;
+        }
+      }
+
+      if (isSensorValid(readings.readings[i])
+          && cfg.mode == "auto"
+          && readings.readings[i].percent < cfg.thresholdDry
+          && !getValveState(i)) {
+        Serial.print("Petak ");
+        Serial.print(i);
+        Serial.print(" dry (");
+        Serial.print(readings.readings[i].percent);
+        Serial.print("%), opening valve for ");
+        Serial.print(cfg.valveDurationMs);
+        Serial.println(" ms");
+        openValve(RELAY_PINS[i], cfg.valveDurationMs);
+      }
+    }
+  }
+
+  if (minInterval >= MIN_READ_INTERVAL_SEC) {
+    currentReadIntervalSec = minInterval;
+  }
+
+  bool actualValveStates[NUM_PETAK];
+  for (int i = 0; i < NUM_PETAK; i++) {
+    actualValveStates[i] = getValveState(i);
+  }
+
+  postAllSensorReadings(readings, actualValveStates, PETAK_IDS);
+  syncPrevValveStates();
+
+  Serial.print("=== Sensor push complete (next in ");
+  Serial.print(currentReadIntervalSec);
+  Serial.println("s) ===");
 }
 
 void setup() {
@@ -43,15 +105,24 @@ void setup() {
   Serial.println(ESP32_ID);
   Serial.print("Number of petaks: ");
   Serial.println(NUM_PETAK);
+  Serial.print("Default read interval: ");
+  Serial.print(DEFAULT_READ_INTERVAL_SEC);
+  Serial.println("s");
 
   if (!connectWiFi()) {
     Serial.println("WiFi failed, restarting...");
     ESP.restart();
   }
 
-  refreshAllConfigs();
+  // Heartbeat & push sensor pertama langsung saat boot agar app segera
+  // menerima data segar tanpa menunggu siklus 30 menit pertama.
+  sendHeartbeat(ESP32_ID);
+  lastHeartbeat = millis();
 
-  lastSensorPush = millis();
+  runSensorPushCycle();
+  unsigned long bootDone = millis();
+  lastSensorPush = bootDone;
+  lastConfigRefresh = bootDone;
 }
 
 void loop() {
@@ -60,8 +131,8 @@ void loop() {
   // 1. Update valve timers (non-blocking)
   updateValves();
 
-  // 1b. Push valve state change to Supabase immediately
-  if (now - lastValvePush >= 2000) {
+  // 1b. Push valve state change to Supabase immediately (e.g. timer auto-close)
+  if (now - lastValvePush >= 2000UL) {
     bool valveChanged = false;
     for (int i = 0; i < NUM_PETAK; i++) {
       bool current = getValveState(i);
@@ -81,17 +152,18 @@ void loop() {
   }
 
   // 2. WiFi check & reconnect every 30s
-  if (now - lastWiFiCheck >= 30000) {
+  if (now - lastWiFiCheck >= 30000UL) {
     lastWiFiCheck = now;
     if (WiFi.status() != WL_CONNECTED) {
       Serial.println("WiFi disconnected, reconnecting...");
       if (connectWiFi()) {
         refreshAllConfigs();
+        lastConfigRefresh = millis();
       }
     }
   }
 
-  // 3. Check pending commands every 1s
+  // 3. Check pending commands every COMMAND_POLL_INTERVAL_MS (10s)
   if (now - lastCommandCheck >= COMMAND_POLL_INTERVAL_MS) {
     lastCommandCheck = now;
 
@@ -99,6 +171,13 @@ void loop() {
       PendingCommand cmd = getPendingCommand(PETAK_IDS[i]);
 
       if (cmd.valid) {
+        // Segarkan config petak sebelum eksekusi agar mode manual/auto dan
+        // valve_duration tidak basi selama interval sensor 30 menit.
+        SystemConfig freshCfg = getSystemConfig(PETAK_IDS[i]);
+        if (freshCfg.valid) {
+          cachedConfigs[i] = freshCfg;
+        }
+
         Serial.print("Executing command for petak ");
         Serial.print(i);
         Serial.print(": ");
@@ -125,58 +204,34 @@ void loop() {
           cmdValveStates[j] = getValveState(j);
         }
         postAllSensorReadings(cmdReadings, cmdValveStates, PETAK_IDS);
+        syncPrevValveStates();
         Serial.println("Immediate push after command");
       }
     }
   }
 
   // 4. Heartbeat: update last_seen setiap 60s supaya status online akurat
-  if (now - lastHeartbeat >= 60000) {
+  if (now - lastHeartbeat >= HEARTBEAT_INTERVAL_MS) {
     lastHeartbeat = now;
     if (WiFi.status() == WL_CONNECTED) {
       sendHeartbeat(ESP32_ID);
     }
   }
 
-  // 5. Sensor push cycle
-  if (now - lastSensorPush >= (unsigned long)currentReadIntervalSec * 1000) {
+  // 4b. Refresh system_config berkala agar perubahan mode/interval dari app
+  // cepat diterapkan tanpa menunggu siklus sensor 30 menit.
+  if (now - lastConfigRefresh >= CONFIG_REFRESH_INTERVAL_MS) {
+    lastConfigRefresh = now;
+    if (WiFi.status() == WL_CONNECTED) {
+      refreshAllConfigs();
+    }
+  }
+
+  // 5. Sensor push cycle (default 30 menit = 1800s)
+  if (now - lastSensorPush >= (unsigned long)currentReadIntervalSec * 1000UL) {
     lastSensorPush = now;
-    Serial.println("=== Sensor push cycle ===");
-
-    AllReadings readings = readAllSensors(SENSOR_PINS);
-
-    for (int i = 0; i < NUM_PETAK; i++) {
-      SystemConfig cfg = getSystemConfig(PETAK_IDS[i]);
-      if (cfg.valid) {
-        cachedConfigs[i] = cfg;
-        if (cfg.readIntervalSec > 0) {
-          currentReadIntervalSec = cfg.readIntervalSec;
-        }
-
-        if (isSensorValid(readings.readings[i])
-            && cfg.mode == "auto"
-            && readings.readings[i].percent < cfg.thresholdDry
-            && !getValveState(i)) {
-          Serial.print("Petak ");
-          Serial.print(i);
-          Serial.print(" dry (");
-          Serial.print(readings.readings[i].percent);
-          Serial.print("%), opening valve for ");
-          Serial.print(cfg.valveDurationMs);
-          Serial.println(" ms");
-          openValve(RELAY_PINS[i], cfg.valveDurationMs);
-        }
-      }
-    }
-
-    bool actualValveStates[NUM_PETAK];
-    for (int i = 0; i < NUM_PETAK; i++) {
-      actualValveStates[i] = getValveState(i);
-    }
-
-    postAllSensorReadings(readings, actualValveStates, PETAK_IDS);
-
-    Serial.println("=== Sensor push complete ===");
+    lastConfigRefresh = now;
+    runSensorPushCycle();
   }
 
   delay(10);

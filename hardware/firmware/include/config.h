@@ -30,16 +30,13 @@
 #define DEFAULT_VALVE_DURATION_MS 30000
 // ============================================================
 // INTERVAL PENGIRIMAN DATA SENSOR KE SERVER (detik)
-//   DIPAKAI HANYA JIKA system_config.read_interval belum ada
-//   di Supabase (fallback). Nilai di DB selalu menang (lihat
-//   main.cpp refreshAllConfigs / loop step 5).
-//
-//   MODE DEBUG: 5 detik — dikirim SANGAT sering tiap 5 detik agar
-//   data tampak live di app (debug cepat). HANYA untuk debugging!
-//   Setelah selesai ubah ke 300 (5 menit) atau 1800 (30 menit)
-//   untuk hemat baterai/kuota dan hindari spam ke Supabase.
+//   Default produksi: 1800 detik (30 menit).
+//   Nilai system_config.read_interval di Supabase tetap bisa
+//   meng-override nilai ini (dibatasi minimal MIN_READ_INTERVAL_SEC
+//   agar nilai invalid di DB tidak memicu spam request).
 // ============================================================
-#define DEFAULT_READ_INTERVAL_SEC 5
+#define DEFAULT_READ_INTERVAL_SEC 1800
+#define MIN_READ_INTERVAL_SEC 60
 
 // ============================================================
 // TIMING & SAFETY
@@ -50,5 +47,7 @@
 // (sebelumnya 1s × 6 petak = 6 request/detik → beban WiFi tinggi
 // yang memicu puncak arus & reset daya pada power yang rapuh).
 #define COMMAND_POLL_INTERVAL_MS 10000
+#define HEARTBEAT_INTERVAL_MS 60000UL
+#define CONFIG_REFRESH_INTERVAL_MS 120000UL
 
 #endif

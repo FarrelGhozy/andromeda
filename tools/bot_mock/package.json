@@ -1,15 +1,17 @@
 {
   "name": "andromeda-bot-mock",
-  "version": "0.1.0",
-  "description": "Simulasi ESP32-01 ANDROMEDA — kirim sensor_readings + heartbeat + eksekusi pending_commands ke Supabase",
+  "version": "0.2.0",
+  "description": "Virtual ESP32-01 ANDROMEDA — simulasi non-blocking (record 30 mnt, command feedback instan, heartbeat, fisika tanah & cuaca non-template)",
   "type": "module",
   "scripts": {
     "live": "bun src/bot_mock.ts --mode live",
     "live:fast": "bun src/bot_mock.ts --mode live --fast",
     "once": "bun src/bot_mock.ts --mode live --once",
-    "dry-run": "bun src/bot_mock.ts --mode live --dry-run",
+    "dry-run": "bun src/bot_mock.ts --mode live --once --dry-run",
     "backfill": "bun src/bot_mock.ts --mode backfill --days 7",
+    "backfill:dry": "bun src/bot_mock.ts --mode backfill --days 7 --dry-run",
     "cleanup": "bun src/bot_mock.ts --mode cleanup --days 1 --yes",
+    "test": "bun test",
     "check": "bunx tsc --noEmit"
   },
   "devDependencies": {
